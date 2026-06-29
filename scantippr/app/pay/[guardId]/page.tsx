@@ -46,7 +46,7 @@ export default function PayPage({ params }: { params: { guardId: string } }) {
 
   if (!guard) return (
     <main className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <p className="text-gray-500">Guard not found.</p>
+      <p className="text-gray-500">Guard not found. URL: {process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 20)}</p>
     </main>
   );
 
