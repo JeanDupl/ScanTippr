@@ -27,10 +27,12 @@ export default function PayPage({ params }: { params: { guardId: string } }) {
         .single();
 
       if (error || !data) {
-        setGuard(null);
-      } else {
-        setGuard(data as unknown as Guard);
-      }
+  console.log('Error:', error);
+  console.log('Data:', data);
+  setGuard(null);
+} else {
+  setGuard(data as unknown as Guard);
+}
       setLoading(false);
     }
     fetchGuard();
