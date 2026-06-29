@@ -89,7 +89,7 @@ export default function PayPage({ params }: { params: { guardId: string } }) {
           placeholder="Enter custom amount (R)"
           value={customAmount}
           onChange={(e) => { setCustomAmount(e.target.value); setSelectedAmount(0); }}
-          className="w-full border-2 border-gray-200 rounded-xl py-3 px-4 text-center text-lg mb-6 focus:outline-none focus:border-blue-500 placeholder-gray-400 text-gray-800 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          className="w-full border-2 border-gray-200 rounded-xl py-3 px-4 text-center text-lg mb-6 focus:outline-none focus:border-blue-500 placeholder-gray-400"
         />
 
         {/* Pay Button */}
