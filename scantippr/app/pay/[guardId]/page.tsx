@@ -5,7 +5,7 @@ import { supabase } from '../../../lib/supabase';
 interface Guard {
   first_name: string;
   last_name: string;
-  companies: { name: string };
+  companies: { name: string } | { name: string }[];
 }
 
 export default function PayPage({ params }: { params: { guardId: string } }) {
@@ -29,7 +29,7 @@ export default function PayPage({ params }: { params: { guardId: string } }) {
       if (error || !data) {
         setGuard(null);
       } else {
-        setGuard(data as Guard);
+        setGuard(data as unknown as Guard);
       }
       setLoading(false);
     }
@@ -61,7 +61,7 @@ export default function PayPage({ params }: { params: { guardId: string } }) {
             {guard.first_name} {guard.last_name}
           </h1>
           <p className="text-gray-500 text-sm mt-1">
-            {guard.companies.name} • Car Guard
+            {Array.isArray(guard.companies) ? guard.companies[0]?.name : guard.companies.name} • Car Guard
           </p>
         </div>
 
