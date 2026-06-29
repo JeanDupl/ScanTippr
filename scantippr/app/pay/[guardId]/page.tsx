@@ -19,22 +19,23 @@ export default function PayPage({ params }: { params: { guardId: string } }) {
 
   useEffect(() => {
     async function fetchGuard() {
-      const { data, error } = await supabase
-        .from('guards')
-        .select('first_name, last_name, companies(name)')
-        .eq('id', params.guardId)
-        .eq('is_active', true)
-        .single();
+  const { data, error } = await supabase
+    .from('guards')
+    .select('first_name, last_name, companies(name)')
+    .eq('id', params.guardId)
+    .eq('is_active', true)
+    .limit(1);
 
-      if (error || !data) {
   console.log('Error:', error);
-  console.log('Data:', data);
-  setGuard(null);
-} else {
-  setGuard(data as unknown as Guard);
+  console.log('Data:', JSON.stringify(data));
+
+  if (error || !data || data.length === 0) {
+    setGuard(null);
+  } else {
+    setGuard(data[0] as unknown as Guard);
+  }
+  setLoading(false);
 }
-      setLoading(false);
-    }
     fetchGuard();
   }, [params.guardId]);
 
