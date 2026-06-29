@@ -9,6 +9,7 @@ interface Guard {
 }
 
 export default function PayPage({ params }: { params: { guardId: string } }) {
+  const guardId = params?.guardId || '';
   const [guard, setGuard] = useState<Guard | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedAmount, setSelectedAmount] = useState<number>(20);
@@ -22,7 +23,7 @@ export default function PayPage({ params }: { params: { guardId: string } }) {
   const { data, error } = await supabase
     .from('guards')
     .select('first_name, last_name, companies(name)')
-    .eq('id', params.guardId)
+    .eq('id', guardId)
     .eq('is_active', true)
     .limit(1);
 
@@ -37,7 +38,7 @@ export default function PayPage({ params }: { params: { guardId: string } }) {
   setLoading(false);
 }
     fetchGuard();
-  }, [params.guardId]);
+  }, [guardId]);
 
   if (loading) return (
     <main className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -49,7 +50,7 @@ export default function PayPage({ params }: { params: { guardId: string } }) {
     <main className="min-h-screen bg-gray-50 flex items-center justify-center flex-col gap-4 p-4">
       <p className="text-gray-500">Guard not found.</p>
       <p className="text-xs text-gray-400">URL: {process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 30)}</p>
-      <p className="text-xs text-gray-400">Guard ID: {params.guardId}</p>
+      <p className="text-xs text-gray-400">Guard ID: {guardId}</p>
     </main>
   );
 
