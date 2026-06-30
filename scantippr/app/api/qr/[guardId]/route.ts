@@ -2,9 +2,9 @@ import QRCode from 'qrcode';
 
 export async function GET(
   request: Request,
-  { params }: { params: { guardId: string } }
+  { params }: { params: Promise<{ guardId: string }> }
 ) {
-  const { guardId } = params;
+  const { guardId } = await params;
   const url = `https://www.scantippr.co.za/pay/${guardId}`;
 
   const qrBuffer = await QRCode.toBuffer(url, {
