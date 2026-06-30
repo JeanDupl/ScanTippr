@@ -15,7 +15,8 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
   const [loading, setLoading] = useState(true);
   const [selectedAmount, setSelectedAmount] = useState<number>(20);
   const [customAmount, setCustomAmount] = useState<string>('');
-
+  const [processing, setProcessing] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
   const tipAmounts = [10, 20, 50, 100];
   const displayAmount = customAmount ? parseInt(customAmount) : selectedAmount;
 
@@ -27,11 +28,6 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
         .eq('id', guardId)
         .eq('is_active', true)
         .limit(1);
-
-      console.log('GuardId:', guardId);
-      console.log('Error:', error);
-      console.log('Data:', JSON.stringify(data));
-
       if (error || !data || data.length === 0) {
         setGuard(null);
       } else {
@@ -41,6 +37,35 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
     }
     fetchGuard();
   }, [guardId]);
+
+  async function handleTip() {
+    console.log('handleTip called, displayAmount:', displayAmount);
+    if (!displayAmount || displayAmount <= 0) return;
+    setProcessing(true);
+    setPaymentError(null);
+
+    try {
+      const res = await fetch('/api/initiate-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guardId, amount: displayAmount }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setPaymentError(data.error || 'Something went wrong. Please try again.');
+        setProcessing(false);
+        return;
+      }
+
+      // Redirect to Paystack's hosted checkout
+      window.location.href = data.authorization_url;
+    } catch (err) {
+      setPaymentError('Could not connect to payment service. Please try again.');
+      setProcessing(false);
+    }
+  }
 
   if (loading) return (
     <main className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -92,8 +117,15 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
           onChange={(e) => { setCustomAmount(e.target.value); setSelectedAmount(0); }}
           className="w-full border-2 border-gray-200 rounded-xl py-3 px-4 text-center text-lg mb-6 focus:outline-none focus:border-blue-500 placeholder-gray-400"
         />
-        <button className="w-full bg-blue-500 text-white rounded-xl py-4 font-bold text-xl hover:bg-blue-600 transition-colors">
-          {displayAmount ? `Tip R${displayAmount}` : 'Select an amount'}
+        {paymentError && (
+          <p className="text-red-500 text-sm text-center mb-4">{paymentError}</p>
+        )}
+        <button
+          onClick={() => alert('button works')}
+          disabled={!displayAmount || displayAmount <= 0 || processing}
+          className="w-full bg-blue-500 text-white rounded-xl py-4 font-bold text-xl hover:bg-blue-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+        >
+          {processing ? 'Processing...' : displayAmount ? `Tip R${displayAmount}` : 'Select an amount'}
         </button>
         <p className="text-center text-gray-400 text-xs mt-6">
           Powered by ScanTippr • Secure payment
