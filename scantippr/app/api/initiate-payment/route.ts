@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       amount: amount * 100,
       currency: 'ZAR',
       subaccount: subaccountCode,
-      callback_url: `https://www.scantippr.co.za/pay/${guardId}/success`,
+      callback_url: `https://scan-tippr-rk88.vercel.app/pay/${guardId}/success`,
       metadata: {
         guard_id: guardId,
         guard_name: `${guard.first_name} ${guard.last_name}`,
