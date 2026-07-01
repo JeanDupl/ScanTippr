@@ -121,7 +121,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
           <p className="text-red-500 text-sm text-center mb-4">{paymentError}</p>
         )}
         <button
-          onClick={() => alert('button works')}
+          onClick={handleTip}
           disabled={!displayAmount || displayAmount <= 0 || processing}
           className="w-full bg-blue-500 text-white rounded-xl py-4 font-bold text-xl hover:bg-blue-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
