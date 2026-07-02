@@ -48,7 +48,11 @@ export default async function AdminPage() {
                       <td className="py-2">
                         <a href={'/api/qr/' + guard.id} target="_blank" className="text-blue-500 hover:underline text-xs">
                           Download QR
-                        </a>
+                            </a>
+                              <span className="text-gray-300 mx-1">|</span>
+                            <a href={'/guard-card/' + guard.id} target="_blank" className="text-blue-500 hover:underline text-xs">
+                            Print card
+                            </a>
                       </td>
                     </tr>
                   ))}
