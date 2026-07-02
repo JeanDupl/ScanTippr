@@ -9,19 +9,20 @@ const supabase = createClient(
 export default async function GuardCardPage({
   params,
 }: {
-  params: { guardId: string }
+  params: Promise<{ guardId: string }>
 }) {
+  const { guardId } = await params
   const { data: guard } = await supabase
     .from('guards')
     .select('*, companies(name)')
-    .eq('id', params.guardId)
+    .eq('id', guardId)
     .single()
 
   if (!guard) {
     return <p style={{ padding: '2rem' }}>Guard not found.</p>
   }
 
-  const qrUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/qr/${params.guardId}`
+  const qrUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/qr/${guardId}`
   const companyName = (guard.companies as { name: string })?.name ?? 'ScanTippr'
 
   return (
