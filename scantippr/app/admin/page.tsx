@@ -1,4 +1,3 @@
-cat > scantippr/app/admin/page.tsx << 'EOF'
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
