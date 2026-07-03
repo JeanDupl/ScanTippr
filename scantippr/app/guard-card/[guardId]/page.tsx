@@ -90,30 +90,37 @@ export default async function GuardCardPage({
 
           <div style={{ width: '100%', height: '1px', background: '#e0e8f0' }} />
 
-          {/* QR Code */}
+          {/* CTA above QR */}
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ margin: '0 0 4px', fontSize: '17px', fontWeight: 600, color: '#1a2b3c' }}>
+              Show your appreciation
+             </p>
+             <p style={{ margin: 0, fontSize: '14px', color: '#6b7f90' }}>
+               Scan the QR code to leave a tip.
+             </p>
+          </div>
+
+        {/* QR Code */}
           <div style={{
             background: '#fff',
             borderRadius: '8px',
             padding: '12px',
             border: '0.5px solid #e0e8f0',
-          }}>
-            <img
-              src={qrUrl}
-              alt={`QR code for ${guard.first_name} ${guard.last_name}`}
-              width={200}
-              height={200}
-            />
-          </div>
+    }}>
+        <img
+           src={qrUrl}
+           alt={`QR code for ${guard.first_name} ${guard.last_name}`}
+           width={200}
+           height={200}
+        />
+        </div>
 
-          {/* CTA */}
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: '0 0 4px', fontSize: '17px', fontWeight: 600, color: '#1a2b3c' }}>
-              Want to show appreciation?
-            </p>
-            <p style={{ margin: 0, fontSize: '14px', color: '#6b7f90' }}>
-              Scan the QR code to send a tip
-            </p>
-          </div>
+      {/* Thank you message */}
+        <div style={{ textAlign: 'center' }}>
+         <p style={{ margin: 0, fontSize: '14px', color: '#6b7f90' }}>
+           Thank you for your support!
+         </p>
+        </div>
 
         </div>
 
