@@ -4,6 +4,11 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
   if (pathname.startsWith('/admin')) {
+    // Allow server action POST requests through
+    if (req.method === 'POST') {
+      return NextResponse.next()
+    }
+
     const authHeader = req.headers.get('authorization')
 
     if (authHeader) {
