@@ -117,9 +117,9 @@ export default async function GuardCardPage({
 
       {/* Thank you message */}
         <div style={{ textAlign: 'center' }}>
-         <p style={{ margin: 0, fontSize: '14px', color: '#6b7f90' }}>
-           Thank you for your support!
-         </p>
+         <p style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#6b7f90' }}>
+          Thank you for your support!
+        </p>
         </div>
 
         </div>
