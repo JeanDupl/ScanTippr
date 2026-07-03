@@ -80,7 +80,7 @@ export default async function GuardCardPage({
           {/* Guard name */}
           <p style={{
             margin: 0,
-            fontSize: '20px',
+            fontSize: '26px',
             fontWeight: 600,
             color: '#1a2b3c',
             textAlign: 'center',
@@ -100,17 +100,17 @@ export default async function GuardCardPage({
             <img
               src={qrUrl}
               alt={`QR code for ${guard.first_name} ${guard.last_name}`}
-              width={160}
-              height={160}
+              width={200}
+              height={200}
             />
           </div>
 
           {/* CTA */}
           <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: 600, color: '#1a2b3c' }}>
+            <p style={{ margin: '0 0 4px', fontSize: '17px', fontWeight: 600, color: '#1a2b3c' }}>
               Want to show appreciation?
             </p>
-            <p style={{ margin: 0, fontSize: '12px', color: '#6b7f90' }}>
+            <p style={{ margin: 0, fontSize: '14px', color: '#6b7f90' }}>
               Scan the QR code to send a tip
             </p>
           </div>
