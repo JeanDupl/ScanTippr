@@ -27,14 +27,12 @@ export async function addGuard(formData: FormData) {
   const lastName = formData.get('lastName') as string
   const companyId = formData.get('companyId') as string
 
-  console.log('addGuard called:', { firstName, lastName, companyId })
 
   if (!firstName?.trim() || !lastName?.trim() || !companyId) {
-    console.log('Validation failed')
     return
   }
 
-  const { data, error } = await supabase
+  const { error: dbError } = await supabase
     .from('guards')
     .insert({
       first_name: firstName.trim(),
@@ -42,8 +40,6 @@ export async function addGuard(formData: FormData) {
       company_id: companyId,
       is_active: true,
     })
-
-  console.log('Supabase result:', { data, error })
 
   redirect('/admin')
 }
