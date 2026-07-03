@@ -19,7 +19,32 @@ export default async function AdminPage() {
   return (
     <main className="min-h-screen bg-gray-50 p-8">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">ScanTippr Admin</h1>
+<h1 className="text-3xl font-bold text-gray-800 mb-8">ScanTippr Admin</h1>
 
+<div style={{ display: 'flex', gap: '12px', marginBottom: '2rem' }}>
+  <a href="/admin/add-company" style={{
+    padding: '10px 20px',
+    background: '#1a3a5c',
+    color: '#fff',
+    borderRadius: '8px',
+    textDecoration: 'none',
+    fontSize: '14px',
+    fontWeight: 600,
+  }}>
+    + Add company
+  </a>
+  <a href="/admin/add-guard" style={{
+    padding: '10px 20px',
+    background: '#1a3a5c',
+    color: '#fff',
+    borderRadius: '8px',
+    textDecoration: 'none',
+    fontSize: '14px',
+    fontWeight: 600,
+  }}>
+    + Add guard
+  </a>
+</div>
       <section className="mb-10">
         <h2 className="text-xl font-semibold text-gray-700 mb-4">Companies and Guards</h2>
         <div className="grid gap-4">
