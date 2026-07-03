@@ -95,7 +95,7 @@ export default async function GuardCardPage({
             <p style={{ margin: '0 0 4px', fontSize: '17px', fontWeight: 600, color: '#1a2b3c' }}>
               Show your appreciation
              </p>
-             <p style={{ margin: 0, fontSize: '14px', color: '#6b7f90' }}>
+             <p style={{ margin: 0, fontSize: '14px', color: '#52616e' }}>
                Scan the QR code to leave a tip.
              </p>
           </div>
