@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import CollapsibleSection from './CollapsibleSection'
 import CollapsibleCompany from './CollapsibleCompany'
+import CollapsibleTransactions from './CollapsibleTransactions'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -55,13 +56,22 @@ const { data: companiesList } = await supabase
         </a>
       </div>
 
-      <CollapsibleSection title="Companies and Guards">
-        <div className="grid gap-4">
-          {companies?.map((company) => (
-            <CollapsibleCompany key={company.id} company={company} />
-          ))}
-        </div>
-      </CollapsibleSection>
+      <CollapsibleSection title="Recent Transactions">
+  <div className="grid gap-4">
+    {companiesList?.map((company) => {
+      const companyTransactions = transactions?.filter(tx => tx.company_id === company.id) ?? []
+      if (companyTransactions.length === 0) return null
+      return (
+        <CollapsibleTransactions
+          key={company.id}
+          companyName={company.name}
+          transactions={companyTransactions}
+          guards={guards ?? []}
+        />
+      )
+    })}
+  </div>
+</CollapsibleSection>
 
       <CollapsibleSection title="Recent Transactions">
         <div className="grid gap-4">
