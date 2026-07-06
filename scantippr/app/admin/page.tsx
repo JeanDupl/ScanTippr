@@ -13,10 +13,18 @@ export default async function AdminPage() {
     .select('*, guards(id, first_name, last_name, is_active)')
 
   const { data: transactions } = await supabase
-    .from('transactions')
-    .select('*, guards(first_name, last_name), companies(name)')
-    .order('created_at', { ascending: false })
-    .limit(20)
+  .from('transactions')
+  .select('*')
+  .order('created_at', { ascending: false })
+  .limit(20)
+
+const { data: guards } = await supabase
+  .from('guards')
+  .select('id, first_name, last_name')
+
+const { data: companiesList } = await supabase
+  .from('companies')
+  .select('id, name'))
 
   return (
     <main className="min-h-screen bg-gray-50 p-8">
@@ -74,8 +82,8 @@ export default async function AdminPage() {
                   <td className="px-6 py-3 text-gray-500">
                     {new Date(tx.created_at).toLocaleDateString('en-ZA')}
                   </td>
-                  <td className="px-6 py-3">{(tx.guards as any)?.first_name} {(tx.guards as any)?.last_name}</td>
-                  <td className="px-6 py-3 text-gray-500">{(tx.companies as any)?.name}</td>
+                  <td className="px-6 py-3">{guards?.find(g => g.id === tx.guard_id)?.first_name} {guards?.find(g => g.id === tx.guard_id)?.last_name}</td>
+                  <td className="px-6 py-3 text-gray-500">{companiesList?.find(c => c.id === tx.company_id)?.name}</td>
                   <td className="px-6 py-3 font-medium text-green-600">R{tx.amount}</td>
                   <td className="px-6 py-3 text-gray-400 text-xs">{tx.paystack_reference}</td>
                   <td className="px-6 py-3">
