@@ -1,94 +1,61 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js'
+import CollapsibleSection from './CollapsibleSection'
+import CollapsibleCompany from './CollapsibleCompany'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+)
 
 export default async function AdminPage() {
   const { data: companies } = await supabase
     .from('companies')
-    .select('*, guards(id, first_name, last_name, is_active)');
+    .select('*, guards(id, first_name, last_name, is_active)')
 
   const { data: transactions } = await supabase
     .from('transactions')
     .select('*')
     .order('created_at', { ascending: false })
-    .limit(20);
+    .limit(20)
 
   return (
     <main className="min-h-screen bg-gray-50 p-8">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">ScanTippr Admin</h1>
 
-        <div style={{ display: 'flex', gap: '12px', marginBottom: '2rem' }}>
-  <a href="/admin/add-company" style={{
-    padding: '10px 20px',
-    background: '#1a3a5c',
-    color: '#fff',
-    borderRadius: '8px',
-    textDecoration: 'none',
-    fontSize: '14px',
-    fontWeight: 600,
-  }}>
-    + Add company
-  </a>
-  <a href="/admin/add-guard" style={{
-    padding: '10px 20px',
-    background: '#1a3a5c',
-    color: '#fff',
-    borderRadius: '8px',
-    textDecoration: 'none',
-    fontSize: '14px',
-    fontWeight: 600,
-  }}>
-    + Add guard
-  </a>
-</div>
-      <section className="mb-10">
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">Companies and Guards</h2>
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '2rem' }}>
+        <a href="/admin/add-company" style={{
+          padding: '10px 20px',
+          background: '#1a3a5c',
+          color: '#fff',
+          borderRadius: '8px',
+          textDecoration: 'none',
+          fontSize: '14px',
+          fontWeight: 600,
+        }}>
+          + Add company
+        </a>
+        <a href="/admin/add-guard" style={{
+          padding: '10px 20px',
+          background: '#1a3a5c',
+          color: '#fff',
+          borderRadius: '8px',
+          textDecoration: 'none',
+          fontSize: '14px',
+          fontWeight: 600,
+        }}>
+          + Add guard
+        </a>
+      </div>
+
+      <CollapsibleSection title="Companies and Guards">
         <div className="grid gap-4">
           {companies?.map((company) => (
-            <div key={company.id} className="bg-white rounded-xl shadow p-6">
-              <h3 className="text-lg font-bold text-gray-800 mb-3">{company.name}</h3>
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-gray-500 border-b">
-                    <th className="pb-2">Guard ID</th>
-                    <th className="pb-2">Name</th>
-                    <th className="pb-2">Status</th>
-                    <th className="pb-2">QR Code</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {company.guards?.map((guard: any) => (
-                    <tr key={guard.id} className="border-b last:border-0">
-                      <td className="py-2 text-gray-500">{guard.id}</td>
-                      <td className="py-2 font-medium">{guard.first_name} {guard.last_name}</td>
-                      <td className="py-2">
-                        <span className={guard.is_active ? 'px-2 py-1 rounded-full text-xs bg-green-100 text-green-700' : 'px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-500'}>
-                          {guard.is_active ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      <td className="py-2">
-                        <a href={'/api/qr/' + guard.id} target="_blank" className="text-blue-500 hover:underline text-xs">
-                          Download QR
-                            </a>
-                              <span className="text-gray-300 mx-1">|</span>
-                            <a href={'/guard-card/' + guard.id} target="_blank" className="text-blue-500 hover:underline text-xs">
-                            Print card
-                            </a>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <CollapsibleCompany key={company.id} company={company} />
           ))}
         </div>
-      </section>
+      </CollapsibleSection>
 
-      <section>
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">Recent Transactions</h2>
+      <CollapsibleSection title="Recent Transactions">
         <div className="bg-white rounded-xl shadow overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-50">
@@ -125,7 +92,7 @@ export default async function AdminPage() {
             </tbody>
           </table>
         </div>
-      </section>
+      </CollapsibleSection>
     </main>
-  );
+  )
 }
