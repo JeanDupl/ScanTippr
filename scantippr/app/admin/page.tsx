@@ -55,36 +55,60 @@ const { data: companiesList } = await supabase
         </a>
       </div>
 
+      <CollapsibleSection title="Companies and Guards">
+        <div className="grid gap-4">
+          {companies?.map((company) => (
+            <CollapsibleCompany key={company.id} company={company} />
+          ))}
+        </div>
+      </CollapsibleSection>
+
       <CollapsibleSection title="Recent Transactions">
-  <div className="grid gap-4">
-    {companiesList?.map((company) => {
-      const companyTransactions = transactions?.filter(tx => tx.company_id === company.id) ?? []
-      if (companyTransactions.length === 0) return null
-      return (
-        <div key={company.id} className="bg-white rounded-xl shadow overflow-hidden">
-          <div className="px-6 py-3 bg-gray-50 border-b">
-            <h3 className="font-semibold text-gray-700">{company.name}</h3>
-          </div>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-gray-500 border-b">
-                <th className="px-6 py-3">Date</th>
-                <th className="px-6 py-3">Guard</th>
-                <th className="px-6 py-3">Amount</th>
-                <th className="px-6 py-3">Reference</th>
-                <th className="px-6 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {companyTransactions.map((tx) => (
-                <tr key={tx.id} className="border-t">
-                  <td className="px-6 py-3 text-gray-500">
-                    {new Date(tx.created_at).toLocaleDateString('en-ZA')}
-                  </td>
-                  <td className="px-6 py-3">
-                    {guards?.find(g => g.id === tx.guard_id)?.first_name} {guards?.find(g => g.id === tx.guard_id)?.last_name}
-                  </td>
-                  <td className="px-6 py-3 font-medium text-green-600">R{tx.amount}</td>
+        <div className="grid gap-4">
+          {companiesList?.map((company) => {
+            const companyTransactions = transactions?.filter(tx => tx.company_id === company.id) ?? []
+            if (companyTransactions.length === 0) return null
+            return (
+              <div key={company.id} className="bg-white rounded-xl shadow overflow-hidden">
+                <div className="px-6 py-3 bg-gray-50 border-b">
+                  <h3 className="font-semibold text-gray-700">{company.name}</h3>
+                </div>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-gray-500 border-b">
+                      <th className="px-6 py-3">Date</th>
+                      <th className="px-6 py-3">Guard</th>
+                      <th className="px-6 py-3">Amount</th>
+                      <th className="px-6 py-3">Reference</th>
+                      <th className="px-6 py-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {companyTransactions.map((tx) => (
+                      <tr key={tx.id} className="border-t">
+                        <td className="px-6 py-3 text-gray-500">
+                          {new Date(tx.created_at).toLocaleDateString('en-ZA')}
+                        </td>
+                        <td className="px-6 py-3">
+                          {guards?.find(g => g.id === tx.guard_id)?.first_name} {guards?.find(g => g.id === tx.guard_id)?.last_name}
+                        </td>
+                        <td className="px-6 py-3 font-medium text-green-600">R{tx.amount}</td>
+                        <td className="px-6 py-3 text-gray-400 text-xs">{tx.paystack_reference}</td>
+                        <td className="px-6 py-3">
+                          <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
+                            {tx.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )
+          })}
+        </div>
+      </CollapsibleSection>
+
     </main>
   )
 }
