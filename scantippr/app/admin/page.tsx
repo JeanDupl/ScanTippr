@@ -24,7 +24,7 @@ const { data: guards } = await supabase
 
 const { data: companiesList } = await supabase
   .from('companies')
-  .select('id, name'))
+  .select('id, name')
 
   return (
     <main className="min-h-screen bg-gray-50 p-8">
