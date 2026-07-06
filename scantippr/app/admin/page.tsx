@@ -14,7 +14,7 @@ export default async function AdminPage() {
 
   const { data: transactions } = await supabase
     .from('transactions')
-    .select('*')
+    .select('*, guards(first_name, last_name), companies(name)')
     .order('created_at', { ascending: false })
     .limit(20)
 
@@ -62,6 +62,7 @@ export default async function AdminPage() {
               <tr className="text-left text-gray-500">
                 <th className="px-6 py-3">Date</th>
                 <th className="px-6 py-3">Guard</th>
+                <th className="px-6 py-3">Company</th>
                 <th className="px-6 py-3">Amount</th>
                 <th className="px-6 py-3">Reference</th>
                 <th className="px-6 py-3">Status</th>
@@ -73,7 +74,8 @@ export default async function AdminPage() {
                   <td className="px-6 py-3 text-gray-500">
                     {new Date(tx.created_at).toLocaleDateString('en-ZA')}
                   </td>
-                  <td className="px-6 py-3">{tx.guard_id}</td>
+                  <td className="px-6 py-3">{(tx.guards as any)?.first_name} {(tx.guards as any)?.last_name}</td>
+                  <td className="px-6 py-3 text-gray-500">{(tx.companies as any)?.name}</td>
                   <td className="px-6 py-3 font-medium text-green-600">R{tx.amount}</td>
                   <td className="px-6 py-3 text-gray-400 text-xs">{tx.paystack_reference}</td>
                   <td className="px-6 py-3">
@@ -84,7 +86,7 @@ export default async function AdminPage() {
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-gray-400">
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
                     No transactions yet
                   </td>
                 </tr>
