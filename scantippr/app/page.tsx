@@ -19,6 +19,7 @@ export default function Home() {
         .nav-buttons { gap: 8px; }
         .hero-buttons { flex-direction: column; }
         .hero-buttons a { text-align: center; }
+        .hero-badge { text-align: center; }
 }
       `}</style>
       <main style={{ fontFamily: 'sans-serif', color: '#1a2b3c', background: '#fff' }}>
@@ -35,7 +36,9 @@ export default function Home() {
         {/* Hero - Two column */}
         <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '4rem 2rem' }} className="hero-grid">
           <div>
-            <div style={{ display: 'inline-block', background: '#e6f1fb', color: '#185fa5', fontSize: '13px', padding: '4px 14px', borderRadius: '20px', marginBottom: '1.5rem', fontWeight: 500 }}>Built for South African businesses</div>
+            <div className="hero-badge" style={{ marginBottom: '1.5rem' }}>
+              <span style={{ display: 'inline-block', background: '#e6f1fb', color: '#185fa5', fontSize: '13px', padding: '4px 14px', borderRadius: '20px', fontWeight: 500 }}>Built for South African businesses</span>
+            </div>
             <h1 style={{ fontSize: '40px', fontWeight: 700, color: '#1a2b3c', margin: '0 0 1.25rem', lineHeight: 1.15 }}>Turn everyday appreciation into digital payments</h1>
             <p style={{ fontSize: '17px', color: '#4a6070', margin: '0 0 1rem', lineHeight: 1.7 }}>ScanTippr helps security companies, fuel stations, and other customer-facing businesses enable secure cashless appreciation for frontline employees using unique QR codes.</p>
             <p style={{ fontSize: '15px', color: '#6b7f90', margin: '0 0 2rem', lineHeight: 1.7, fontStyle: 'italic' }}>Every day, customers want to show appreciation for exceptional service — but many no longer carry cash. ScanTippr bridges that gap.</p>
