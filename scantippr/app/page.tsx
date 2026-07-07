@@ -14,7 +14,7 @@ export default function Home() {
       </nav>
 
       {/* Hero - Two column */}
-      <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '5rem 2rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+      <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '5rem 2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', alignItems: 'center' }}>
         <div>
           <div style={{ display: 'inline-block', background: '#e6f1fb', color: '#185fa5', fontSize: '13px', padding: '4px 14px', borderRadius: '20px', marginBottom: '1.5rem', fontWeight: 500 }}>Built for South African businesses</div>
           <h1 style={{ fontSize: '40px', fontWeight: 700, color: '#1a2b3c', margin: '0 0 1.25rem', lineHeight: 1.15 }}>Turn everyday appreciation into digital payments</h1>
@@ -94,7 +94,7 @@ export default function Home() {
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#1a2b3c', textAlign: 'center', marginBottom: '0.75rem' }}>Built for every customer-facing business</h2>
           <p style={{ textAlign: 'center', color: '#6b7f90', fontSize: '16px', marginBottom: '3rem' }}>ScanTippr works for any business with frontline employees.</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem' }}>
             {[
               { icon: <Shield size={28} color="#fff" />, label: 'Security companies', featured: true },
               { icon: <Fuel size={28} color="#fff" />, label: 'Fuel stations', featured: true },
@@ -164,7 +164,7 @@ export default function Home() {
       <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '5rem 2rem' }}>
         <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#1a2b3c', textAlign: 'center', marginBottom: '0.75rem' }}>Secure and trusted</h2>
         <p style={{ textAlign: 'center', color: '#6b7f90', fontSize: '16px', marginBottom: '3rem' }}>Payments processed through trusted South African payment providers.</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem' }}>
           {[
             { icon: <Lock size={24} color="#1a3a5c" />, label: 'Secure checkout' },
             { icon: <Zap size={24} color="#1a3a5c" />, label: 'Instant confirmation' },
