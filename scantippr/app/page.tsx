@@ -11,13 +11,15 @@ export default function Home() {
         .nav-buttons { display: flex; gap: 12px; }
         .nav-secondary { display: inline-flex; }
         @media (max-width: 768px) {
-          .hero-grid { grid-template-columns: 1fr; gap: 2rem; }
-          .three-col { grid-template-columns: 1fr; }
-          .two-col { grid-template-columns: 1fr; }
-          .four-col { grid-template-columns: repeat(2, 1fr); }
-          .nav-secondary { display: none; }
-          .nav-buttons { gap: 8px; }
-        }
+        .hero-grid { grid-template-columns: 1fr; gap: 2rem; }
+        .three-col { grid-template-columns: 1fr; }
+        .two-col { grid-template-columns: 1fr; }
+        .four-col { grid-template-columns: repeat(2, 1fr); }
+        .nav-secondary { display: none; }
+        .nav-buttons { gap: 8px; }
+        .hero-buttons { flex-direction: column; }
+        .hero-buttons a { text-align: center; }
+}
       `}</style>
       <main style={{ fontFamily: 'sans-serif', color: '#1a2b3c', background: '#fff' }}>
 
@@ -37,7 +39,7 @@ export default function Home() {
             <h1 style={{ fontSize: '40px', fontWeight: 700, color: '#1a2b3c', margin: '0 0 1.25rem', lineHeight: 1.15 }}>Turn everyday appreciation into digital payments</h1>
             <p style={{ fontSize: '17px', color: '#4a6070', margin: '0 0 1rem', lineHeight: 1.7 }}>ScanTippr helps security companies, fuel stations, and other customer-facing businesses enable secure cashless appreciation for frontline employees using unique QR codes.</p>
             <p style={{ fontSize: '15px', color: '#6b7f90', margin: '0 0 2rem', lineHeight: 1.7, fontStyle: 'italic' }}>Every day, customers want to show appreciation for exceptional service — but many no longer carry cash. ScanTippr bridges that gap.</p>
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div className="hero-buttons" style={{ display: 'flex', gap: '12px' }}>
               <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ padding: '14px 28px', fontSize: '15px', borderRadius: '8px', background: '#1a3a5c', color: '#fff', textDecoration: 'none', fontWeight: 600 }}>Request a demo</a>
               <a href="mailto:info@scantippr.co.za" style={{ padding: '14px 28px', fontSize: '15px', borderRadius: '8px', border: '1px solid #1a3a5c', color: '#1a3a5c', textDecoration: 'none', fontWeight: 500 }}>Contact sales</a>
             </div>
