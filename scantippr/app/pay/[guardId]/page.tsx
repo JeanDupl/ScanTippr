@@ -6,6 +6,7 @@ import { use } from 'react';
 interface Guard {
   first_name: string;
   last_name: string;
+  job_title: string | null;
   companies: { name: string } | { name: string }[];
 }
 
@@ -24,7 +25,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
     async function fetchGuard() {
       const { data, error } = await supabase
         .from('guards')
-        .select('first_name, last_name, companies(name)')
+        .select('first_name, last_name, job_title, companies(name)')
         .eq('id', guardId)
         .eq('is_active', true)
         .limit(1);
@@ -91,7 +92,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
             {guard.first_name} {guard.last_name}
           </h1>
           <p className="text-gray-500 text-sm mt-1">
-            {Array.isArray(guard.companies) ? guard.companies[0]?.name : guard.companies.name} • Car Guard
+            {Array.isArray(guard.companies) ? guard.companies[0]?.name : guard.companies.name}{guard.job_title ? ` • ${guard.job_title}` : ''}
           </p>
         </div>
         <p className="text-center text-gray-600 font-medium mb-4">Choose a tip amount</p>

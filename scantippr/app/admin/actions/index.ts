@@ -26,20 +26,17 @@ export async function addGuard(formData: FormData) {
   const firstName = formData.get('firstName') as string
   const lastName = formData.get('lastName') as string
   const companyId = formData.get('companyId') as string
+  const jobTitle = formData.get('jobTitle') as string
 
+  if (!firstName?.trim() || !lastName?.trim() || !companyId) return
 
-  if (!firstName?.trim() || !lastName?.trim() || !companyId) {
-    return
-  }
-
-  const { error: dbError } = await supabase
-    .from('guards')
-    .insert({
-      first_name: firstName.trim(),
-      last_name: lastName.trim(),
-      company_id: companyId,
-      is_active: true,
-    })
+  await supabase.from('guards').insert({
+    first_name: firstName.trim(),
+    last_name: lastName.trim(),
+    company_id: companyId,
+    job_title: jobTitle?.trim() || null,
+    is_active: true,
+  })
 
   redirect('/admin')
 }

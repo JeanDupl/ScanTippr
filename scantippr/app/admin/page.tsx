@@ -11,7 +11,7 @@ const supabase = createClient(
 export default async function AdminPage() {
   const { data: companies } = await supabase
     .from('companies')
-    .select('*, guards(id, first_name, last_name, is_active)')
+    .select('*, guards(id, first_name, last_name, job_title, is_active)')
 
   const { data: transactions } = await supabase
     .from('transactions')

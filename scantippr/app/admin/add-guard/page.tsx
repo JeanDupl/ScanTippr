@@ -70,6 +70,25 @@ export default async function AddGuardPage() {
             />
           </div>
 
+      <div style={{ marginBottom: '1rem' }}>
+      <label style={{ display: 'block', fontSize: '13px', color: '#6b7f90', marginBottom: '6px' }}>
+        Job title <span style={{ color: '#b0bec5' }}>(optional)</span>
+          </label>
+            <input
+    name="jobTitle"
+    type="text"
+    placeholder="e.g. Security Officer, Petrol Attendant, Waiter"
+    style={{
+      width: '100%',
+      padding: '10px 12px',
+      borderRadius: '8px',
+      border: '1px solid #e0e8f0',
+      fontSize: '15px',
+      boxSizing: 'border-box',
+    }}
+  />
+</div>
+
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{ display: 'block', fontSize: '13px', color: '#6b7f90', marginBottom: '6px' }}>
               Company
