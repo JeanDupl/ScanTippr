@@ -8,6 +8,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+export const revalidate = 0
+
 export default async function AdminPage() {
   const { data: companies } = await supabase
     .from('companies')
