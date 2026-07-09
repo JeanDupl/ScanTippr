@@ -45,7 +45,7 @@ export default function CollapsibleTransactions({
                   {guards?.find((g) => g.id === tx.guard_id)?.last_name}
                 </td>
                 <td className="px-6 py-3 font-medium text-green-600">R{tx.amount}</td>
-                <td className="px-6 py-3 text-gray-400 text-xs">{tx.paystack_reference}</td>
+                <td className="px-6 py-3 text-gray-400 text-xs">{tx.paystack_reference ?? '—'}</td>
                 <td className="px-6 py-3">
                   <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
                     {tx.status}
