@@ -43,15 +43,17 @@ export default function ReportsClient({
   const [from, setFrom] = useState(firstOfMonth)
   const [to, setTo] = useState(today)
   const [selectedCompany, setSelectedCompany] = useState<string>('all')
+  const [selectedGuard, setSelectedGuard] = useState<string>('all')
 
   const filtered = useMemo(() => {
-    return transactions.filter((tx) => {
-      const date = tx.created_at.split('T')[0]
-      const inRange = date >= from && date <= to
-      const inCompany = selectedCompany === 'all' || tx.company_id === selectedCompany
-      return inRange && inCompany
-    })
-  }, [transactions, from, to, selectedCompany])
+  return transactions.filter((tx) => {
+    const date = tx.created_at.split('T')[0]
+    const inRange = date >= from && date <= to
+    const inCompany = selectedCompany === 'all' || tx.company_id === selectedCompany
+    const inGuard = selectedGuard === 'all' || tx.guard_id === selectedGuard
+    return inRange && inCompany && inGuard
+  })
+}, [transactions, from, to, selectedCompany, selectedGuard])
 
   const guardName = (id: string) => {
     const g = guards.find((g) => g.id === id)
@@ -172,7 +174,10 @@ export default function ReportsClient({
             <label className="block text-xs text-gray-500 mb-1 font-medium">Company</label>
             <select
               value={selectedCompany}
-              onChange={(e) => setSelectedCompany(e.target.value)}
+              onChange={(e) => {
+                 setSelectedCompany(e.target.value)
+                 setSelectedGuard('all')
+                 }}
               className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
             >
               <option value="all">All companies</option>
@@ -181,6 +186,23 @@ export default function ReportsClient({
               ))}
             </select>
           </div>
+          <div>
+  <label className="block text-xs text-gray-500 mb-1 font-medium">Guard</label>
+  <select
+    value={selectedGuard}
+    onChange={(e) => setSelectedGuard(e.target.value)}
+    className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+  >
+    <option value="all">All guards</option>
+    {guards
+      .filter((g) => selectedCompany === 'all' || g.company_id === selectedCompany)
+      .map((g) => (
+        <option key={g.id} value={g.id}>
+          {g.first_name} {g.last_name}
+        </option>
+      ))}
+  </select>
+</div>
         </div>
       </div>
 
