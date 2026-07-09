@@ -1,12 +1,18 @@
 import { supabase } from '@/lib/supabase';
+import crypto from 'crypto';
+
+function generatePeachSignature(params: Record<string, string>, secretToken: string): string {
+  const sortedKeys = Object.keys(params).sort();
+  const signatureString = sortedKeys.map((key) => `${key}${params[key]}`).join('');
+  return crypto.createHmac('sha256', secretToken).update(signatureString).digest('hex');
+}
 
 export async function POST(request: Request) {
   const { guardId, amount } = await request.json();
 
-  // Look up the guard and their company's subaccount
   const { data: guard, error } = await supabase
     .from('guards')
-    .select('id, first_name, last_name, company_id, companies(paystack_subaccount_code, name)')
+    .select('id, first_name, last_name, company_id, companies(name)')
     .eq('id', guardId)
     .maybeSingle();
 
@@ -14,39 +20,47 @@ export async function POST(request: Request) {
     return Response.json({ error: 'Guard not found' }, { status: 404 });
   }
 
-  const subaccountCode = (guard as any).companies?.paystack_subaccount_code;
+  const entityId = process.env.PEACH_ENTITY_ID!;
+  const secretToken = process.env.PEACH_SECRET_TOKEN!;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
+  const merchantTransactionId = `TIP-${guardId}-${Date.now()}`;
+  const nonce = crypto.randomBytes(16).toString('hex');
 
-  if (!subaccountCode) {
-    return Response.json({ error: 'Payment not set up for this guard yet' }, { status: 400 });
-  }
+  const params: Record<string, string> = {
+    'authentication.entityId': entityId,
+    amount: amount.toFixed(2),
+    currency: 'ZAR',
+    merchantTransactionId,
+    nonce,
+    paymentType: 'DB',
+    shopperResultUrl: `${siteUrl}/pay/${guardId}/success`,
+    'customParameters[guard_id]': guardId,
+    'customParameters[guard_name]': `${guard.first_name} ${guard.last_name}`,
+  };
 
-  const paystackRes = await fetch('https://api.paystack.co/transaction/initialize', {
+  const signature = generatePeachSignature(params, secretToken);
+
+  const body = new URLSearchParams({ ...params, signature });
+
+  const peachRes = await fetch('https://testsecure.peachpayments.com/checkout/initiate', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Accept: 'application/json',
+      Referer: siteUrl,
     },
-    body: JSON.stringify({
-      email: 'tipper@scantippr.co.za',
-      amount: amount * 100,
-      currency: 'ZAR',
-      subaccount: subaccountCode,
-      callback_url: `https://scan-tippr-rk88.vercel.app/pay/${guardId}/success`,
-      metadata: {
-        guard_id: guardId,
-        guard_name: `${guard.first_name} ${guard.last_name}`,
-      },
-    }),
+    body: body.toString(),
   });
 
-  const paystackData = await paystackRes.json();
+  const peachData = await peachRes.json();
 
-  if (!paystackData.status) {
+  if (!peachData.redirectUrl) {
+    console.error('Peach error:', peachData);
     return Response.json({ error: 'Failed to initialize payment' }, { status: 500 });
   }
 
   return Response.json({
-    authorization_url: paystackData.data.authorization_url,
-    reference: paystackData.data.reference,
+    authorization_url: peachData.redirectUrl,
+    reference: merchantTransactionId,
   });
 }
