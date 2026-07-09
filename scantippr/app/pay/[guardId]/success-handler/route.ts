@@ -22,9 +22,9 @@ function verifyPeachSignature(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { guardId: string } }
+  { params }: { params: Promise<{ guardId: string }> }
 ) {
-  const { guardId } = params;
+  const { guardId } = await params;
   const body = await request.text();
   const formParams = Object.fromEntries(new URLSearchParams(body));
 
