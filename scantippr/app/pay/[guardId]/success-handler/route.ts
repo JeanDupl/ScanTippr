@@ -20,19 +20,20 @@ function verifyPeachSignature(
   return expected === receivedSignature;
 }
 
-export async function POST(request: NextRequest, { params }: { params: { guardId: string } }) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { guardId: string } }
+) {
   const { guardId } = params;
   const body = await request.text();
   const formParams = Object.fromEntries(new URLSearchParams(body));
 
   const { signature, ...rest } = formParams;
   const secretToken = process.env.PEACH_SECRET_TOKEN!;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
 
-  // Verify signature
   if (signature && !verifyPeachSignature(rest, secretToken, signature)) {
-    return NextResponse.redirect(
-      new URL(`/pay/${guardId}/success?status=error`, request.url)
-    );
+    return NextResponse.redirect(new URL(`/pay/${guardId}/success?status=error`, siteUrl));
   }
 
   const resultCode: string = formParams['result.code'] ?? '';
@@ -61,6 +62,6 @@ export async function POST(request: NextRequest, { params }: { params: { guardId
 
   const status = isSuccess ? 'success' : 'cancelled';
   return NextResponse.redirect(
-    new URL(`/pay/${guardId}/success?status=${status}&reference=${reference}`, request.url)
+    new URL(`/pay/${guardId}/success?status=${status}&reference=${reference}`, siteUrl)
   );
 }

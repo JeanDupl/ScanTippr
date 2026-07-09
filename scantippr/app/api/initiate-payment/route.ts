@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     merchantTransactionId,
     nonce,
     paymentType: 'DB',
-    shopperResultUrl: `${siteUrl}/pay/${guardId}/success`,
+    shopperResultUrl: `${siteUrl}/pay/${guardId}/success-handler`,
     'customParameters[guard_id]': guardId,
     'customParameters[guard_name]': `${guard.first_name} ${guard.last_name}`,
   };
