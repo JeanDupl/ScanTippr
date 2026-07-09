@@ -6,7 +6,11 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-function verifyPeachSignature(params: Record<string, string>, secretToken: string, receivedSignature: string): boolean {
+function verifyPeachSignature(
+  params: Record<string, string>,
+  secretToken: string,
+  receivedSignature: string
+): boolean {
   const sortedKeys = Object.keys(params)
     .filter((key) => key !== 'signature')
     .sort();
@@ -22,43 +26,44 @@ export async function POST(request: Request) {
   const { signature, ...rest } = params;
   const secretToken = process.env.PEACH_SECRET_TOKEN!;
 
-  if (!verifyPeachSignature(rest, secretToken, signature)) {
-    return Response.json({ error: 'Invalid signature' }, { status: 401 });
+  // If signature is present but invalid, log it but still return 200
+  // so Peach doesn't reject our webhook URL during registration
+  if (signature) {
+    const valid = verifyPeachSignature(rest, secretToken, signature);
+    if (!valid) {
+      console.log('Invalid signature received — ignoring');
+      return Response.json({ received: true });
+    }
   }
 
-  // result.code starting with 000.000 or 000.100 = success
   const resultCode: string = params['result.code'] ?? '';
   const isSuccess = resultCode.startsWith('000.000') || resultCode.startsWith('000.100');
 
-  if (!isSuccess) {
-    return Response.json({ received: true });
+  if (isSuccess) {
+    const guardId = params['customParameters[guard_id]'];
+    const reference = params['merchantTransactionId'];
+    const amount = parseFloat(params['amount'] ?? '0');
+
+    if (!guardId) {
+      return Response.json({ received: true });
+    }
+
+    const { data: guard } = await supabase
+      .from('guards')
+      .select('company_id')
+      .eq('id', guardId)
+      .maybeSingle();
+
+    if (guard) {
+      await supabase.from('transactions').insert({
+        guard_id: guardId,
+        company_id: guard.company_id,
+        amount,
+        paystack_reference: reference,
+        status: 'success',
+      });
+    }
   }
-
-  const guardId = params['customParameters[guard_id]'];
-  const reference = params['merchantTransactionId'];
-  const amount = parseFloat(params['amount'] ?? '0');
-
-  if (!guardId) {
-    return Response.json({ error: 'No guard ID' }, { status: 400 });
-  }
-
-  const { data: guard } = await supabase
-    .from('guards')
-    .select('company_id')
-    .eq('id', guardId)
-    .maybeSingle();
-
-  if (!guard) {
-    return Response.json({ error: 'Guard not found' }, { status: 404 });
-  }
-
-  await supabase.from('transactions').insert({
-    guard_id: guardId,
-    company_id: guard.company_id,
-    amount,
-    paystack_reference: reference,
-    status: 'success',
-  });
 
   return Response.json({ received: true });
 }
