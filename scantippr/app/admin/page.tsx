@@ -56,6 +56,17 @@ export default async function AdminPage() {
         }}>
           + Add guard
         </a>
+        <a href="/admin/reports" style={{
+          padding: '10px 20px',
+          background: '#1a3a5c',
+          color: '#fff',
+          borderRadius: '8px',
+          textDecoration: 'none',
+          fontSize: '14px',
+          fontWeight: 600,
+        }}>
+          Reports
+        </a>
       </div>
 
       <CollapsibleSection title="Companies and Guards">
