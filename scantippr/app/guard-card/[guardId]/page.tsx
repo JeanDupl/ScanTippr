@@ -118,10 +118,7 @@ export default async function GuardCardPage({
           {/* CTA */}
           <div style={{ textAlign: 'center' }}>
             <p style={{ margin: '0 0 2px', fontSize: '17px', fontWeight: 600, color: '#1a2b3c' }}>
-              Show your appreciation
-            </p>
-            <p style={{ margin: 0, fontSize: '13px', color: '#52616e' }}>
-              Scan to show your appreciation.
+              Scan the QR code below to show your appreciation.
             </p>
           </div>
 
@@ -135,14 +132,14 @@ export default async function GuardCardPage({
             <img
               src={qrUrl}
               alt={`QR code for ${guard.first_name} ${guard.last_name}`}
-              width={180}
-              height={180}
+              width={220}
+              height={220}
             />
           </div>
 
           {/* Thank you */}
           <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#3e444a' }}>
+            <p style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#3e444a' }}>
               Thank you for your support!
             </p>
           </div>
@@ -154,7 +151,7 @@ export default async function GuardCardPage({
           padding: '10px 20px',
           textAlign: 'center',
         }}>
-          <p style={{ margin: 0, fontSize: '13px', color: '#7ab3d9', fontWeight: 600 }}>
+          <p style={{ margin: 0, fontSize: '15px', color: '#7ab3d9', fontWeight: 600 }}>
             www.scantippr.co.za
           </p>
         </div>
