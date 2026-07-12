@@ -118,7 +118,6 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
                 {guard.job_title && (
             <p className="text-gray-500 text-sm mt-1">{guard.job_title}</p>
             )}
-          <p className="text-gray-400 text-sm mt-0.5">{company?.name}</p>
         </div>
 
         {/* Amount selection */}
