@@ -114,14 +114,14 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
           <h1 className="text-2xl font-bold text-gray-800">
             {guard.first_name} {guard.last_name}
           </h1>
-            <p className="text-gray-400 text-sm mt-0.5">{company?.name}</p>
+            <p className="text-gray-500 text-sm mt-0.5">{company?.name}</p>
                 {guard.job_title && (
             <p className="text-gray-500 text-sm mt-1">{guard.job_title}</p>
             )}
         </div>
 
         {/* Amount selection */}
-        <p className="text-center text-gray-600 font-medium mb-3">Show your appreciation</p>
+        <p className="text-center text-gray-600 font-medium mb-3">Show your appreciation.</p>
         <div className="grid grid-cols-2 gap-3 mb-4">
           {amounts.map((amount) => (
             <button
