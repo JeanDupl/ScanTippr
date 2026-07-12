@@ -7,7 +7,8 @@ interface Guard {
   first_name: string;
   last_name: string;
   job_title: string | null;
-  companies: { name: string } | { name: string }[];
+  photo_url: string | null;
+  companies: { name: string; logo_url: string | null } | { name: string; logo_url: string | null }[];
 }
 
 export default function PayPage({ params }: { params: Promise<{ guardId: string }> }) {
@@ -18,14 +19,14 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
   const [customAmount, setCustomAmount] = useState<string>('');
   const [processing, setProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
-  const tipAmounts = [10, 20, 50, 100];
+  const amounts = [10, 20, 50, 100];
   const displayAmount = customAmount ? parseInt(customAmount) : selectedAmount;
 
   useEffect(() => {
     async function fetchGuard() {
       const { data, error } = await supabase
         .from('guards')
-        .select('first_name, last_name, job_title, companies(name)')
+        .select('first_name, last_name, job_title, photo_url, companies(name, logo_url)')
         .eq('id', guardId)
         .eq('is_active', true)
         .limit(1);
@@ -39,8 +40,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
     fetchGuard();
   }, [guardId]);
 
-  async function handleTip() {
-    console.log('handleTip called, displayAmount:', displayAmount);
+  async function handlePayment() {
     if (!displayAmount || displayAmount <= 0) return;
     setProcessing(true);
     setPaymentError(null);
@@ -60,7 +60,6 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
         return;
       }
 
-      // Redirect to Paystack's hosted checkout
       window.location.href = data.authorization_url;
     } catch (err) {
       setPaymentError('Could not connect to payment service. Please try again.');
@@ -76,28 +75,55 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
 
   if (!guard) return (
     <main className="min-h-screen bg-gray-50 flex items-center justify-center flex-col gap-4 p-4">
-      <p className="text-gray-500">Guard not found.</p>
-      <p className="text-xs text-gray-400">Guard ID: {guardId}</p>
+      <p className="text-gray-500">Employee not found.</p>
     </main>
   );
+
+  const company = Array.isArray(guard.companies) ? guard.companies[0] : guard.companies;
 
   return (
     <main className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-sm">
+
+        {/* Company logo */}
+        {company?.logo_url && (
+          <div className="flex justify-center mb-4">
+            <img
+              src={company.logo_url}
+              alt={company.name}
+              style={{ height: '48px', objectFit: 'contain' }}
+            />
+          </div>
+        )}
+
+        {/* Guard photo and info */}
         <div className="text-center mb-8">
-          <div className="w-24 h-24 rounded-full bg-gray-200 mx-auto mb-4 flex items-center justify-center">
-            <span className="text-4xl">👤</span>
+          <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden bg-gray-100 flex items-center justify-center">
+            {guard.photo_url ? (
+              <img
+                src={guard.photo_url}
+                alt={`${guard.first_name} ${guard.last_name}`}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-4xl text-gray-400 font-bold">
+                {guard.first_name[0]}{guard.last_name[0]}
+              </span>
+            )}
           </div>
           <h1 className="text-2xl font-bold text-gray-800">
             {guard.first_name} {guard.last_name}
           </h1>
-          <p className="text-gray-500 text-sm mt-1">
-            {Array.isArray(guard.companies) ? guard.companies[0]?.name : guard.companies.name}{guard.job_title ? ` • ${guard.job_title}` : ''}
-          </p>
+          {guard.job_title && (
+            <p className="text-gray-500 text-sm mt-1">{guard.job_title}</p>
+          )}
+          <p className="text-gray-400 text-sm mt-0.5">{company?.name}</p>
         </div>
-        <p className="text-center text-gray-600 font-medium mb-4">Choose a tip amount</p>
+
+        {/* Amount selection */}
+        <p className="text-center text-gray-600 font-medium mb-4">Show your appreciation</p>
         <div className="grid grid-cols-2 gap-3 mb-4">
-          {tipAmounts.map((amount) => (
+          {amounts.map((amount) => (
             <button
               key={amount}
               onClick={() => { setSelectedAmount(amount); setCustomAmount(''); }}
@@ -111,26 +137,32 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
             </button>
           ))}
         </div>
+
         <input
-          type="text"
-          placeholder="Enter custom amount (R)"
+          type="number"
+          placeholder="Custom amount (R)"
           value={customAmount}
           onChange={(e) => { setCustomAmount(e.target.value); setSelectedAmount(0); }}
           className="w-full border-2 border-gray-200 rounded-xl py-3 px-4 text-center text-lg mb-6 focus:outline-none focus:border-blue-500 placeholder-gray-400"
         />
+
         {paymentError && (
           <p className="text-red-500 text-sm text-center mb-4">{paymentError}</p>
         )}
+
         <button
-          onClick={handleTip}
+          onClick={handlePayment}
           disabled={!displayAmount || displayAmount <= 0 || processing}
           className="w-full bg-blue-500 text-white rounded-xl py-4 font-bold text-xl hover:bg-blue-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
-          {processing ? 'Processing...' : displayAmount ? `Tip R${displayAmount}` : 'Select an amount'}
+          {processing ? 'Processing...' : displayAmount ? `Send R${displayAmount}` : 'Select an amount'}
         </button>
-        <p className="text-center text-gray-400 text-xs mt-6">
-          Powered by ScanTippr • Secure payment
-        </p>
+
+        {/* Trust indicators */}
+        <div className="mt-4 flex flex-col items-center gap-1">
+          <p className="text-xs text-gray-400">✓ Secure payment &nbsp; ✓ Directly supports this employee</p>
+          <p className="text-xs text-gray-400">Powered by ScanTippr</p>
+        </div>
       </div>
     </main>
   );

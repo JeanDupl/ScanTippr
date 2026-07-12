@@ -14,7 +14,7 @@ export default async function GuardCardPage({
   const { guardId } = await params
   const { data: guard } = await supabase
     .from('guards')
-    .select('*, companies(name)')
+    .select('*, companies(name, logo_url)')
     .eq('id', guardId)
     .single()
 
@@ -23,7 +23,8 @@ export default async function GuardCardPage({
   }
 
   const qrUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/qr/${guardId}`
-  const companyName = (guard.companies as { name: string })?.name ?? 'ScanTippr'
+  const company = (guard.companies as { name: string; logo_url: string | null })
+  const companyName = company?.name ?? 'ScanTippr'
 
   return (
     <div style={{
@@ -36,7 +37,6 @@ export default async function GuardCardPage({
       padding: '2rem',
       fontFamily: 'sans-serif',
     }}>
-
       {/* Card */}
       <div id="guard-card" style={{
         width: '105mm',
@@ -48,16 +48,30 @@ export default async function GuardCardPage({
         flexDirection: 'column',
         boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
       }}>
-
         {/* Header */}
         <div style={{
           background: '#1a3a5c',
-          padding: '16px 20px',
+          padding: '14px 20px',
           textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '8px',
         }}>
+          {company?.logo_url && (
+            <img
+              src={company.logo_url}
+              alt={companyName}
+              style={{
+                height: '36px',
+                objectFit: 'contain',
+                maxWidth: '120px',
+              }}
+            />
+          )}
           <p style={{
             margin: 0,
-            fontSize: '13px',
+            fontSize: '12px',
             fontWeight: 600,
             color: '#7ab3d9',
             letterSpacing: '0.08em',
@@ -70,17 +84,16 @@ export default async function GuardCardPage({
         {/* Body */}
         <div style={{
           flex: 1,
-          padding: '24px 20px',
+          padding: '20px 20px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '16px',
+          gap: '12px',
         }}>
-
           {/* Guard name */}
           <p style={{
             margin: 0,
-            fontSize: '26px',
+            fontSize: '24px',
             fontWeight: 600,
             color: '#1a2b3c',
             textAlign: 'center',
@@ -88,40 +101,51 @@ export default async function GuardCardPage({
             {guard.first_name} {guard.last_name}
           </p>
 
+          {/* Job title */}
+          {guard.job_title && (
+            <p style={{
+              margin: 0,
+              fontSize: '14px',
+              color: '#52616e',
+              textAlign: 'center',
+            }}>
+              {guard.job_title}
+            </p>
+          )}
+
           <div style={{ width: '100%', height: '1px', background: '#e0e8f0' }} />
 
-          {/* CTA above QR */}
+          {/* CTA */}
           <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: '0 0 4px', fontSize: '19px', fontWeight: 600, color: '#1a2b3c' }}>
+            <p style={{ margin: '0 0 2px', fontSize: '17px', fontWeight: 600, color: '#1a2b3c' }}>
               Show your appreciation
-             </p>
-             <p style={{ margin: 0, fontSize: '16px', color: '#52616e' }}>
-               Scan the QR code to leave a tip.
-             </p>
+            </p>
+            <p style={{ margin: 0, fontSize: '13px', color: '#52616e' }}>
+              Scan to show your appreciation.
+            </p>
           </div>
 
-        {/* QR Code */}
+          {/* QR Code */}
           <div style={{
             background: '#fff',
             borderRadius: '8px',
-            padding: '12px',
+            padding: '10px',
             border: '0.5px solid #e0e8f0',
-    }}>
-        <img
-           src={qrUrl}
-           alt={`QR code for ${guard.first_name} ${guard.last_name}`}
-           width={200}
-           height={200}
-        />
-        </div>
+          }}>
+            <img
+              src={qrUrl}
+              alt={`QR code for ${guard.first_name} ${guard.last_name}`}
+              width={180}
+              height={180}
+            />
+          </div>
 
-      {/* Thank you message */}
-        <div style={{ textAlign: 'center' }}>
-         <p style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#3e444a' }}>
-          Thank you for your support!
-        </p>
-        </div>
-
+          {/* Thank you */}
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#3e444a' }}>
+              Thank you for your support!
+            </p>
+          </div>
         </div>
 
         {/* Footer */}
@@ -130,16 +154,14 @@ export default async function GuardCardPage({
           padding: '10px 20px',
           textAlign: 'center',
         }}>
-          <p style={{ margin: 0, fontSize: '11px', color: '#7ab3d9' }}>
-            scantippr.co.za
+          <p style={{ margin: 0, fontSize: '13px', color: '#7ab3d9', fontWeight: 600 }}>
+            www.scantippr.co.za
           </p>
         </div>
-
       </div>
 
       {/* Print button */}
       <PrintButton />
-
     </div>
   )
 }
