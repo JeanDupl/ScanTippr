@@ -93,7 +93,7 @@ export default async function GuardCardPage({
           {/* Guard name */}
           <p style={{
             margin: 0,
-            fontSize: '24px',
+            fontSize: '25px',
             fontWeight: 600,
             color: '#1a2b3c',
             textAlign: 'center',
@@ -105,8 +105,8 @@ export default async function GuardCardPage({
           {guard.job_title && (
             <p style={{
               margin: 0,
-              fontSize: '14px',
-              color: '#52616e',
+              fontSize: '15px',
+              color: '#495864',
               textAlign: 'center',
             }}>
               {guard.job_title}
@@ -117,7 +117,7 @@ export default async function GuardCardPage({
 
           {/* CTA */}
           <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: '0 0 2px', fontSize: '15px', fontWeight: 600, color: '#4d5053' }}>
+            <p style={{ margin: '0 0 2px', fontSize: '15px', fontWeight: 600, color: '#495864' }}>
               Scan the QR code below to show your appreciation.
             </p>
           </div>
@@ -139,7 +139,7 @@ export default async function GuardCardPage({
 
           {/* Thank you */}
           <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#53585d' }}>
+            <p style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#495864' }}>
               Thank you for your support!
             </p>
           </div>
