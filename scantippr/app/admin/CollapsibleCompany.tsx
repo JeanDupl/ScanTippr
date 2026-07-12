@@ -73,9 +73,9 @@ export default function CollapsibleCompany({ company }: { company: any }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-gray-500 border-b">
-              <th className="pb-2">Guard ID</th>
               <th className="pb-2">Name</th>
               <th className="pb-2">Job Title</th>
+              <th className="pb-2">Guard ID</th>
               <th className="pb-2">Status</th>
               <th className="pb-2">QR Code</th>
               <th className="pb-2">Actions</th>
@@ -84,8 +84,6 @@ export default function CollapsibleCompany({ company }: { company: any }) {
           <tbody>
             {guards.map((guard: any) => (
               <tr key={guard.id} className="border-b last:border-0">
-                <td className="py-2 text-gray-500 text-xs">{guard.id}</td>
-
                 {editingId === guard.id ? (
                   <>
                     <td className="py-2">
@@ -110,6 +108,7 @@ export default function CollapsibleCompany({ company }: { company: any }) {
                         placeholder="Job title"
                       />
                     </td>
+                    <td className="py-2 text-gray-500 text-xs">{guard.id}</td>
                     <td className="py-2">
                       <span className={guard.is_active
                         ? 'px-2 py-1 rounded-full text-xs bg-green-100 text-green-700'
@@ -148,6 +147,7 @@ export default function CollapsibleCompany({ company }: { company: any }) {
                   <>
                     <td className="py-2 font-medium">{guard.first_name} {guard.last_name}</td>
                     <td className="py-2 text-gray-500">{guard.job_title || '—'}</td>
+                    <td className="py-2 text-gray-500 text-xs">{guard.id}</td>
                     <td className="py-2">
                       <span className={guard.is_active
                         ? 'px-2 py-1 rounded-full text-xs bg-green-100 text-green-700'
