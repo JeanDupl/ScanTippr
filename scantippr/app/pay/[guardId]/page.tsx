@@ -83,7 +83,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
 
   return (
     <main className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-sm">
+      <div className="bg-white rounded-2xl shadow-lg p-5 w-full max-w-sm">
 
         {/* Company logo */}
         {company?.logo_url && (
@@ -97,7 +97,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
         )}
 
         {/* Guard photo and info */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden bg-gray-100 flex items-center justify-center">
             {guard.photo_url ? (
               <img
@@ -121,7 +121,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
         </div>
 
         {/* Amount selection */}
-        <p className="text-center text-gray-600 font-medium mb-4">Show your appreciation</p>
+        <p className="text-center text-gray-600 font-medium mb-3">Show your appreciation</p>
         <div className="grid grid-cols-2 gap-3 mb-4">
           {amounts.map((amount) => (
             <button
@@ -143,7 +143,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
           placeholder="Custom amount (R)"
           value={customAmount}
           onChange={(e) => { setCustomAmount(e.target.value); setSelectedAmount(0); }}
-          className="w-full border-2 border-gray-200 rounded-xl py-3 px-4 text-center text-lg mb-6 focus:outline-none focus:border-blue-500 placeholder-gray-400"
+          className="w-full border-2 border-gray-200 rounded-xl py-3 px-4 text-center text-lg mb-3 focus:outline-none focus:border-blue-500 placeholder-gray-400"
         />
 
         {paymentError && (
@@ -159,9 +159,9 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
         </button>
 
         {/* Trust indicators */}
-        <div className="mt-4 flex flex-col items-center gap-1">
-          <p className="text-xs text-gray-400">✓ Secure payment &nbsp; ✓ Directly supports this employee</p>
-          <p className="text-xs text-gray-400">Powered by ScanTippr</p>
+        <div className="mt-3 text-center">
+          <p className="text-xs text-gray-400">✓ Secure payment · ✓ Directly supports this employee</p>
+          <p className="text-xs text-gray-400 mt-0.5">Powered by ScanTippr</p>
         </div>
       </div>
     </main>
