@@ -58,17 +58,7 @@ export default async function GuardCardPage({
           alignItems: 'center',
           gap: '8px',
         }}>
-          {company?.logo_url && (
-            <img
-              src={company.logo_url}
-              alt={companyName}
-              style={{
-                height: '36px',
-                objectFit: 'contain',
-                maxWidth: '120px',
-              }}
-            />
-          )}
+          
           <p style={{
             margin: 0,
             fontSize: '12px',
