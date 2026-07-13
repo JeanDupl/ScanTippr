@@ -94,7 +94,7 @@ export default async function GuardCardPage({
           {/* Job title */}
           {guard.job_title && (
             <p style={{
-              margin: '-5px 0 0 0',
+              margin: '-7px 0 0 0',
               fontSize: '15px',
               color: '#495864',
               textAlign: 'center',
