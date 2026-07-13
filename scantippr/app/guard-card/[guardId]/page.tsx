@@ -61,7 +61,7 @@ export default async function GuardCardPage({
           
           <p style={{
             margin: 0,
-            fontSize: '12px',
+            fontSize: '14px',
             fontWeight: 600,
             color: '#7ab3d9',
             letterSpacing: '0.08em',
