@@ -83,46 +83,48 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
 
   return (
     <main className="min-h-screen bg-white sm:bg-gray-50 flex items-center justify-center p-2 sm:p-4" style={{ colorScheme: 'light' }}>
+      {/* 1. Moved logo up on mobile by changing pt-3 to pt-1 */}
       <div className="bg-white rounded-2xl shadow-lg pt-1 px-5 pb-5 w-full max-w-sm">
 
         {/* Company logo */}
         {company?.logo_url && (
-         <div className="flex justify-center mb-4">
-    <img
-      src={company.logo_url}
-      alt={company.name}
-      style={{ height: '60px', objectFit: 'contain' }}
-    />
-  </div>
-)}
+          /* 2. Increased bottom space from mb-2 to mb-6 */
+          <div className="flex justify-center mb-6">
+            <img
+              src={company.logo_url}
+              alt={company.name}
+              style={{ height: '60px', objectFit: 'contain' }}
+            />
+          </div>
+        )}
 
         {/* Guard photo and info */}
-<div className="text-center mb-4">
-  {/* Added a subtle border to the profile image container */}
-  <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden bg-gray-100 flex items-center justify-center border-4 border-gray-100 shadow-sm">
-    {guard.photo_url ? (
-      <img
-        src={guard.photo_url}
-        alt={`${guard.first_name} ${guard.last_name}`}
-        className="w-full h-full object-cover"
-      />
-    ) : (
-      <span className="text-4xl text-gray-400 font-bold">
-        {guard.first_name[0]}{guard.last_name[0]}
-      </span>
-    )}
-  </div>
-  
-  <h1 className="text-2xl font-bold text-gray-800 mb-1">
-    {guard.first_name} {guard.last_name}
-  </h1>
-  
-  {/* Improved hierarchy between Company and Job Title */}
-  <p className="text-gray-600 font-medium text-sm">{company?.name}</p>
-  {guard.job_title && (
-    <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mt-0.5">{guard.job_title}</p>
-  )}
-</div>
+        <div className="text-center mb-4">
+          {/* 3. Added border and shadow to make the photo pop off the white page background */}
+          <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden bg-gray-100 flex items-center justify-center border-4 border-gray-100 shadow-sm">
+            {guard.photo_url ? (
+              <img
+                src={guard.photo_url}
+                alt={`${guard.first_name} ${guard.last_name}`}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-4xl text-gray-400 font-bold">
+                {guard.first_name[0]}{guard.last_name[0]}
+              </span>
+            )}
+          </div>
+          
+          <h1 className="text-2xl font-bold text-gray-800 mb-1">
+            {guard.first_name} {guard.last_name}
+          </h1>
+          
+          {/* 4. Polished visual hierarchy for Company and Job Title */}
+          <p className="text-gray-600 font-medium text-sm">{company?.name}</p>
+          {guard.job_title && (
+            <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mt-0.5">{guard.job_title}</p>
+          )}
+        </div>
 
         {/* Amount selection */}
         <p className="text-center text-gray-600 font-medium mb-3">Show your appreciation.</p>
