@@ -83,7 +83,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
 
   return (
     <main className="min-h-screen bg-white sm:bg-gray-50 flex items-center justify-center p-2 sm:p-4" style={{ colorScheme: 'light' }}>
-      <div className="bg-white rounded-2xl shadow-lg pt-3 px-5 pb-5 w-full max-w-sm">
+      <div className="bg-white rounded-2xl shadow-lg pt-1 px-5 pb-5 w-full max-w-sm">
 
         {/* Company logo */}
         {company?.logo_url && (
