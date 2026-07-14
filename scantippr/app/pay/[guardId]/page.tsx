@@ -133,7 +133,8 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
             <button
               key={amount}
               onClick={() => { setSelectedAmount(amount); setCustomAmount(''); }}
-              className={`rounded-xl py-3 font-bold text-lg transition-colors border-2 ${
+              /* 5. Added transition and scale interaction (active:scale-[0.98]) */
+              className={`rounded-xl py-3 font-bold text-lg transition-all duration-150 active:scale-[0.98] border-2 ${
                 selectedAmount === amount && !customAmount
                   ? 'bg-blue-500 text-white border-blue-500'
                   : 'border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white'
@@ -144,30 +145,42 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
           ))}
         </div>
 
-        <input
-          type="number"
-          placeholder="Custom amount (R)"
-          value={customAmount}
-          onChange={(e) => { setCustomAmount(e.target.value); setSelectedAmount(0); }}
-          className="w-full border-2 border-gray-200 rounded-xl py-3 px-4 text-center text-lg mb-3 focus:outline-none focus:border-blue-500 placeholder-gray-400"
-        />
+        {/* 6. Customized Input wrapper with stationary currency prefix */}
+        <div className="relative mb-3">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg pointer-events-none">
+            R
+          </span>
+          <input
+            type="number"
+            placeholder="Custom amount"
+            value={customAmount}
+            onChange={(e) => { setCustomAmount(e.target.value); setSelectedAmount(0); }}
+            className="w-full border-2 border-gray-200 rounded-xl py-3 pl-10 pr-4 text-left text-lg focus:outline-none focus:border-blue-500 placeholder-gray-400 font-semibold transition-all duration-150"
+          />
+        </div>
 
         {paymentError && (
           <p className="text-red-500 text-sm text-center mb-4">{paymentError}</p>
         )}
 
+        {/* 7. Added transition and scale interaction to main action button */}
         <button
           onClick={handlePayment}
           disabled={!displayAmount || displayAmount <= 0 || processing}
-          className="w-full bg-blue-500 text-white rounded-xl py-4 font-bold text-xl hover:bg-blue-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+          className="w-full bg-blue-500 text-white rounded-xl py-4 font-bold text-xl hover:bg-blue-600 transition-all duration-150 active:scale-[0.98] disabled:scale-100 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           {processing ? 'Processing...' : displayAmount ? `Send R${displayAmount}` : 'Select an amount'}
         </button>
 
-        {/* Trust indicators */}
-        <div className="mt-3 text-center">
-          <p className="text-xs text-gray-400">✓ Secure payment · ✓ Directly supports this employee</p>
-          <p className="text-xs text-gray-400 mt-0.5">Powered by ScanTippr</p>
+        {/* 8. Polished and highlighted secure badge banner */}
+        <div className="mt-5 pt-4 border-t border-gray-100 text-center">
+          <div className="inline-flex items-center gap-1.5 bg-green-50 text-green-700 px-3 py-1.5 rounded-full text-xs font-medium mb-3">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            Secure Payment - Directly supports this employee.
+          </div>
+          <p className="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Powered by ScanTippr</p>
         </div>
       </div>
     </main>
