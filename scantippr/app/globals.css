@@ -6,6 +6,13 @@
     color-scheme: light;
 }
 
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #ffffff !important;
+    color: #171717 !important;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
