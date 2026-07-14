@@ -91,7 +91,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
     <img
       src={company.logo_url}
       alt={company.name}
-      style={{ height: '50px', width: '160px', objectFit: 'contain' }}
+      style={{ height: '60px', objectFit: 'contain' }}
     />
   </div>
 )}
