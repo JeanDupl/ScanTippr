@@ -68,13 +68,13 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
   }
 
   if (loading) return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+    <main className="min-h-screen bg-gray-50 flex items-center justify-center p-2 sm:p-4">
       <p className="text-gray-500">Loading...</p>
     </main>
   );
 
   if (!guard) return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center flex-col gap-4 p-4">
+    <main className="min-h-screen bg-gray-50 flex items-center justify-center flex-col gap-4 p-2 sm:p-4">
       <p className="text-gray-500">Employee not found.</p>
     </main>
   );
@@ -82,7 +82,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
   const company = Array.isArray(guard.companies) ? guard.companies[0] : guard.companies;
 
   return (
-    <main className="min-h-screen bg-white sm:bg-gray-50 flex items-center justify-center p-4" style={{ colorScheme: 'light' }}>
+    <main className="min-h-screen bg-white sm:bg-gray-50 flex items-center justify-center p-2 sm:p-4" style={{ colorScheme: 'light' }}>
       <div className="bg-white rounded-2xl shadow-lg pt-3 px-5 pb-5 w-full max-w-sm">
 
         {/* Company logo */}
