@@ -87,7 +87,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
 
         {/* Company logo */}
         {company?.logo_url && (
-  <div className="flex justify-center mb-2">
+         <div className="flex justify-center mb-4">
     <img
       src={company.logo_url}
       alt={company.name}
