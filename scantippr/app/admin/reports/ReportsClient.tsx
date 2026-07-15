@@ -88,7 +88,7 @@ export default function ReportsClient({
   // CSV export - all filtered transactions
   const exportCSV = (txList: Transaction[], filename: string) => {
     const rows = [
-      ['Date', 'Company', 'Guard', 'Job Title', 'Amount (ZAR)', 'Reference', 'Status'],
+      ['Date', 'Company', 'Employee', 'Job Title', 'Amount (ZAR)', 'Reference', 'Status'],
       ...txList.map((tx) => {
         const g = guards.find((g) => g.id === tx.guard_id)
         return [
@@ -187,13 +187,13 @@ export default function ReportsClient({
             </select>
           </div>
           <div>
-  <label className="block text-xs text-gray-500 mb-1 font-medium">Guard</label>
+  <label className="block text-xs text-gray-500 mb-1 font-medium">Employee</label>
   <select
     value={selectedGuard}
     onChange={(e) => setSelectedGuard(e.target.value)}
     className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
   >
-    <option value="all">All guards</option>
+    <option value="all">All employees</option>
     {guards
       .filter((g) => selectedCompany === 'all' || g.company_id === selectedCompany)
       .map((g) => (
@@ -267,7 +267,7 @@ export default function ReportsClient({
                 <thead>
                   <tr className="text-left text-gray-500 border-b text-xs">
                     <th className="px-6 py-3">Date</th>
-                    <th className="px-6 py-3">Guard</th>
+                    <th className="px-6 py-3">Employee</th>
                     <th className="px-6 py-3">Job Title</th>
                     <th className="px-6 py-3">Amount</th>
                     <th className="px-6 py-3">Reference</th>

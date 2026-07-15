@@ -28,7 +28,7 @@ export default function CollapsibleTransactions({
           <thead>
             <tr className="text-left text-gray-500 border-b">
               <th className="px-6 py-3">Date</th>
-              <th className="px-6 py-3">Guard</th>
+              <th className="px-6 py-3">Employee</th>
               <th className="px-6 py-3">Amount</th>
               <th className="px-6 py-3">Reference</th>
               <th className="px-6 py-3">Status</th>

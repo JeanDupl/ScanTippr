@@ -75,7 +75,7 @@ export default function CollapsibleCompany({ company }: { company: any }) {
             <tr className="text-left text-gray-500 border-b">
               <th className="pb-2">Name</th>
               <th className="pb-2">Job Title</th>
-              <th className="pb-2">Guard ID</th>
+              <th className="pb-2">Employee ID</th>
               <th className="pb-2">Status</th>
               <th className="pb-2">QR Code</th>
               <th className="pb-2">Actions</th>
