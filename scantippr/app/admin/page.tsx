@@ -54,7 +54,7 @@ export default async function AdminPage() {
           fontSize: '14px',
           fontWeight: 600,
         }}>
-          + Add guard
+          + Add employee
         </a>
         <a href="/admin/reports" style={{
           padding: '10px 20px',
@@ -69,7 +69,7 @@ export default async function AdminPage() {
         </a>
       </div>
 
-      <CollapsibleSection title="Companies and Guards">
+      <CollapsibleSection title="Companies and Employees">
         <div className="grid gap-4">
           {companies?.map((company) => (
             <CollapsibleCompany key={company.id} company={company} />
