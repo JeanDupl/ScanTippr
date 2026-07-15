@@ -1,4 +1,5 @@
 import { Shield, Fuel, UtensilsCrossed, Car, Hotel, ShoppingCart, Plane, Truck, QrCode, Users, BarChart3, Lock, CheckCircle, Zap, Smartphone, ArrowRight } from 'lucide-react'
+import Image from 'next/image'
 
 export default function Home() {
   return (
@@ -26,7 +27,7 @@ export default function Home() {
 
         {/* Nav */}
         <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 2rem', borderBottom: '1px solid #e0e8f0', position: 'sticky', top: 0, background: '#fff', zIndex: 50 }}>
-          <span style={{ fontSize: '20px', fontWeight: 700, color: '#1a3a5c' }}>ScanTippr</span>
+          <a href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}><Image src="/logo-footer.png" alt="ScanTippr Logo" width={180} height={50} priority style={{ objectFit: 'contain' }} /></a>
           <div className="nav-buttons">
             <a href="mailto:info@scantippr.co.za" className="nav-secondary" style={{ padding: '10px 20px', fontSize: '14px', borderRadius: '8px', border: '1px solid #1a3a5c', color: '#1a3a5c', textDecoration: 'none', fontWeight: 500 }}>Contact sales</a>
             <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ padding: '10px 20px', fontSize: '14px', borderRadius: '8px', background: '#1a3a5c', color: '#fff', textDecoration: 'none', fontWeight: 500 }}>Request a demo</a>
@@ -232,17 +233,17 @@ export default function Home() {
 
         {/* Footer */}
         <footer style={{ background: '#111e29', padding: '2rem' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-            <span style={{ fontSize: '14px', color: '#4a6070' }}>© 2026 ScanTippr. All rights reserved.</span>
-            <div style={{ display: 'flex', gap: '1.5rem' }}>
-              {['Privacy policy', 'Terms', 'Contact', 'Support'].map((link) => (
-                <a key={link} href="mailto:info@scantippr.co.za" style={{ fontSize: '13px', color: '#4a6070', textDecoration: 'none' }}>{link}</a>
-              ))}
-            </div>
-          </div>
-        </footer>
-
-      </main>
-    </>
-  )
-}
+  <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+      <Image src="/logo-footer.png" alt="ScanTippr Logo" width={180} height={50} style={{ objectFit: 'contain' }} />
+    </div>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+      <span style={{ fontSize: '14px', color: '#4a6070' }}>© 2026 ScanTippr. All rights reserved.</span>
+      <div style={{ display: 'flex', gap: '1.5rem' }}>
+        {['Privacy policy', 'Terms', 'Contact', 'Support'].map((link) => (
+          <a key={link} href="mailto:info@scantippr.co.za" style={{ fontSize: '13px', color: '#4a6070', textDecoration: 'none' }}>{link}</a>
+        ))}
+      </div>
+    </div>
+  </div>
+</footer>
