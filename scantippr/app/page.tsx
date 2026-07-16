@@ -134,7 +134,7 @@ export default function Home() {
               boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
             }}>
               <img 
-                src="/ScanTippr_header.png"  {/* Updated to use the correct header asset */}
+                src="/ScanTippr_header.png"
                 alt="ScanTippr Logo" 
                 style={{ width: '140px', height: 'auto', objectFit: 'contain' }} 
               />
