@@ -126,7 +126,8 @@ export default function Home() {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            <a href="/" style={{ display: 'flex', alignItems: 'center', width: '160px', textDecoration: 'none' }}>
+            {/* Expanded header logo container to 240px for prominent presentation */}
+            <a href="/" style={{ display: 'flex', alignItems: 'center', width: '240px', textDecoration: 'none' }}>
               <img 
                 src="/ScanTippr_header.png" 
                 alt="ScanTippr Logo" 
@@ -238,8 +239,9 @@ export default function Home() {
                 </div>
 
                 <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+                  {/* Fixed: Profile image source pointing directly to the loaded Pay-screen.png */}
                   <img 
-                    src="/mike-johnson.png" 
+                    src="/Pay-screen.png" 
                     alt="Mike Johnson" 
                     style={{ width: '72px', height: '72px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #12C7B5', marginBottom: '8px' }} 
                   />
@@ -262,9 +264,10 @@ export default function Home() {
                   Continue to Pay
                 </button>
 
+                {/* Fixed: Replaced broken /logo-footer.png with working /ScanTippr_header.png inside phone mockup footer */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '16px' }}>
                   <span style={{ fontSize: '9px', color: '#94A3B8', fontWeight: 500 }}>Secured by</span>
-                  <img src="/logo-footer.png" alt="ScanTippr" style={{ height: '12px', width: 'auto' }} />
+                  <img src="/ScanTippr_header.png" alt="ScanTippr" style={{ height: '14px', width: 'auto', objectFit: 'contain' }} />
                 </div>
               </div>
             </div>
@@ -347,7 +350,8 @@ export default function Home() {
               <div className="dashboard-grid" style={{ minHeight: 'auto' }}>
                 {/* Sidebar - Scales perfectly, wraps naturally */}
                 <div style={{ background: 'rgba(255, 255, 255, 0.05)', borderRadius: '12px', padding: '16px' }}>
-                  <img src="/logo-footer.png" alt="ScanTippr" style={{ width: '100px', marginBottom: '24px' }} />
+                  {/* Fixed: Replaced broken /logo-footer.png with /ScanTippr_header.png */}
+                  <img src="/ScanTippr_header.png" alt="ScanTippr" style={{ width: '100px', marginBottom: '24px', background: '#FFF', padding: '4px', borderRadius: '4px' }} />
                   <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '8px' }}>
                     <div style={{ background: 'rgba(18, 199, 181, 0.15)', color: '#12C7B5', padding: '8px 12px', borderRadius: '6px', fontWeight: 600, fontSize: '12px' }}>📊 Dashboard</div>
                     <div style={{ color: '#94A3B8', padding: '8px 12px', fontSize: '12px' }}>🏢 Companies</div>
@@ -573,11 +577,12 @@ export default function Home() {
                     borderRadius: '8px', 
                     display: 'inline-flex', 
                     alignItems: 'center',
-                    width: '120px',
+                    width: '180px',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                   }}>
+                    {/* Fixed: Replaced broken /logo-main with working /ScanTippr_header.png */}
                     <img 
-                      src="/logo-main" 
+                      src="/ScanTippr_header.png" 
                       alt="ScanTippr Logo" 
                       style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
                     />
@@ -609,7 +614,6 @@ export default function Home() {
                 <h4 style={{ color: '#FFF', fontSize: '14px', fontWeight: 700, marginBottom: '16px' }}>Contact</h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', color: '#94A3B8' }}>
                   <span>✉️ info@scantippr.co.za</span>
-                  <span>📞 +27 12 345 6789</span>
                   <span>📍 South Africa</span>
                 </div>
               </div>
