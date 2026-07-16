@@ -126,9 +126,9 @@ export default function Home() {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            <a href="/" style={{ display: 'flex', alignItems: 'center', width: '130px', textDecoration: 'none' }}>
+            <a href="/" style={{ display: 'flex', alignItems: 'center', width: '160px', textDecoration: 'none' }}>
               <img 
-                src="/logo-footer.png" 
+                src="/ScanTippr_header.png" 
                 alt="ScanTippr Logo" 
                 style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
               />
@@ -239,7 +239,7 @@ export default function Home() {
 
                 <div style={{ textAlign: 'center', marginBottom: '16px' }}>
                   <img 
-                    src="/ChatGPT Image Jul 12, 2026, 07_47_07 PM" 
+                    src="/mike-johnson.png" 
                     alt="Mike Johnson" 
                     style={{ width: '72px', height: '72px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #12C7B5', marginBottom: '8px' }} 
                   />
@@ -424,28 +424,28 @@ export default function Home() {
               {/* Blue Card */}
               <div style={{ background: '#0F2942', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <span style={{ fontSize: '10px', fontWeight: 700, color: '#12C7B5', marginBottom: '12px' }}>SENTRY SECURITY</span>
-                <img src="/ChatGPT Image Jul 12, 2026, 07_42_57 PM" alt="QR" style={{ width: '100px', height: '100px', background: '#FFF', padding: '8px', borderRadius: '10px', marginBottom: '12px' }} />
+                <img src="/qr-code.png" alt="QR" style={{ width: '100px', height: '100px', background: '#FFF', padding: '8px', borderRadius: '10px', marginBottom: '12px' }} />
                 <span style={{ fontWeight: 600, fontSize: '13px' }}>Thank you!</span>
               </div>
 
               {/* Green Card */}
               <div style={{ background: '#0F5B46', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <span style={{ fontSize: '10px', fontWeight: 700, color: '#4ADE80', marginBottom: '12px' }}>GREEN FIELD STATIONS</span>
-                <img src="/ChatGPT Image Jul 12, 2026, 07_42_57 PM" alt="QR" style={{ width: '100px', height: '100px', background: '#FFF', padding: '8px', borderRadius: '10px', marginBottom: '12px' }} />
+                <img src="/qr-code.png" alt="QR" style={{ width: '100px', height: '100px', background: '#FFF', padding: '8px', borderRadius: '10px', marginBottom: '12px' }} />
                 <span style={{ fontWeight: 600, fontSize: '13px' }}>Appreciation Portal</span>
               </div>
 
               {/* Orange Card */}
               <div style={{ background: '#C2410C', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <span style={{ fontSize: '10px', fontWeight: 700, color: '#FB923C', marginBottom: '12px' }}>CITY GUARD TEAM</span>
-                <img src="/ChatGPT Image Jul 12, 2026, 07_42_57 PM" alt="QR" style={{ width: '100px', height: '100px', background: '#FFF', padding: '8px', borderRadius: '10px', marginBottom: '12px' }} />
+                <img src="/qr-code.png" alt="QR" style={{ width: '100px', height: '100px', background: '#FFF', padding: '8px', borderRadius: '10px', marginBottom: '12px' }} />
                 <span style={{ fontWeight: 600, fontSize: '13px' }}>Scan to Support</span>
               </div>
 
               {/* Red Card */}
               <div style={{ background: '#991B1B', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <span style={{ fontSize: '10px', fontWeight: 700, color: '#F87171', marginBottom: '12px' }}>PREMIER HOTELS</span>
-                <img src="/ChatGPT Image Jul 12, 2026, 07_42_57 PM" alt="QR" style={{ width: '100px', height: '100px', background: '#FFF', padding: '8px', borderRadius: '10px', marginBottom: '12px' }} />
+                <img src="/qr-code.png" alt="QR" style={{ width: '100px', height: '100px', background: '#FFF', padding: '8px', borderRadius: '10px', marginBottom: '12px' }} />
                 <span style={{ fontWeight: 600, fontSize: '13px' }}>Thank Our Team</span>
               </div>
             </div>
