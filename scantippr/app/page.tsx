@@ -390,7 +390,7 @@ export default function Home() {
                       src="/Midelpage-logo.png" 
                       alt="ScanTippr" 
                       style={{ 
-                        width: '130px', 
+                        width: '150px', 
                         height: 'auto', 
                         objectFit: 'contain' 
                       }} 
@@ -677,7 +677,7 @@ export default function Home() {
                     boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                   }}>
                     <img 
-                      src="/Midel-logo.png" 
+                      src="/Midelpage-logo.png" 
                       alt="ScanTippr Logo" 
                       style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
                     />
