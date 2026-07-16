@@ -72,17 +72,48 @@ export default function Home() {
 
       <main style={{ fontFamily: 'system-ui, -apple-system, sans-serif', color: '#1a2b3c', background: '#fff' }}>
 
-        {/* Navigation Bar */}
-        <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 2rem', borderBottom: '1px solid #e0e8f0', position: 'sticky', top: 0, background: '#rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(8px)', zIndex: 50 }}>
-          <a href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <Image src="/logo-footer.png" alt="ScanTippr Logo" width={180} height={50} priority style={{ objectFit: 'contain' }} />
-          </a>
-          <div className="nav-buttons">
-            <a href="mailto:info@scantippr.co.za" className="nav-secondary" style={{ padding: '10px 20px', fontSize: '14px', borderRadius: '8px', border: '1px solid #1a3a5c', color: '#1a3a5c', textDecoration: 'none', fontWeight: 600, transition: 'all 0.2s' }}>Contact sales</a>
-            <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ padding: '10px 20px', fontSize: '14px', borderRadius: '8px', background: '#1a3a5c', color: '#fff', textDecoration: 'none', fontWeight: 600, transition: 'all 0.2s' }}>Request a demo</a>
-          </div>
-        </nav>
-
+       {/* Navigation Bar */}
+          <nav style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            padding: '12px 16px', 
+            borderBottom: '1px solid #1e293b', 
+            position: 'sticky', 
+            top: 0, 
+            background: '#111e29', 
+            zIndex: 50 
+          }}>
+            <a href="/" style={{ display: 'flex', alignItems: 'center', width: '130px', textDecoration: 'none' }}>
+              <img 
+                src="/logo-main" 
+                alt="ScanTippr Logo" 
+                style={{ 
+                  width: '100%', 
+                  height: 'auto', 
+                  objectFit: 'contain' 
+                }} 
+              />
+            </a>
+            
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <a 
+                href="mailto:info@scantippr.co.za?subject=Demo Request" 
+                style={{ 
+                  padding: '10px 16px', 
+                  fontSize: '13px', 
+                  borderRadius: '6px', 
+                  background: '#1aa39a', 
+                  color: '#fff', 
+                  textDecoration: 'none', 
+                  fontWeight: 600,
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                Request a demo
+              </a>
+            </div>
+          </nav>
         {/* Hero Section */}
         <section style={{ maxWidth: '1150px', margin: '0 auto', padding: '5rem 2rem' }} className="hero-grid">
           <div>
