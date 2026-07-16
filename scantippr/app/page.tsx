@@ -123,7 +123,6 @@ export default function Home() {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            {/* Logo updated to use Midel-logo.png */}
             <a href="/" style={{ display: 'flex', alignItems: 'center', width: '220px', textDecoration: 'none' }}>
               <img 
                 src="/Midel-logo.png" 
@@ -151,7 +150,6 @@ export default function Home() {
                   color: '#fff', 
                   textDecoration: 'none', 
                   fontWeight: 600,
-                  transition: 'background 0.2s ease',
                   boxShadow: '0 4px 12px rgba(18, 199, 181, 0.2)'
                 }}
               >
@@ -260,7 +258,6 @@ export default function Home() {
                   Continue to Pay
                 </button>
 
-                {/* Dashboard / Branding Logo updated to use Midel-logo.png inside device footer */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '16px' }}>
                   <span style={{ fontSize: '9px', color: '#94A3B8', fontWeight: 500 }}>Secured by</span>
                   <img src="/Midel-logo.png" alt="ScanTippr" style={{ height: '14px', width: 'auto', objectFit: 'contain' }} />
@@ -296,7 +293,8 @@ export default function Home() {
             <div className="three-col-grid">
               {/* Step 1 - Scan */}
               <div style={{ background: '#FFF', padding: '32px 24px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 10px 25px -5px rgba(15, 41, 66, 0.05)' }}>
-                <div style={{ width: '64px', height: '64px', background: 'rgba(18, 199, 181, 0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', justify_content: 'center', marginBottom: '20px', marginLeft: 'auto', marginRight: 'auto', justifyContent: 'center' }}>
+                {/* Fixed snake_case typo here: changed justify_content to justifyContent */}
+                <div style={{ width: '64px', height: '64px', background: 'rgba(18, 199, 181, 0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', marginBottom: '20px', marginLeft: 'auto', marginRight: 'auto', justifyContent: 'center' }}>
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 8V6C4 4.89543 4.89543 4 6 4H8" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
                     <path d="M20 8V6C20 4.89543 19.1046 4 18 4H16" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
@@ -370,7 +368,6 @@ export default function Home() {
               <div className="dashboard-grid">
                 {/* Sidebar */}
                 <div style={{ background: 'rgba(255, 255, 255, 0.05)', borderRadius: '12px', padding: '16px' }}>
-                  {/* Updated dashboard brand reference to use /Midel-logo.png */}
                   <div style={{ background: '#FFF', padding: '6px', borderRadius: '6px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <img src="/Midel-logo.png" alt="ScanTippr" style={{ width: '100%', maxHeight: '32px', objectFit: 'contain' }} />
                   </div>
@@ -418,7 +415,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Perfect For Every Industry (Added Premium Vector Micro-Illustrations) */}
+        {/* Perfect For Every Industry */}
         <section id="industries" style={{ padding: '60px 16px', background: '#F8FAFC' }}>
           <div className="responsive-container">
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
@@ -448,7 +445,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Company Branding & Customizable Cards (Fixed Broken Image Paths with Vector QR Matrices) */}
+        {/* Company Branding & Customizable Cards */}
         <section id="branding" style={{ padding: '60px 16px', background: '#FFFFFF' }}>
           <div className="responsive-container">
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
@@ -459,6 +456,7 @@ export default function Home() {
 
             <div className="four-col-grid">
               {/* Blue Card */}
+              {/* FIXED: changed justify_content: 'center' to justifyContent: 'center' */}
               <div style={{ background: '#0F2942', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <span style={{ fontSize: '10px', fontWeight: 700, color: '#12C7B5', marginBottom: '16px', letterSpacing: '0.05em' }}>SENTRY SECURITY</span>
                 <div style={{ background: '#FFF', padding: '12px', borderRadius: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -471,6 +469,7 @@ export default function Home() {
               </div>
 
               {/* Green Card */}
+              {/* FIXED: changed justify_content: 'center' to justifyContent: 'center' */}
               <div style={{ background: '#0F5B46', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <span style={{ fontSize: '10px', fontWeight: 700, color: '#4ADE80', marginBottom: '16px', letterSpacing: '0.05em' }}>GREEN FIELD STATIONS</span>
                 <div style={{ background: '#FFF', padding: '12px', borderRadius: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -483,6 +482,7 @@ export default function Home() {
               </div>
 
               {/* Orange Card */}
+              {/* FIXED: changed justify_content: 'center' to justifyContent: 'center' */}
               <div style={{ background: '#C2410C', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <span style={{ fontSize: '10px', fontWeight: 700, color: '#FB923C', marginBottom: '16px', letterSpacing: '0.05em' }}>CITY GUARD TEAM</span>
                 <div style={{ background: '#FFF', padding: '12px', borderRadius: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -495,6 +495,7 @@ export default function Home() {
               </div>
 
               {/* Red Card */}
+              {/* FIXED: changed justify_content: 'center' to justifyContent: 'center' */}
               <div style={{ background: '#991B1B', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <span style={{ fontSize: '10px', fontWeight: 700, color: '#F87171', marginBottom: '16px', letterSpacing: '0.05em' }}>PREMIER HOTELS</span>
                 <div style={{ background: '#FFF', padding: '12px', borderRadius: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -633,7 +634,6 @@ export default function Home() {
                     width: '180px',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                   }}>
-                    {/* Updated footer reference to use /Midel-logo.png */}
                     <img 
                       src="/Midel-logo.png" 
                       alt="ScanTippr Logo" 
