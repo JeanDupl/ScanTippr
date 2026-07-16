@@ -220,57 +220,22 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Phone Mockup */}
+            {/* Phone Mockup Image */}
             <div className="floating-mockup" style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
               <div style={{
                 width: '100%',
-                maxWidth: '300px',
-                background: '#FFF',
-                borderRadius: '32px',
-                border: '8px solid #0F2942',
-                boxShadow: '0 25px 50px -12px rgba(15, 41, 66, 0.15)',
-                padding: '20px',
-                fontFamily: "system-ui, sans-serif"
+                maxWidth: '350px',
+                filter: 'drop-shadow(0 25px 50px rgba(15, 41, 66, 0.12))'
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#94A3B8', marginBottom: '16px', fontWeight: 600 }}>
-                  <span>9:41</span>
-                  <span>📶 🔋</span>
-                </div>
-
-                <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-                  <img 
-                    src="/Pay-screen.png" 
-                    alt="Mike Johnson" 
-                    style={{ width: '72px', height: '72px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #12C7B5', marginBottom: '8px' }} 
-                  />
-                  <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0F2942', margin: '0 0 2px 0' }}>Mike Johnson</h3>
-                  <p style={{ fontSize: '12px', color: '#64748B', margin: 0, fontWeight: 500 }}>Sentry Security Guard</p>
-                </div>
-
-                <div style={{ background: '#F8FAFC', borderRadius: '12px', padding: '12px', textAlign: 'center', marginBottom: '16px' }}>
-                  <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Choose Amount</span>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px', marginTop: '8px' }}>
-                    {['R20', 'R50', 'R100'].map((amt) => (
-                      <button key={amt} style={{ background: '#FFF', border: '1px solid #E5E7EB', borderRadius: '6px', padding: '8px 0', fontWeight: 600, color: '#0F2942', fontSize: '13px' }}>
-                        {amt}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <button style={{ width: '100%', background: '#12C7B5', color: '#FFF', border: 'none', borderRadius: '8px', padding: '12px', fontWeight: 600, fontSize: '14px' }}>
-                  Continue to Pay
-                </button>
-
-                {/* Updated "Secured by" with ScanTippr_header logo */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '16px' }}>
-                  <span style={{ fontSize: '9px', color: '#94A3B8', fontWeight: 500 }}>Secured by</span>
-                  <img 
-                    src="/ScanTippr_header.png" 
-                    alt="ScanTippr" 
-                    style={{ height: '18px', width: 'auto', objectFit: 'contain' }} 
-                  />
-                </div>
+                <img 
+                  src="/Cell-Phone.png" 
+                  alt="ScanTippr Mobile Payment Screen" 
+                  style={{ 
+                    width: '100%', 
+                    height: 'auto', 
+                    display: 'block' 
+                  }} 
+                />
               </div>
             </div>
           </div>
