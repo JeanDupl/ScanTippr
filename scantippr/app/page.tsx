@@ -123,20 +123,15 @@ export default function Home() {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            {/* Header Logo Wrapper using ScanTippr_header */}
             <a href="/" style={{ 
               display: 'flex', 
               alignItems: 'center', 
-              textDecoration: 'none',
-              background: '#FFFFFF', 
-              padding: '6px 12px',
-              borderRadius: '6px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+              textDecoration: 'none'
             }}>
               <img 
                 src="/ScanTippr_header.png"
                 alt="ScanTippr Logo" 
-                style={{ width: '140px', height: 'auto', objectFit: 'contain' }} 
+                style={{ width: '180px', height: 'auto', objectFit: 'contain' }} 
               />
             </a>
 
@@ -267,9 +262,14 @@ export default function Home() {
                   Continue to Pay
                 </button>
 
+                {/* Updated "Secured by" with ScanTippr_header logo */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '16px' }}>
                   <span style={{ fontSize: '9px', color: '#94A3B8', fontWeight: 500 }}>Secured by</span>
-                  <img src="/Midel-logo.png" alt="ScanTippr" style={{ height: '14px', width: 'auto', objectFit: 'contain' }} />
+                  <img 
+                    src="/ScanTippr_header.png" 
+                    alt="ScanTippr" 
+                    style={{ height: '18px', width: 'auto', objectFit: 'contain' }} 
+                  />
                 </div>
               </div>
             </div>
