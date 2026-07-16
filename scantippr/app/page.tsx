@@ -377,18 +377,24 @@ export default function Home() {
               <div className="dashboard-grid">
                 {/* Sidebar */}
                 <div style={{ background: '#1e3a5f', borderRadius: '12px', padding: '16px' }}>
-                  {/* Blended Logo Container (Matching the sidebar color) */}
+                  {/* Blended Logo Container (Using Midelpage-logo and matching the sidebar background) */}
                   <div style={{ 
                     background: '#1e3a5f', 
-                    padding: '6px', 
-                    borderRadius: '6px', 
+                    padding: '12px 6px', 
                     marginBottom: '24px', 
                     display: 'flex', 
                     alignItems: 'center', 
                     justifyContent: 'center',
-                    border: '1px solid rgba(255, 255, 255, 0.1)'
                   }}>
-                    <img src="/Midel-logo.png" alt="ScanTippr" style={{ width: '100%', maxHeight: '32px', objectFit: 'contain' }} />
+                    <img 
+                      src="/Midelpage-logo.png" 
+                      alt="ScanTippr" 
+                      style={{ 
+                        width: '130px', 
+                        height: 'auto', 
+                        objectFit: 'contain' 
+                      }} 
+                    />
                   </div>
                   
                   {/* Restored Complete Menu Navigation */}
