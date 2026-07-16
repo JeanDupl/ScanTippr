@@ -13,7 +13,6 @@ export default function Home() {
     <>
       {/* Global CSS for seamless responsiveness */}
       <style jsx global>{`
-        /* Desktop-first layout switches to single-column on mobile */
         .responsive-container {
           width: 100%;
           max-width: 1200px;
@@ -56,7 +55,6 @@ export default function Home() {
           display: none;
         }
 
-        /* Responsive Breakpoints */
         @media (min-width: 768px) {
           .hero-grid {
             grid-template-columns: 1.1fr 0.9fr;
@@ -90,7 +88,6 @@ export default function Home() {
           }
         }
 
-        /* Soft float animation for the hero phone image */
         @keyframes float {
           0% { transform: translateY(0px); }
           50% { transform: translateY(-10px); }
@@ -126,10 +123,10 @@ export default function Home() {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            {/* Expanded header logo container to 240px for prominent presentation */}
-            <a href="/" style={{ display: 'flex', alignItems: 'center', width: '240px', textDecoration: 'none' }}>
+            {/* Logo updated to use Midel-logo.png */}
+            <a href="/" style={{ display: 'flex', alignItems: 'center', width: '220px', textDecoration: 'none' }}>
               <img 
-                src="/ScanTippr_header.png" 
+                src="/Midel-logo.png" 
                 alt="ScanTippr Logo" 
                 style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
               />
@@ -221,7 +218,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Interactive Phone Mockup */}
+            {/* Phone Mockup */}
             <div className="floating-mockup" style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
               <div style={{
                 width: '100%',
@@ -239,7 +236,6 @@ export default function Home() {
                 </div>
 
                 <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-                  {/* Fixed: Profile image source pointing directly to the loaded Pay-screen.png */}
                   <img 
                     src="/Pay-screen.png" 
                     alt="Mike Johnson" 
@@ -253,21 +249,21 @@ export default function Home() {
                   <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Choose Amount</span>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px', marginTop: '8px' }}>
                     {['R20', 'R50', 'R100'].map((amt) => (
-                      <button key={amt} style={{ background: '#FFF', border: '1px solid #E5E7EB', borderRadius: '6px', padding: '8px 0', fontWeight: 600, color: '#0F2942', fontSize: '13px', cursor: 'pointer' }}>
+                      <button key={amt} style={{ background: '#FFF', border: '1px solid #E5E7EB', borderRadius: '6px', padding: '8px 0', fontWeight: 600, color: '#0F2942', fontSize: '13px' }}>
                         {amt}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                <button style={{ width: '100%', background: '#12C7B5', color: '#FFF', border: 'none', borderRadius: '8px', padding: '12px', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}>
+                <button style={{ width: '100%', background: '#12C7B5', color: '#FFF', border: 'none', borderRadius: '8px', padding: '12px', fontWeight: 600, fontSize: '14px' }}>
                   Continue to Pay
                 </button>
 
-                {/* Fixed: Replaced broken /logo-footer.png with working /ScanTippr_header.png inside phone mockup footer */}
+                {/* Dashboard / Branding Logo updated to use Midel-logo.png inside device footer */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '16px' }}>
                   <span style={{ fontSize: '9px', color: '#94A3B8', fontWeight: 500 }}>Secured by</span>
-                  <img src="/ScanTippr_header.png" alt="ScanTippr" style={{ height: '14px', width: 'auto', objectFit: 'contain' }} />
+                  <img src="/Midel-logo.png" alt="ScanTippr" style={{ height: '14px', width: 'auto', objectFit: 'contain' }} />
                 </div>
               </div>
             </div>
@@ -299,25 +295,8 @@ export default function Home() {
 
             <div className="three-col-grid">
               {/* Step 1 - Scan */}
-              <div style={{ 
-                background: '#FFF', 
-                padding: '32px 24px', 
-                borderRadius: '16px', 
-                border: '1px solid #E5E7EB', 
-                boxShadow: '0 10px 25px -5px rgba(15, 41, 66, 0.05)',
-                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-              }}>
-                <div style={{ 
-                  width: '64px', 
-                  height: '64px', 
-                  background: 'rgba(18, 199, 181, 0.1)', 
-                  borderRadius: '14px', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  marginBottom: '20px' 
-                }}>
-                  {/* Premium Scan Icon SVG */}
+              <div style={{ background: '#FFF', padding: '32px 24px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 10px 25px -5px rgba(15, 41, 66, 0.05)' }}>
+                <div style={{ width: '64px', height: '64px', background: 'rgba(18, 199, 181, 0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', justify_content: 'center', marginBottom: '20px', marginLeft: 'auto', marginRight: 'auto', justifyContent: 'center' }}>
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 8V6C4 4.89543 4.89543 4 6 4H8" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
                     <path d="M20 8V6C20 4.89543 19.1046 4 18 4H16" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
@@ -327,31 +306,15 @@ export default function Home() {
                     <rect x="11" y="11" width="2" height="2" fill="#0F2942" />
                   </svg>
                 </div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>1. Scan QR Code</h3>
-                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0 }}>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px', textAlign: 'center' }}>1. Scan QR Code</h3>
+                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0, textAlign: 'center' }}>
                   Customer scans the employee's unique QR code card using any native smartphone camera. No app download required.
                 </p>
               </div>
 
               {/* Step 2 - Choose Amount */}
-              <div style={{ 
-                background: '#FFF', 
-                padding: '32px 24px', 
-                borderRadius: '16px', 
-                border: '1px solid #E5E7EB', 
-                boxShadow: '0 10px 25px -5px rgba(15, 41, 66, 0.05)'
-              }}>
-                <div style={{ 
-                  width: '64px', 
-                  height: '64px', 
-                  background: 'rgba(18, 199, 181, 0.1)', 
-                  borderRadius: '14px', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  marginBottom: '20px' 
-                }}>
-                  {/* Premium Choose Amount Icon SVG */}
+              <div style={{ background: '#FFF', padding: '32px 24px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 10px 25px -5px rgba(15, 41, 66, 0.05)' }}>
+                <div style={{ width: '64px', height: '64px', background: 'rgba(18, 199, 181, 0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', marginLeft: 'auto', marginRight: 'auto' }}>
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="3" y="4" width="18" height="12" rx="2" stroke="#0F2942" strokeWidth="2" />
                     <circle cx="12" cy="10" r="3" stroke="#12C7B5" strokeWidth="2" />
@@ -360,31 +323,15 @@ export default function Home() {
                     <path d="M12 17V20" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
                   </svg>
                 </div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>2. Select Amount</h3>
-                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0 }}>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px', textAlign: 'center' }}>2. Select Amount</h3>
+                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0, textAlign: 'center' }}>
                   Select predefined appreciation options like R20, R50, or type in a completely custom amount instantly.
                 </p>
               </div>
 
               {/* Step 3 - Secure Payment */}
-              <div style={{ 
-                background: '#FFF', 
-                padding: '32px 24px', 
-                borderRadius: '16px', 
-                border: '1px solid #E5E7EB', 
-                boxShadow: '0 10px 25px -5px rgba(15, 41, 66, 0.05)'
-              }}>
-                <div style={{ 
-                  width: '64px', 
-                  height: '64px', 
-                  background: 'rgba(18, 199, 181, 0.1)', 
-                  borderRadius: '14px', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  marginBottom: '20px' 
-                }}>
-                  {/* Premium Pay Securely Icon SVG */}
+              <div style={{ background: '#FFF', padding: '32px 24px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 10px 25px -5px rgba(15, 41, 66, 0.05)' }}>
+                <div style={{ width: '64px', height: '64px', background: 'rgba(18, 199, 181, 0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', marginLeft: 'auto', marginRight: 'auto' }}>
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="3" y="6" width="18" height="12" rx="2" stroke="#0F2942" strokeWidth="2" />
                     <path d="M3 10H21" stroke="#0F2942" strokeWidth="2" />
@@ -392,8 +339,8 @@ export default function Home() {
                     <path d="M14 13.5L16.5 16L21 11" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>3. Pay Securely</h3>
-                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0 }}>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px', textAlign: 'center' }}>3. Pay Securely</h3>
+                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0, textAlign: 'center' }}>
                   Complete checkout in seconds using secure credit/debit card gateways, Apple Pay, Google Pay, or secure instant EFT.
                 </p>
               </div>
@@ -410,7 +357,7 @@ export default function Home() {
               <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto' }}>Complete command over your branch locations, personnel profiles, transaction logs, and performance metrics.</p>
             </div>
 
-            {/* Desktop / Mobile Smart Dashboard Wrapper */}
+            {/* Dashboard Container Layout */}
             <div style={{
               background: '#0F2942',
               borderRadius: '20px',
@@ -420,11 +367,13 @@ export default function Home() {
               border: '1px solid rgba(255, 255, 255, 0.1)',
               overflowX: 'hidden'
             }}>
-              <div className="dashboard-grid" style={{ minHeight: 'auto' }}>
-                {/* Sidebar - Scales perfectly, wraps naturally */}
+              <div className="dashboard-grid">
+                {/* Sidebar */}
                 <div style={{ background: 'rgba(255, 255, 255, 0.05)', borderRadius: '12px', padding: '16px' }}>
-                  {/* Fixed: Replaced broken /logo-footer.png with /ScanTippr_header.png */}
-                  <img src="/ScanTippr_header.png" alt="ScanTippr" style={{ width: '100px', marginBottom: '24px', background: '#FFF', padding: '4px', borderRadius: '4px' }} />
+                  {/* Updated dashboard brand reference to use /Midel-logo.png */}
+                  <div style={{ background: '#FFF', padding: '6px', borderRadius: '6px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <img src="/Midel-logo.png" alt="ScanTippr" style={{ width: '100%', maxHeight: '32px', objectFit: 'contain' }} />
+                  </div>
                   <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '8px' }}>
                     <div style={{ background: 'rgba(18, 199, 181, 0.15)', color: '#12C7B5', padding: '8px 12px', borderRadius: '6px', fontWeight: 600, fontSize: '12px' }}>📊 Dashboard</div>
                     <div style={{ color: '#94A3B8', padding: '8px 12px', fontSize: '12px' }}>🏢 Companies</div>
@@ -439,7 +388,7 @@ export default function Home() {
                     <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 500 }}>System Live • HQ</span>
                   </div>
 
-                  {/* Summary Cards */}
+                  {/* Metrics Row */}
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px', marginBottom: '16px' }}>
                     <div style={{ background: '#FFF', padding: '14px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
                       <span style={{ fontSize: '10px', color: '#64748B', fontWeight: 600 }}>APPRECIATION</span>
@@ -451,7 +400,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Dynamic Table Preview */}
+                  {/* Transaction Table */}
                   <div style={{ background: '#FFF', borderRadius: '8px', padding: '12px', border: '1px solid #E5E7EB' }}>
                     <h4 style={{ fontSize: '12px', fontWeight: 700, marginBottom: '12px' }}>Recent Appreciations</h4>
                     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #F1F5F9', fontSize: '12px' }}>
@@ -469,7 +418,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Perfect For Every Industry */}
+        {/* Perfect For Every Industry (Added Premium Vector Micro-Illustrations) */}
         <section id="industries" style={{ padding: '60px 16px', background: '#F8FAFC' }}>
           <div className="responsive-container">
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
@@ -478,17 +427,28 @@ export default function Home() {
             </div>
 
             <div className="four-col-grid">
-              {['Security Companies', 'Car Guards', 'Fuel Stations', 'Restaurants', 'Hotels', 'Cleaning Services', 'Retail Stores', 'Corporate Offices'].map((industry) => (
-                <div key={industry} style={{ background: '#FFF', padding: '16px', borderRadius: '12px', border: '1px solid #E5E7EB', textAlign: 'center', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.01)' }}>
-                  <div style={{ fontSize: '24px', marginBottom: '8px' }}>🔒</div>
-                  <span style={{ fontSize: '14px', fontWeight: 700, color: '#0F2942' }}>{industry}</span>
+              {[
+                { name: 'Security Companies', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> },
+                { name: 'Car Guards', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><rect x="1" y="3" width="22" height="13" rx="2"/><path d="M7 21h10M12 16v5"/></svg> },
+                { name: 'Fuel Stations', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><path d="M3 22V2h12v20M15 6h4v4h-4M19 10l2 3v5h-4"/></svg> },
+                { name: 'Restaurants', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><path d="M12 2v20M17 5H7a2 2 0 00-2 2v3a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2z"/></svg> },
+                { name: 'Hotels', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 7h2M9 11h2M13 7h2M13 11h2"/></svg> },
+                { name: 'Cleaning Services', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><path d="M12 22a7 7 0 100-14 7 7 0 000 14zM12 2v6M4.93 4.93l4.24 4.24M19.07 4.93l-4.24 4.24"/></svg> },
+                { name: 'Retail Stores', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0"/></svg> },
+                { name: 'Corporate Offices', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M6 21h12M12 17v4"/></svg> }
+              ].map((industry) => (
+                <div key={industry.name} style={{ background: '#FFF', padding: '24px 16px', borderRadius: '12px', border: '1px solid #E5E7EB', textAlign: 'center', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.01)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', background: '#F1F5F9', borderRadius: '50%' }}>
+                    {industry.icon}
+                  </div>
+                  <span style={{ fontSize: '14px', fontWeight: 700, color: '#0F2942' }}>{industry.name}</span>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Company Branding & Customizable Cards */}
+        {/* Company Branding & Customizable Cards (Fixed Broken Image Paths with Vector QR Matrices) */}
         <section id="branding" style={{ padding: '60px 16px', background: '#FFFFFF' }}>
           <div className="responsive-container">
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
@@ -500,29 +460,49 @@ export default function Home() {
             <div className="four-col-grid">
               {/* Blue Card */}
               <div style={{ background: '#0F2942', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span style={{ fontSize: '10px', fontWeight: 700, color: '#12C7B5', marginBottom: '12px' }}>SENTRY SECURITY</span>
-                <img src="/qr-code.png" alt="QR" style={{ width: '100px', height: '100px', background: '#FFF', padding: '8px', borderRadius: '10px', marginBottom: '12px' }} />
+                <span style={{ fontSize: '10px', fontWeight: 700, color: '#12C7B5', marginBottom: '16px', letterSpacing: '0.05em' }}>SENTRY SECURITY</span>
+                <div style={{ background: '#FFF', padding: '12px', borderRadius: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#0F2942" strokeWidth="2">
+                    <rect x="2" y="2" width="6" height="6"/><rect x="16" y="2" width="6" height="6"/><rect x="2" y="16" width="6" height="6"/>
+                    <path d="M10 2h4v4h-4zm0 8h4v4h-4zm6 0h4v4h-4zM2 10h4v4H2zm8 6h4v4h-4zm6 0h4v4h-4z"/>
+                  </svg>
+                </div>
                 <span style={{ fontWeight: 600, fontSize: '13px' }}>Thank you!</span>
               </div>
 
               {/* Green Card */}
               <div style={{ background: '#0F5B46', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span style={{ fontSize: '10px', fontWeight: 700, color: '#4ADE80', marginBottom: '12px' }}>GREEN FIELD STATIONS</span>
-                <img src="/qr-code.png" alt="QR" style={{ width: '100px', height: '100px', background: '#FFF', padding: '8px', borderRadius: '10px', marginBottom: '12px' }} />
+                <span style={{ fontSize: '10px', fontWeight: 700, color: '#4ADE80', marginBottom: '16px', letterSpacing: '0.05em' }}>GREEN FIELD STATIONS</span>
+                <div style={{ background: '#FFF', padding: '12px', borderRadius: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#0F5B46" strokeWidth="2">
+                    <rect x="2" y="2" width="6" height="6"/><rect x="16" y="2" width="6" height="6"/><rect x="2" y="16" width="6" height="6"/>
+                    <path d="M10 2h4v4h-4zm0 8h4v4h-4zm6 0h4v4h-4zM2 10h4v4H2zm8 6h4v4h-4zm6 0h4v4h-4z"/>
+                  </svg>
+                </div>
                 <span style={{ fontWeight: 600, fontSize: '13px' }}>Appreciation Portal</span>
               </div>
 
               {/* Orange Card */}
               <div style={{ background: '#C2410C', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span style={{ fontSize: '10px', fontWeight: 700, color: '#FB923C', marginBottom: '12px' }}>CITY GUARD TEAM</span>
-                <img src="/qr-code.png" alt="QR" style={{ width: '100px', height: '100px', background: '#FFF', padding: '8px', borderRadius: '10px', marginBottom: '12px' }} />
+                <span style={{ fontSize: '10px', fontWeight: 700, color: '#FB923C', marginBottom: '16px', letterSpacing: '0.05em' }}>CITY GUARD TEAM</span>
+                <div style={{ background: '#FFF', padding: '12px', borderRadius: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#C2410C" strokeWidth="2">
+                    <rect x="2" y="2" width="6" height="6"/><rect x="16" y="2" width="6" height="6"/><rect x="2" y="16" width="6" height="6"/>
+                    <path d="M10 2h4v4h-4zm0 8h4v4h-4zm6 0h4v4h-4zM2 10h4v4H2zm8 6h4v4h-4zm6 0h4v4h-4z"/>
+                  </svg>
+                </div>
                 <span style={{ fontWeight: 600, fontSize: '13px' }}>Scan to Support</span>
               </div>
 
               {/* Red Card */}
               <div style={{ background: '#991B1B', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span style={{ fontSize: '10px', fontWeight: 700, color: '#F87171', marginBottom: '12px' }}>PREMIER HOTELS</span>
-                <img src="/qr-code.png" alt="QR" style={{ width: '100px', height: '100px', background: '#FFF', padding: '8px', borderRadius: '10px', marginBottom: '12px' }} />
+                <span style={{ fontSize: '10px', fontWeight: 700, color: '#F87171', marginBottom: '16px', letterSpacing: '0.05em' }}>PREMIER HOTELS</span>
+                <div style={{ background: '#FFF', padding: '12px', borderRadius: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#991B1B" strokeWidth="2">
+                    <rect x="2" y="2" width="6" height="6"/><rect x="16" y="2" width="6" height="6"/><rect x="2" y="16" width="6" height="6"/>
+                    <path d="M10 2h4v4h-4zm0 8h4v4h-4zm6 0h4v4h-4zM2 10h4v4H2zm8 6h4v4h-4zm6 0h4v4h-4z"/>
+                  </svg>
+                </div>
                 <span style={{ fontWeight: 600, fontSize: '13px' }}>Thank Our Team</span>
               </div>
             </div>
@@ -538,7 +518,7 @@ export default function Home() {
             </div>
 
             <div className="pricing-grid">
-              {/* Starter */}
+              {/* Starter Plan */}
               <div style={{ background: '#FFF', padding: '24px', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
                 <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>Starter</h3>
                 <div style={{ fontSize: '28px', fontWeight: 800, color: '#0F2942', marginBottom: '16px' }}>Free <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>/ month</span></div>
@@ -550,7 +530,7 @@ export default function Home() {
                 <a href="mailto:info@scantippr.co.za" style={{ display: 'block', textDecoration: 'none', textAlign: 'center', padding: '10px 0', border: '2px solid #0F2942', color: '#0F2942', borderRadius: '8px', fontWeight: 600, fontSize: '13px' }}>Get Started</a>
               </div>
 
-              {/* Professional */}
+              {/* Professional Plan */}
               <div style={{ background: '#0F2942', color: '#FFF', padding: '32px 24px', borderRadius: '20px', border: '2px solid #12C7B5' }}>
                 <div style={{ display: 'inline-block', background: '#12C7B5', color: '#0F2942', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 700, marginBottom: '12px' }}>MOST POPULAR</div>
                 <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '8px' }}>Professional</h3>
@@ -563,7 +543,7 @@ export default function Home() {
                 <a href="mailto:info@scantippr.co.za?subject=Professional Plan Request" style={{ display: 'block', textDecoration: 'none', textAlign: 'center', padding: '12px 0', background: '#12C7B5', color: '#0F2942', borderRadius: '8px', fontWeight: 700, fontSize: '13px' }}>Contact Sales</a>
               </div>
 
-              {/* Enterprise */}
+              {/* Enterprise Plan */}
               <div style={{ background: '#FFF', padding: '24px', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
                 <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>Enterprise</h3>
                 <div style={{ fontSize: '28px', fontWeight: 800, color: '#0F2942', marginBottom: '16px' }}>Tailored Pricing</div>
@@ -607,7 +587,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Final CTA Section */}
+        {/* CTA Section */}
         <section style={{ padding: '60px 16px', background: '#0F2942', color: '#FFF', textAlign: 'center' }}>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <h2 style={{ fontSize: '32px', fontWeight: 800, marginBottom: '16px' }}>Ready to modernize employee appreciation?</h2>
@@ -653,9 +633,9 @@ export default function Home() {
                     width: '180px',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                   }}>
-                    {/* Fixed: Replaced broken /logo-main with working /ScanTippr_header.png */}
+                    {/* Updated footer reference to use /Midel-logo.png */}
                     <img 
-                      src="/ScanTippr_header.png" 
+                      src="/Midel-logo.png" 
                       alt="ScanTippr Logo" 
                       style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
                     />
