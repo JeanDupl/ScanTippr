@@ -292,37 +292,110 @@ export default function Home() {
         {/* How It Works */}
         <section id="how-it-works" style={{ padding: '60px 16px', background: '#F8FAFC' }}>
           <div className="responsive-container">
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+            <div style={{ textAlign: 'center', marginBottom: '48px' }}>
               <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#0F2942', marginBottom: '12px' }}>How ScanTippr Works</h2>
               <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto' }}>Three simple steps to modernize appreciation without physical cash.</p>
             </div>
 
             <div className="three-col-grid">
-              {/* Step 1 */}
-              <div style={{ background: '#FFF', padding: '24px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '48px', height: '48px', background: 'rgba(18, 199, 181, 0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', color: '#12C7B5', marginBottom: '16px', fontWeight: 'bold' }}>
-                  1
+              {/* Step 1 - Scan */}
+              <div style={{ 
+                background: '#FFF', 
+                padding: '32px 24px', 
+                borderRadius: '16px', 
+                border: '1px solid #E5E7EB', 
+                boxShadow: '0 10px 25px -5px rgba(15, 41, 66, 0.05)',
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+              }}>
+                <div style={{ 
+                  width: '64px', 
+                  height: '64px', 
+                  background: 'rgba(18, 199, 181, 0.1)', 
+                  borderRadius: '14px', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  marginBottom: '20px' 
+                }}>
+                  {/* Premium Scan Icon SVG */}
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 8V6C4 4.89543 4.89543 4 6 4H8" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
+                    <path d="M20 8V6C20 4.89543 19.1046 4 18 4H16" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
+                    <path d="M4 16V18C4 19.1046 4.89543 20 6 20H8" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
+                    <path d="M20 16V18C20 19.1046 19.1046 20 18 20H16" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
+                    <rect x="8" y="8" width="8" height="8" rx="1.5" stroke="#0F2942" strokeWidth="2" />
+                    <rect x="11" y="11" width="2" height="2" fill="#0F2942" />
+                  </svg>
                 </div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>Scan</h3>
-                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6' }}>Customer scans the employee's unique QR code using any native smartphone camera.</p>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>1. Scan QR Code</h3>
+                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0 }}>
+                  Customer scans the employee's unique QR code card using any native smartphone camera. No app download required.
+                </p>
               </div>
 
-              {/* Step 2 */}
-              <div style={{ background: '#FFF', padding: '24px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '48px', height: '48px', background: 'rgba(18, 199, 181, 0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', color: '#12C7B5', marginBottom: '16px', fontWeight: 'bold' }}>
-                  2
+              {/* Step 2 - Choose Amount */}
+              <div style={{ 
+                background: '#FFF', 
+                padding: '32px 24px', 
+                borderRadius: '16px', 
+                border: '1px solid #E5E7EB', 
+                boxShadow: '0 10px 25px -5px rgba(15, 41, 66, 0.05)'
+              }}>
+                <div style={{ 
+                  width: '64px', 
+                  height: '64px', 
+                  background: 'rgba(18, 199, 181, 0.1)', 
+                  borderRadius: '14px', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  marginBottom: '20px' 
+                }}>
+                  {/* Premium Choose Amount Icon SVG */}
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="4" width="18" height="12" rx="2" stroke="#0F2942" strokeWidth="2" />
+                    <circle cx="12" cy="10" r="3" stroke="#12C7B5" strokeWidth="2" />
+                    <path d="M3 10H5M19 10H21" stroke="#0F2942" strokeWidth="2" strokeLinecap="round" />
+                    <path d="M7 20H17" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
+                    <path d="M12 17V20" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
+                  </svg>
                 </div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>Choose Amount</h3>
-                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6' }}>Select predefined options like R10, R20, R50, or type in any customized custom amount instantly.</p>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>2. Select Amount</h3>
+                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0 }}>
+                  Select predefined appreciation options like R20, R50, or type in a completely custom amount instantly.
+                </p>
               </div>
 
-              {/* Step 3 */}
-              <div style={{ background: '#FFF', padding: '24px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '48px', height: '48px', background: 'rgba(18, 199, 181, 0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', color: '#12C7B5', marginBottom: '16px', fontWeight: 'bold' }}>
-                  3
+              {/* Step 3 - Secure Payment */}
+              <div style={{ 
+                background: '#FFF', 
+                padding: '32px 24px', 
+                borderRadius: '16px', 
+                border: '1px solid #E5E7EB', 
+                boxShadow: '0 10px 25px -5px rgba(15, 41, 66, 0.05)'
+              }}>
+                <div style={{ 
+                  width: '64px', 
+                  height: '64px', 
+                  background: 'rgba(18, 199, 181, 0.1)', 
+                  borderRadius: '14px', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  marginBottom: '20px' 
+                }}>
+                  {/* Premium Pay Securely Icon SVG */}
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="6" width="18" height="12" rx="2" stroke="#0F2942" strokeWidth="2" />
+                    <path d="M3 10H21" stroke="#0F2942" strokeWidth="2" />
+                    <path d="M7 14H9" stroke="#12C7B5" strokeWidth="2" strokeLinecap="round" />
+                    <path d="M14 13.5L16.5 16L21 11" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>Pay Securely</h3>
-                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6' }}>Complete transaction securely using card gateways, Apple Pay, Google Pay, or secure instant EFT.</p>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>3. Pay Securely</h3>
+                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0 }}>
+                  Complete checkout in seconds using secure credit/debit card gateways, Apple Pay, Google Pay, or secure instant EFT.
+                </p>
               </div>
             </div>
           </div>
