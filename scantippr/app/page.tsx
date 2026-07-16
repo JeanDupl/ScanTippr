@@ -78,10 +78,10 @@ export default function Home() {
             justifyContent: 'space-between', 
             alignItems: 'center', 
             padding: '12px 16px', 
-            borderBottom: '1px solid #1e293b', 
+            borderBottom: '1px solid #e2e8f0', /* Light clean border */
             position: 'sticky', 
             top: 0, 
-            background: '#111e29', 
+            background: '#ffffff', /* Changed to white so logo blends in seamlessly */
             zIndex: 50 
           }}>
             <a href="/" style={{ display: 'flex', alignItems: 'center', width: '130px', textDecoration: 'none' }}>
@@ -114,6 +114,7 @@ export default function Home() {
               </a>
             </div>
           </nav>
+
         {/* Hero Section */}
         <section style={{ maxWidth: '1150px', margin: '0 auto', padding: '5rem 2rem' }} className="hero-grid">
           <div>
@@ -330,23 +331,31 @@ export default function Home() {
           <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ display: 'inline-block', padding: '15px 36px', fontSize: '16px', borderRadius: '8px', background: '#1aa39a', color: '#fff', textDecoration: 'none', fontWeight: 700, boxShadow: '0 4px 14px rgba(26,163,154,0.3)', transition: 'transform 0.2s' }}>Request a demo</a>
         </section>
 
-        {/* Footer */}
-        <footer style={{ background: '#111e29', padding: '3rem 2rem' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
-              <Image src="/logo-footer.png" alt="ScanTippr Logo" width={180} height={50} style={{ objectFit: 'contain' }} />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem', borderTop: '1px solid #1a2b3c', paddingTop: '1.5rem' }}>
-              <span style={{ fontSize: '14px', color: '#4a6070' }}>© 2026 ScanTippr. All rights reserved.</span>
-              <div style={{ display: 'flex', gap: '1.75rem' }}>
-                {['Privacy policy', 'Terms', 'Contact', 'Support'].map((link) => (
-                  <a key={link} href="mailto:info@scantippr.co.za" style={{ fontSize: '13.5px', color: '#4a6070', textDecoration: 'none', transition: 'color 0.2s' }}>{link}</a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </footer>
+        <footer style={{ background: '#111e29', padding: '2rem' }}>
+  <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+      <div style={{ 
+        background: '#ffffff', 
+        padding: '6px 14px', 
+        borderRadius: '8px', 
+        display: 'inline-flex', 
+        alignItems: 'center',
+        width: '120px'
+      }}>
+        <img 
+          src="/logo-footer" 
+          alt="ScanTippr Logo" 
+          style={{ 
+            width: '100%', 
+            height: 'auto', 
+            objectFit: 'contain' 
+          }} 
+        />
+      </div>
+    </div>
+  </div> {/* This closes the maxWidth div that was missing! */}
+</footer>
       </main>
     </>
-  )
+  );
 }
