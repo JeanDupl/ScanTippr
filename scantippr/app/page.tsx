@@ -367,14 +367,41 @@ export default function Home() {
             }}>
               <div className="dashboard-grid">
                 {/* Sidebar */}
-                <div style={{ background: 'rgba(255, 255, 255, 0.05)', borderRadius: '12px', padding: '16px' }}>
-                  <div style={{ background: '#FFF', padding: '6px', borderRadius: '6px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ background: '#1e3a5f', borderRadius: '12px', padding: '16px' }}>
+                  {/* Blended Logo Container (Matching the sidebar color) */}
+                  <div style={{ 
+                    background: '#1e3a5f', 
+                    padding: '6px', 
+                    borderRadius: '6px', 
+                    marginBottom: '24px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    border: '1px solid rgba(255, 255, 255, 0.1)'
+                  }}>
                     <img src="/Midel-logo.png" alt="ScanTippr" style={{ width: '100%', maxHeight: '32px', objectFit: 'contain' }} />
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '8px' }}>
-                    <div style={{ background: 'rgba(18, 199, 181, 0.15)', color: '#12C7B5', padding: '8px 12px', borderRadius: '6px', fontWeight: 600, fontSize: '12px' }}>📊 Dashboard</div>
-                    <div style={{ color: '#94A3B8', padding: '8px 12px', fontSize: '12px' }}>🏢 Companies</div>
-                    <div style={{ color: '#94A3B8', padding: '8px 12px', fontSize: '12px' }}>👥 Employees</div>
+                  
+                  {/* Restored Complete Menu Navigation */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ background: 'rgba(18, 199, 181, 0.15)', color: '#12C7B5', padding: '8px 12px', borderRadius: '6px', fontWeight: 600, fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span>📊</span> Dashboard
+                    </div>
+                    <div style={{ color: '#94A3B8', padding: '8px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span>🏢</span> Companies
+                    </div>
+                    <div style={{ color: '#94A3B8', padding: '8px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span>👥</span> Employees
+                    </div>
+                    <div style={{ color: '#94A3B8', padding: '8px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span>💸</span> Transactions
+                    </div>
+                    <div style={{ color: '#94A3B8', padding: '8px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span>📈</span> Analytics
+                    </div>
+                    <div style={{ color: '#94A3B8', padding: '8px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span>⚙️</span> Settings
+                    </div>
                   </div>
                 </div>
 
