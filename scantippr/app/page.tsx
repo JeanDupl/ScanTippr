@@ -667,14 +667,11 @@ export default function Home() {
             <div className="footer-grid" style={{ marginBottom: '32px' }}>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '1rem' }}>
+                  {/* Blended Logo Container (No white background block) */}
                   <div style={{ 
-                    background: '#ffffff', 
-                    padding: '6px 14px', 
-                    borderRadius: '8px', 
                     display: 'inline-flex', 
                     alignItems: 'center',
-                    width: '180px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                    width: '180px'
                   }}>
                     <img 
                       src="/Midelpage-logo.png" 
