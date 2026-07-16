@@ -355,105 +355,152 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Powerful Dashboard Preview */}
-        <section style={{ padding: '60px 16px', background: '#FFFFFF', borderTop: '1px solid #E5E7EB', overflowX: 'hidden' }}>
+        {/* Management Suite section with the Upgraded Dashboard */}
+        <section id="how-it-works" style={{ padding: '80px 0', background: '#F8FAFC' }}>
           <div className="responsive-container">
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#12C7B5', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Management Suite</span>
-              <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#0F2942', marginTop: '8px', marginBottom: '12px' }}>Powerful Corporate Dashboard</h2>
-              <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto' }}>Complete command over your branch locations, personnel profiles, transaction logs, and performance metrics.</p>
+            <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+              <span style={{ fontSize: '12px', color: '#12C7B5', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Management Suite</span>
+              <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#0F2942', marginTop: '8px', marginBottom: '12px' }}>Powerful Corporate Dashboard</h2>
+              <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto' }}>
+                Complete command over your branch locations, personnel profiles, transaction logs, and performance metrics.
+              </p>
             </div>
 
-            {/* Dashboard Container Layout */}
-            <div style={{
-              background: '#0F2942',
-              borderRadius: '20px',
-              padding: '16px',
-              boxShadow: '0 30px 60px -15px rgba(15, 41, 66, 0.3)',
-              color: '#FFF',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              overflowX: 'hidden'
-            }}>
-              <div className="dashboard-grid">
-                {/* Sidebar */}
-                <div style={{ background: '#1e3a5f', borderRadius: '12px', padding: '16px' }}>
-                  {/* Blended Logo Container (Using Midelpage-logo and matching the sidebar background) */}
-                  <div style={{ 
-                    background: '#1e3a5f', 
-                    padding: '12px 6px', 
-                    marginBottom: '24px', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
-                  }}>
-                    <img 
-                      src="/Midelpage-logo.png" 
-                      alt="ScanTippr" 
-                      style={{ 
-                        width: '150px', 
-                        height: 'auto', 
-                        objectFit: 'contain' 
-                      }} 
-                    />
+            {/* Dashboard Mockup Board */}
+            <div style={{ background: '#FFF', padding: '24px', borderRadius: '24px', boxShadow: '0 20px 60px -20px rgba(15, 41, 66, 0.08)', border: '1px solid #E2E8F0' }}>
+              <div className="upgraded-dashboard-container">
+                
+                {/* Sidebar Menu using Midelpage-logo */}
+                <aside style={{ background: '#0F2942', borderRadius: '16px', padding: '24px', color: '#FFF' }}>
+                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '32px' }}>
+                    <img src="/Midelpage-logo.png" alt="ScanTippr" style={{ width: '130px', height: 'auto', objectFit: 'contain' }} />
                   </div>
                   
-                  {/* Restored Complete Menu Navigation */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ background: 'rgba(18, 199, 181, 0.15)', color: '#12C7B5', padding: '8px 12px', borderRadius: '6px', fontWeight: 600, fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span>📊</span> Dashboard
-                    </div>
-                    <div style={{ color: '#94A3B8', padding: '8px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span>🏢</span> Companies
-                    </div>
-                    <div style={{ color: '#94A3B8', padding: '8px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span>👥</span> Employees
-                    </div>
-                    <div style={{ color: '#94A3B8', padding: '8px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span>💸</span> Transactions
-                    </div>
-                    <div style={{ color: '#94A3B8', padding: '8px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span>📈</span> Analytics
-                    </div>
-                    <div style={{ color: '#94A3B8', padding: '8px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span>⚙️</span> Settings
-                    </div>
-                  </div>
-                </div>
+                  <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '8px', background: 'rgba(18, 199, 181, 0.15)', color: '#12C7B5', fontWeight: 600, textDecoration: 'none', fontSize: '14px' }}>
+                      📈 <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>Dashboard</span>
+                    </a>
+                    {[
+                      { label: 'Companies', icon: '🏢' },
+                      { label: 'Employees', icon: '👥' },
+                      { label: 'Transactions', icon: '💸' },
+                      { label: 'Reports', icon: '📊' },
+                      { label: 'Payouts', icon: '🏦' },
+                      { label: 'Settings', icon: '⚙️' },
+                    ].map(item => (
+                      <a key={item.label} href="#" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '8px', color: '#A0AEC0', textDecoration: 'none', fontSize: '14px' }}>
+                        {item.icon} <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>{item.label}</span>
+                      </a>
+                    ))}
+                  </nav>
+                </aside>
 
-                {/* Main Panel */}
-                <div style={{ background: '#F8FAFC', borderRadius: '12px', padding: '16px', color: '#0F2942' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
-                    <h3 style={{ fontSize: '16px', fontWeight: 700 }}>Performance Metrics</h3>
-                    <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 500 }}>System Live • HQ</span>
+                {/* Main Interactive Board */}
+                <div>
+                  
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', margin: 0 }}>Overview Metrics</h3>
+                    <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>System Live • Bloemfontein HQ</span>
                   </div>
 
-                  {/* Metrics Row */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px', marginBottom: '16px' }}>
-                    <div style={{ background: '#FFF', padding: '14px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
-                      <span style={{ fontSize: '10px', color: '#64748B', fontWeight: 600 }}>APPRECIATION</span>
-                      <div style={{ fontSize: '18px', fontWeight: 800, color: '#0F2942', marginTop: '4px' }}>R25,430.00</div>
-                    </div>
-                    <div style={{ background: '#FFF', padding: '14px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
-                      <span style={{ fontSize: '10px', color: '#64748B', fontWeight: 600 }}>ACTIVE STAFF</span>
-                      <div style={{ fontSize: '18px', fontWeight: 800, color: '#0F2942', marginTop: '4px' }}>532</div>
-                    </div>
+                  {/* 4 KPI Metrics block */}
+                  <div className="advanced-kpi-grid">
+                    {[
+                      { label: 'Total Transactions', value: '1 248', change: '+10.2% this week', icon: '💸' },
+                      { label: 'Total Tips', value: 'R 25 430', change: '+18.3% this week', icon: '💰' },
+                      { label: 'Active Employees', value: '532', change: '+8.7% this week', icon: '👥' },
+                      { label: 'Companies', value: '24', change: '+2 this week', icon: '🏢' },
+                    ].map(kpi => (
+                      <div key={kpi.label} style={{ background: '#FFF', padding: '20px', borderRadius: '16px', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                          <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 600, textTransform: 'uppercase' }}>{kpi.label}</span>
+                          <span style={{ fontSize: '16px' }}>{kpi.icon}</span>
+                        </div>
+                        <div style={{ fontSize: '24px', fontWeight: 800, color: '#0F2942', letterSpacing: '-0.02em' }}>{kpi.value}</div>
+                        <div style={{ fontSize: '11px', color: '#12C7B5', fontWeight: 600, marginTop: '4px' }}>{kpi.change}</div>
+                      </div>
+                    ))}
                   </div>
 
-                  {/* Transaction Table */}
-                  <div style={{ background: '#FFF', borderRadius: '8px', padding: '12px', border: '1px solid #E5E7EB' }}>
-                    <h4 style={{ fontSize: '12px', fontWeight: 700, marginBottom: '12px' }}>Recent Appreciations</h4>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #F1F5F9', fontSize: '12px' }}>
-                      <span style={{ fontWeight: 600 }}>Mike Johnson</span>
-                      <span style={{ color: '#12C7B5', fontWeight: 700 }}>+R50.00</span>
+                  {/* Detailed Panel Layout (Transactions Feed + Spline Chart) */}
+                  <div className="detailed-panel-grid">
+                    
+                    {/* Detailed Feed */}
+                    <div style={{ background: '#FFF', padding: '24px', borderRadius: '16px', border: '1px solid #E2E8F0' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#0F2942', margin: 0 }}>Recent Transactions</h4>
+                        <span style={{ color: '#12C7B5', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>View All</span>
+                      </div>
+                      
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {[
+                          { name: 'Mike Johnson', role: 'Car Guard', amount: 'R20', time: '2 min ago', avatar: '/Pay-screen.png' },
+                          { name: 'Sarah Williams', role: 'Security Guard', amount: 'R50', time: '15 min ago', avatar: '/Pay-screen.png' },
+                          { name: 'James Brown', role: 'Car Guard', amount: 'R10', time: '32 min ago', avatar: '/Pay-screen.png' },
+                          { name: 'Thabo Dlamini', role: 'Security Guard', amount: 'R20', time: '1 hour ago', avatar: '/Pay-screen.png' },
+                          { name: 'Emma Peters', role: 'Receptionist', amount: 'R30', time: '2 hours ago', avatar: '/Pay-screen.png' },
+                        ].map((tx, idx) => (
+                          <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: idx !== 4 ? '12px' : '0', borderBottom: idx !== 4 ? '1px solid #F1F5F9' : 'none' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                              <img src={tx.avatar} alt={tx.name} style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }} />
+                              <div>
+                                <div style={{ fontSize: '13px', fontWeight: 600, color: '#0F2942' }}>{tx.name}</div>
+                                <div style={{ fontSize: '11px', color: '#64748B' }}>{tx.role}</div>
+                              </div>
+                            </div>
+                            <div style={{ textAlign: 'right' }}>
+                              <div style={{ fontSize: '13px', fontWeight: 700, color: '#12C7B5' }}>{tx.amount}</div>
+                              <div style={{ fontSize: '10px', color: '#94A3B8' }}>{tx.time}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #F1F5F9', fontSize: '12px' }}>
-                      <span style={{ fontWeight: 600 }}>Sarah Williams</span>
-                      <span style={{ color: '#12C7B5', fontWeight: 700 }}>+R100.00</span>
+
+                    {/* Weekly Performance Spline Chart */}
+                    <div style={{ background: '#FFF', padding: '24px', borderRadius: '16px', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                      <div>
+                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#0F2942', margin: '0 0 4px 0' }}>Tips Over Time</h4>
+                        <p style={{ fontSize: '11px', color: '#64748B', margin: 0 }}>Weekly transaction analysis dashboard representation</p>
+                      </div>
+
+                      {/* Custom Spline Chart SVG Mockup */}
+                      <div style={{ width: '100%', height: '180px', marginTop: '16px', position: 'relative' }}>
+                        <svg viewBox="0 0 300 120" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
+                          <defs>
+                            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#12C7B5" stopOpacity="0.2"/>
+                              <stop offset="100%" stopColor="#12C7B5" stopOpacity="0.0"/>
+                            </linearGradient>
+                          </defs>
+                          {/* Grid Lines */}
+                          <line x1="0" y1="20" x2="300" y2="20" stroke="#F1F5F9" strokeWidth="1" />
+                          <line x1="0" y1="50" x2="300" y2="50" stroke="#F1F5F9" strokeWidth="1" />
+                          <line x1="0" y1="80" x2="300" y2="80" stroke="#F1F5F9" strokeWidth="1" />
+                          <line x1="0" y1="110" x2="300" y2="110" stroke="#E2E8F0" strokeWidth="1.5" />
+                          
+                          {/* Gradient Fill under the line */}
+                          <path d="M 10 110 Q 50 80 90 90 T 170 50 T 250 30 T 290 15 L 290 110 Z" fill="url(#chartGrad)" />
+                          
+                          {/* Smooth Spline Curve Line */}
+                          <path d="M 10 110 Q 50 80 90 90 T 170 50 T 250 30 T 290 15" fill="none" stroke="#12C7B5" strokeWidth="3" strokeLinecap="round" />
+                          
+                          {/* Indicator Node Dot */}
+                          <circle cx="290" cy="15" r="4" fill="#12C7B5" stroke="#FFF" strokeWidth="1.5" />
+                        </svg>
+                      </div>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px', fontSize: '11px', color: '#94A3B8', fontWeight: 600 }}>
+                        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                      </div>
                     </div>
+
                   </div>
+
                 </div>
               </div>
             </div>
+
           </div>
         </section>
 
