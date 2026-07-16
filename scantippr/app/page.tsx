@@ -1,360 +1,551 @@
-import { Shield, Fuel, UtensilsCrossed, Car, Hotel, ShoppingCart, Plane, Truck, QrCode, Users, BarChart3, Lock, CheckCircle, Zap, Smartphone, ArrowRight } from 'lucide-react'
-import Image from 'next/image'
+"use client";
+
+import React, { useState } from 'react';
 
 export default function Home() {
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
+  const toggleFaq = (index: number) => {
+    setActiveFaq(activeFaq === index ? null : index);
+  };
+
   return (
     <>
-      <style>{`
-        /* --- Responsive CSS Grid System --- */
-        .hero-grid { 
-          display: grid; 
-          grid-template-columns: 1.1fr 0.9fr; 
-          gap: 4rem; 
-          align-items: center; 
-        }
-        .three-col { 
-          display: grid; 
-          grid-template-columns: repeat(3, 1fr); 
-          gap: 1.75rem; 
-        }
-        .two-col { 
-          display: grid; 
-          grid-template-columns: repeat(2, 1fr); 
-          gap: 1.75rem; 
-        }
-        .four-col { 
-          display: grid; 
-          grid-template-columns: repeat(4, 1fr); 
-          gap: 1.25rem; 
-        }
-        .nav-buttons { 
-          display: flex; 
-          gap: 12px; 
-        }
-        .nav-secondary { 
-          display: inline-flex; 
-        }
-
-        /* --- Mobile Responsiveness Adjustments --- */
-        @media (max-width: 968px) {
-          .hero-grid { 
-            grid-template-columns: 1fr; 
-            gap: 3rem; 
-            text-align: center;
-          }
-          .hero-buttons { 
-            justify-content: center; 
-          }
-          .four-col { 
-            grid-template-columns: repeat(2, 1fr); 
-          }
-        }
-
-        @media (max-width: 768px) {
-          .three-col { grid-template-columns: 1fr; }
-          .two-col { grid-template-columns: 1fr; }
-          .nav-secondary { display: none; }
-          .hero-buttons { flex-direction: column; }
-          .hero-buttons a { text-align: center; }
-          .hero-badge { text-align: center; }
-          
-          /* Adjust "See in Action" flow for mobile */
-          .flow-container {
-            flex-direction: column;
-            gap: 1.5rem;
-          }
-          .flow-arrow {
-            transform: rotate(90deg);
-            margin: 0.5rem 0;
-          }
-        }
-      `}</style>
-
-      <main style={{ fontFamily: 'system-ui, -apple-system, sans-serif', color: '#1a2b3c', background: '#fff' }}>
-
-       {/* Navigation Bar */}
-          <nav style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            padding: '12px 16px', 
-            borderBottom: '1px solid #e2e8f0', /* Light clean border */
-            position: 'sticky', 
-            top: 0, 
-            background: '#ffffff', /* Changed to white so logo blends in seamlessly */
-            zIndex: 50 
+      <main style={{ 
+        fontFamily: "'Inter', 'Manrope', system-ui, sans-serif", 
+        background: '#F8FAFC', 
+        color: '#1E293B',
+        minHeight: '100vh',
+        overflowX: 'hidden'
+      }}>
+        
+        {/* Sticky Header */}
+        <header style={{
+          position: 'sticky',
+          top: 0,
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(8px)',
+          borderBottom: '1px solid #E5E7EB',
+          zIndex: 100,
+          padding: '12px 24px'
+        }}>
+          <div style={{
+            maxWidth: '1200px',
+            margin: '0 auto',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
           }}>
-            <a href="/" style={{ display: 'flex', alignItems: 'center', width: '130px', textDecoration: 'none' }}>
+            <a href="/" style={{ display: 'flex', alignItems: 'center', width: '140px', textDecoration: 'none' }}>
               <img 
-                src="/logo-main" 
+                src="/logo-footer.png" 
                 alt="ScanTippr Logo" 
-                style={{ 
-                  width: '100%', 
-                  height: 'auto', 
-                  objectFit: 'contain' 
-                }} 
+                style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
               />
             </a>
-            
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+
+            <nav style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
+              <a href="#features" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>Features</a>
+              <a href="#how-it-works" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>How It Works</a>
+              <a href="#industries" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>Industries</a>
+              <a href="#branding" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>Branding</a>
+              <a href="#pricing" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>Pricing</a>
+            </nav>
+
+            <div>
               <a 
                 href="mailto:info@scantippr.co.za?subject=Demo Request" 
                 style={{ 
-                  padding: '10px 16px', 
-                  fontSize: '13px', 
-                  borderRadius: '6px', 
-                  background: '#1aa39a', 
+                  padding: '10px 20px', 
+                  fontSize: '14px', 
+                  borderRadius: '8px', 
+                  background: '#12C7B5', 
                   color: '#fff', 
                   textDecoration: 'none', 
                   fontWeight: 600,
-                  whiteSpace: 'nowrap'
+                  transition: 'background 0.2s ease',
+                  boxShadow: '0 4px 12px rgba(18, 199, 181, 0.2)'
                 }}
+                onMouseOver={(e) => e.currentTarget.style.background = '#0fa193'}
+                onMouseOut={(e) => e.currentTarget.style.background = '#12C7B5'}
               >
-                Request a demo
+                Book a Demo
               </a>
             </div>
-          </nav>
+          </div>
+        </header>
 
         {/* Hero Section */}
-        <section style={{ maxWidth: '1150px', margin: '0 auto', padding: '5rem 2rem' }} className="hero-grid">
-          <div>
-            <div className="hero-badge" style={{ marginBottom: '1.5rem' }}>
-              <span style={{ display: 'inline-block', background: '#e6f6f5', color: '#1aa39a', fontSize: '13px', padding: '6px 16px', borderRadius: '20px', fontWeight: 600 }}>Built for South African businesses</span>
-            </div>
-            <h1 style={{ fontSize: '42px', fontWeight: 800, color: '#1a2b3c', margin: '0 0 1.25rem', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
-              Turn everyday appreciation into digital payments
-            </h1>
-            <p style={{ fontSize: '18px', color: '#4a6070', margin: '0 0 1rem', lineHeight: 1.7 }}>
-              ScanTippr helps security companies, fuel stations, and other customer-facing businesses enable secure cashless appreciation for frontline employees using unique QR codes.
-            </p>
-            <p style={{ fontSize: '15px', color: '#708494', margin: '0 0 2.5rem', lineHeight: 1.7, fontStyle: 'italic' }}>
-              Every day, customers want to show appreciation for exceptional service — but many no longer carry cash. ScanTippr bridges that gap.
-            </p>
-            <div className="hero-buttons" style={{ display: 'flex', gap: '14px' }}>
-              <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ padding: '14px 30px', fontSize: '15px', borderRadius: '8px', background: '#1a3a5c', color: '#fff', textDecoration: 'none', fontWeight: 600, boxShadow: '0 4px 12px rgba(26,58,92,0.15)' }}>Request a demo</a>
-              <a href="mailto:info@scantippr.co.za" style={{ padding: '14px 30px', fontSize: '15px', borderRadius: '8px', border: '1px solid #1a3a5c', color: '#1a3a5c', textDecoration: 'none', fontWeight: 600 }}>Contact sales</a>
-            </div>
-          </div>
+        <section style={{ padding: '80px 24px', background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: '48px', alignItems: 'center' }}>
+            <div>
+              <h1 style={{ fontSize: '56px', fontWeight: 800, color: '#0F2942', lineHeight: '1.1', marginBottom: '24px', letterSpacing: '-0.02em' }}>
+                Cashless appreciation <br />
+                <span style={{ color: '#12C7B5' }}>for your employees.</span>
+              </h1>
+              <p style={{ fontSize: '18px', color: '#475569', lineHeight: '1.6', marginBottom: '40px', maxWidth: '540px' }}>
+                Let customers thank your security guards, car guards, fuel attendants and frontline staff with a simple QR scan.
+              </p>
+              
+              <div style={{ display: 'flex', gap: '16px', marginBottom: '48px' }}>
+                <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{
+                  padding: '16px 32px',
+                  background: '#0F2942',
+                  color: '#FFF',
+                  borderRadius: '12px',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  boxShadow: '0 4px 14px rgba(15, 41, 66, 0.2)'
+                }}>
+                  Book a Demo
+                </a>
+                <a href="#how-it-works" style={{
+                  padding: '16px 32px',
+                  background: '#FFF',
+                  color: '#0F2942',
+                  border: '2px solid #E5E7EB',
+                  borderRadius: '12px',
+                  fontWeight: 600,
+                  textDecoration: 'none'
+                }}>
+                  Watch Demo
+                </a>
+              </div>
 
-          {/* Interactive Live-Dashboard Mockup */}
-          <div style={{ background: '#f8fafc', borderRadius: '20px', border: '1px solid #e2e8f0', padding: '1.75rem', boxShadow: '0 12px 40px rgba(26,58,92,0.08)' }}>
-            <div style={{ background: '#1a3a5c', borderRadius: '12px', padding: '1rem 1.25rem', marginBottom: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ color: '#fff', fontWeight: 700, fontSize: '15px', letterSpacing: '0.02em' }}>ScanTippr Dashboard</span>
-              <div style={{ display: 'flex', gap: '6px' }}>
-                <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ff5f57' }}></div>
-                <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#febc2e' }}></div>
-                <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#28c840' }}></div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 24px', maxWidth: '450px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontWeight: 500, fontSize: '15px' }}>
+                  <span style={{ color: '#12C7B5', fontSize: '18px' }}>✓</span> Secure Payments
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontWeight: 500, fontSize: '15px' }}>
+                  <span style={{ color: '#12C7B5', fontSize: '18px' }}>✓</span> Instant Appreciation
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontWeight: 500, fontSize: '15px' }}>
+                  <span style={{ color: '#12C7B5', fontSize: '18px' }}>✓</span> Real-time Reporting
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontWeight: 500, fontSize: '15px' }}>
+                  <span style={{ color: '#12C7B5', fontSize: '18px' }}>✓</span> QR Management
+                </div>
               </div>
             </div>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '1.25rem' }}>
-              {[
-                { label: 'Total employees', value: '24' }, 
-                { label: 'This month', value: 'R4,820' }, 
-                { label: 'Active Companies', value: '3' }, 
-                { label: 'Transactions', value: '142' }
-              ].map((stat) => (
-                <div key={stat.label} style={{ background: '#fff', borderRadius: '10px', padding: '1rem', border: '1px solid #edf2f7' }}>
-                  <p style={{ fontSize: '11px', color: '#718096', margin: '0 0 4px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.03em' }}>{stat.label}</p>
-                  <p style={{ fontSize: '20px', fontWeight: 800, color: '#1a3a5c', margin: 0 }}>{stat.value}</p>
+
+            {/* Interactive Phone Mockup */}
+            <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
+              <div style={{
+                width: '320px',
+                background: '#FFF',
+                borderRadius: '40px',
+                border: '12px solid #0F2942',
+                boxShadow: '0 25px 50px -12px rgba(15, 41, 66, 0.25)',
+                padding: '24px',
+                fontFamily: "system-ui, sans-serif"
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#94A3B8', marginBottom: '24px', fontWeight: 600 }}>
+                  <span>9:41</span>
+                  <span>📶 🔋</span>
                 </div>
-              ))}
-            </div>
-            
-            <div style={{ background: '#fff', borderRadius: '10px', border: '1px solid #edf2f7', overflow: 'hidden' }}>
-              <div style={{ padding: '0.85rem 1.25rem', borderBottom: '1px solid #edf2f7', fontSize: '13px', fontWeight: 700, color: '#1a2b3c', background: '#fcfdfe' }}>Recent transactions</div>
-              {[
-                { name: 'John Smith', company: 'ABC Security', amount: 'R20' }, 
-                { name: 'Sipho Ndlovu', company: 'Engen Bryanston', amount: 'R10' }, 
-                { name: 'Amanda Mokoena', company: 'Spur Sandton', amount: 'R50' }
-              ].map((tx) => (
-                <div key={tx.name} style={{ padding: '0.75rem 1.25rem', borderBottom: '1px solid #f7fafc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <p style={{ fontSize: '12.5px', fontWeight: 700, color: '#2d3748', margin: 0 }}>{tx.name}</p>
-                    <p style={{ fontSize: '11px', color: '#718096', margin: 0 }}>{tx.company}</p>
+
+                <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                  <img 
+                    src="/ChatGPT Image Jul 12, 2026, 07_47_07 PM" 
+                    alt="Mike Johnson" 
+                    style={{ width: '88px', height: '88px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #12C7B5', marginBottom: '12px' }} 
+                  />
+                  <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', margin: '0 0 4px 0' }}>Mike Johnson</h3>
+                  <p style={{ fontSize: '13px', color: '#64748B', margin: 0, fontWeight: 500 }}>Sentry Security Guard</p>
+                </div>
+
+                <div style={{ background: '#F8FAFC', borderRadius: '16px', padding: '16px', textAlign: 'center', marginBottom: '24px' }}>
+                  <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Choose Amount</span>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginTop: '12px' }}>
+                    {['R20', 'R50', 'R100'].map((amt) => (
+                      <button key={amt} style={{ background: '#FFF', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '10px 0', fontWeight: 600, color: '#0F2942', fontSize: '14px', cursor: 'pointer' }}>
+                        {amt}
+                      </button>
+                    ))}
                   </div>
-                  {/* Brand Teal applied to monetary success indicators */}
-                  <span style={{ fontSize: '14px', fontWeight: 800, color: '#1aa39a' }}>{tx.amount}</span>
+                  <input type="text" placeholder="Custom Amount (R)" style={{ width: '100%', marginTop: '12px', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '10px', fontSize: '13px', textAlign: 'center' }} />
                 </div>
-              ))}
+
+                <button style={{ width: '100%', background: '#12C7B5', color: '#FFF', border: 'none', borderRadius: '12px', padding: '14px', fontWeight: 600, fontSize: '15px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(18, 199, 181, 0.2)' }}>
+                  Continue to Pay
+                </button>
+
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '20px' }}>
+                  <span style={{ fontSize: '10px', color: '#94A3B8', fontWeight: 500 }}>Secured by</span>
+                  <img src="/logo-footer.png" alt="ScanTippr" style={{ height: '14px', width: 'auto' }} />
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Feature/Trust Strip */}
-        <section style={{ background: '#f8fafc', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0', padding: '1.75rem 2rem' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', justifyContent: 'center', gap: '3rem', flexWrap: 'wrap' }}>
-            {['QR code technology', 'Secure online payments', 'Mobile friendly', 'Cloud based', 'Instant reporting'].map((item) => (
-              <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: '#1a3a5c', fontWeight: 600 }}>
-                {/* Brand teal checkmarks */}
-                <CheckCircle size={18} color="#1aa39a" style={{ flexShrink: 0 }} /> {item}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* How it Works Section */}
-        <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '6rem 2rem' }}>
-          <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#1a2b3c', textAlign: 'center', marginBottom: '0.75rem', letterSpacing: '-0.01em' }}>How it works</h2>
-          <p style={{ textAlign: 'center', color: '#6b7f90', fontSize: '17px', marginBottom: '3.5rem' }}>Three simple steps to get your team set up.</p>
-          <div className="three-col">
-            {[
-              { num: '1', icon: <Users size={22} color="#fff" />, title: 'Create your team', body: 'Add your employees and generate a unique QR code for each one in minutes.' },
-              { num: '2', icon: <QrCode size={22} color="#fff" />, title: 'Print the QR cards', body: 'Attach cards to uniforms or lanyards. Customers simply scan to pay.' },
-              { num: '3', icon: <BarChart3 size={22} color="#fff" />, title: 'Receive payments', body: 'Customers choose an amount and pay securely. Every transaction is tracked automatically.' },
-            ].map((step) => (
-              <div key={step.num} style={{ background: '#f8fafc', borderRadius: '16px', padding: '2rem', border: '1px solid #e2e8f0', transition: 'transform 0.2s' }}>
-                <div style={{ width: '46px', height: '46px', background: '#1a3a5c', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem' }}>{step.icon}</div>
-                <p style={{ fontWeight: 700, fontSize: '17px', color: '#1a2b3c', margin: '0 0 10px' }}>{step.title}</p>
-                <p style={{ fontSize: '14.5px', color: '#5a6e7f', margin: 0, lineHeight: 1.65 }}>{step.body}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Targeted Industries Grid */}
-        <section style={{ background: '#f8fafc', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0', padding: '6rem 2rem' }}>
-          <div style={{ maxWidth: '1150px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#1a2b3c', textAlign: 'center', marginBottom: '0.75rem', letterSpacing: '-0.01em' }}>Built for every customer-facing business</h2>
-            <p style={{ textAlign: 'center', color: '#6b7f90', fontSize: '17px', marginBottom: '3.5rem' }}>ScanTippr works for any business with frontline employees.</p>
-            <div className="four-col">
-              {[
-                { icon: <Shield size={30} color="#fff" />, label: 'Security companies', featured: true },
-                { icon: <Fuel size={30} color="#fff" />, label: 'Fuel stations', featured: true },
-                { icon: <UtensilsCrossed size={30} color="#1a3a5c" />, label: 'Restaurants' },
-                { icon: <Car size={30} color="#1a3a5c" />, label: 'Car washes' },
-                { icon: <Hotel size={30} color="#1a3a5c" />, label: 'Hospitality' },
-                { icon: <ShoppingCart size={30} color="#1a3a5c" />, label: 'Retail' },
-                { icon: <Plane size={30} color="#1a3a5c" />, label: 'Airports' },
-                { icon: <Truck size={30} color="#1a3a5c" />, label: 'Logistics' },
-              ].map((ind) => (
-                <div key={ind.label} style={{ background: ind.featured ? '#1a3a5c' : '#fff', borderRadius: '16px', padding: '1.75rem 1.5rem', border: ind.featured ? 'none' : '1px solid #e2e8f0', textAlign: 'center', boxShadow: ind.featured ? '0 8px 24px rgba(26,58,92,0.15)' : 'none' }}>
-                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>{ind.icon}</div>
-                  <p style={{ fontSize: '14px', fontWeight: 700, color: ind.featured ? '#fff' : '#1a2b3c', margin: 0 }}>{ind.label}</p>
-                </div>
-              ))}
+        {/* Trusted By Section */}
+        <section style={{ padding: '60px 24px', background: '#FFF', borderTop: '1px solid #E5E7EB', borderBottom: '1px solid #E5E7EB' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
+            <h2 style={{ fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#64748B', fontWeight: 600, marginBottom: '32px' }}>
+              Trusted by leading security and hospitality groups
+            </h2>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '64px', flexWrap: 'wrap', opacity: 0.6 }}>
+              <span style={{ fontSize: '20px', fontWeight: '800', color: '#475569' }}>SENTRY SECURITY</span>
+              <span style={{ fontSize: '20px', fontWeight: '800', color: '#475569' }}>PROTECT SERVICES</span>
+              <span style={{ fontSize: '20px', fontWeight: '800', color: '#475569' }}>SAFEZONE CO.</span>
+              <span style={{ fontSize: '20px', fontWeight: '800', color: '#475569' }}>URBAN GUARDING</span>
             </div>
           </div>
         </section>
 
-        {/* Why ScanTippr Value Proposition */}
-        <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '6rem 2rem' }}>
-          <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#1a2b3c', textAlign: 'center', marginBottom: '0.75rem', letterSpacing: '-0.01em' }}>Why businesses choose ScanTippr</h2>
-          <p style={{ textAlign: 'center', color: '#6b7f90', fontSize: '17px', marginBottom: '3.5rem' }}>Real benefits for your business and your team.</p>
-          <div className="two-col">
-            {[
-              { icon: <Users size={22} color="#1a3a5c" />, title: 'Increase employee motivation', body: 'Give employees a modern, dignified way to receive cashless appreciation from customers.' },
-              { icon: <Smartphone size={22} color="#1a3a5c" />, title: 'Improve customer experience', body: 'Customers no longer need cash. A quick scan is all it takes to show appreciation.' },
-              { icon: <BarChart3 size={22} color="#1a3a5c" />, title: 'Complete visibility', body: 'Track every appreciation payment in real time. Full reporting per employee and per location.' },
-              { icon: <Zap size={22} color="#1a3a5c" />, title: 'Easy setup', body: 'Generate QR codes in minutes. No hardware required. No technical knowledge needed.' },
-            ].map((item) => (
-              <div key={item.title} style={{ background: '#f8fafc', borderRadius: '16px', padding: '2rem', border: '1px solid #e2e8f0', display: 'flex', gap: '1.25rem' }}>
-                <div style={{ width: '44px', height: '44px', background: '#e6f1fb', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{item.icon}</div>
-                <div>
-                  <p style={{ fontWeight: 700, fontSize: '16px', color: '#1a2b3c', margin: '0 0 8px' }}>{item.title}</p>
-                  <p style={{ fontSize: '14.5px', color: '#5a6e7f', margin: 0, lineHeight: 1.65 }}>{item.body}</p>
+        {/* How It Works */}
+        <section id="how-it-works" style={{ padding: '100px 24px', background: '#F8FAFC' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+              <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#0F2942', marginBottom: '16px' }}>How ScanTippr Works</h2>
+              <p style={{ fontSize: '18px', color: '#64748B', maxWidth: '600px', margin: '0 auto' }}>Three simple steps to modernize appreciation without physical cash.</p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '32px' }}>
+              {/* Step 1 */}
+              <div style={{ background: '#FFF', padding: '40px', borderRadius: '20px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+                <div style={{ width: '56px', height: '56px', background: 'rgba(18, 199, 181, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', color: '#12C7B5', marginBottom: '24px', fontWeight: 'bold' }}>
+                  1
                 </div>
+                <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#0F2942', marginBottom: '12px' }}>Scan</h3>
+                <p style={{ color: '#64748B', lineHeight: '1.6' }}>Customer scans the employee's unique QR code using any native smartphone camera.</p>
               </div>
-            ))}
+
+              {/* Step 2 */}
+              <div style={{ background: '#FFF', padding: '40px', borderRadius: '20px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+                <div style={{ width: '56px', height: '56px', background: 'rgba(18, 199, 181, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', color: '#12C7B5', marginBottom: '24px', fontWeight: 'bold' }}>
+                  2
+                </div>
+                <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#0F2942', marginBottom: '12px' }}>Choose Amount</h3>
+                <p style={{ color: '#64748B', lineHeight: '1.6' }}>Select predefined options like R10, R20, R50, or type in any customized custom amount instantly.</p>
+              </div>
+
+              {/* Step 3 */}
+              <div style={{ background: '#FFF', padding: '40px', borderRadius: '20px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+                <div style={{ width: '56px', height: '56px', background: 'rgba(18, 199, 181, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', color: '#12C7B5', marginBottom: '24px', fontWeight: 'bold' }}>
+                  3
+                </div>
+                <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#0F2942', marginBottom: '12px' }}>Pay Securely</h3>
+                <p style={{ color: '#64748B', lineHeight: '1.6' }}>Complete transaction securely using card gateways, Apple Pay, Google Pay, or secure instant EFT.</p>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Horizontal Experience Flow - Optimized for Mobile wrapping */}
-        <section style={{ background: '#f8fafc', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0', padding: '6rem 2rem' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#1a2b3c', marginBottom: '0.75rem', letterSpacing: '-0.01em' }}>See ScanTippr in action</h2>
-            <p style={{ color: '#6b7f90', fontSize: '17px', marginBottom: '4rem' }}>A seamless experience for customers and businesses alike.</p>
-            <div className="flow-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
-              {[
-                { icon: <Smartphone size={28} color="#1a3a5c" />, label: 'Customer scans QR code' },
-                { icon: <QrCode size={28} color="#1a3a5c" />, label: 'Chooses amount and pays' },
-                { icon: <CheckCircle size={28} color="#1aa39a" />, label: 'Payment confirmed instantly' },
-                { icon: <BarChart3 size={28} color="#1a3a5c" />, label: 'Dashboard updates in real time' },
-              ].map((step, i) => (
-                <div key={step.label} style={{ display: 'flex', alignItems: 'center' }}>
-                  <div style={{ textAlign: 'center', padding: '1rem 1.5rem' }}>
-                    <div style={{ width: '64px', height: '64px', background: '#fff', borderRadius: '18px', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>{step.icon}</div>
-                    <p style={{ fontSize: '13.5px', color: '#1a2b3c', fontWeight: 600, margin: 0, maxWidth: '120px', lineHeight: 1.4 }}>{step.label}</p>
+        {/* Powerful Dashboard Preview */}
+        <section style={{ padding: '100px 24px', background: '#FFFFFF', borderTop: '1px solid #E5E7EB' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+              <span style={{ fontSize: '14px', fontWeight: 700, color: '#12C7B5', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Management Suite</span>
+              <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#0F2942', marginTop: '12px', marginBottom: '16px' }}>Powerful Corporate Dashboard</h2>
+              <p style={{ fontSize: '18px', color: '#64748B', maxWidth: '600px', margin: '0 auto' }}>Complete command over your branch locations, personnel profiles, transaction logs, and performance metrics.</p>
+            </div>
+
+            {/* Simulated Desktop Dashboard Mockup */}
+            <div style={{
+              background: '#0F2942',
+              borderRadius: '24px',
+              padding: '24px',
+              boxShadow: '0 30px 60px -15px rgba(15, 41, 66, 0.3)',
+              color: '#FFF',
+              border: '1px solid rgba(255, 255, 255, 0.1)'
+            }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: '24px', minHeight: '450px' }}>
+                {/* Sidebar */}
+                <div style={{ background: 'rgba(255, 255, 255, 0.05)', borderRadius: '16px', padding: '20px' }}>
+                  <img src="/logo-footer.png" alt="ScanTippr" style={{ width: '110px', marginBottom: '40px' }} />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ background: 'rgba(18, 199, 181, 0.15)', color: '#12C7B5', padding: '10px 16px', borderRadius: '8px', fontWeight: 600, fontSize: '14px' }}>📊 Dashboard</div>
+                    <div style={{ color: '#94A3B8', padding: '10px 16px', fontSize: '14px' }}>🏢 Companies</div>
+                    <div style={{ color: '#94A3B8', padding: '10px 16px', fontSize: '14px' }}>👥 Employees</div>
+                    <div style={{ color: '#94A3B8', padding: '10px 16px', fontSize: '14px' }}>💳 Transactions</div>
+                    <div style={{ color: '#94A3B8', padding: '10px 16px', fontSize: '14px' }}>📈 Analytics</div>
+                    <div style={{ color: '#94A3B8', padding: '10px 16px', fontSize: '14px' }}>⚙️ Settings</div>
                   </div>
-                  {i < 3 && <div className="flow-arrow"><ArrowRight size={22} color="#b0bec5" /></div>}
+                </div>
+
+                {/* Main Panel */}
+                <div style={{ background: '#F8FAFC', borderRadius: '16px', padding: '24px', color: '#0F2942' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                    <h3 style={{ fontSize: '18px', fontWeight: 700 }}>Performance Metrics</h3>
+                    <span style={{ fontSize: '13px', color: '#64748B', fontWeight: 500 }}>System Live • Bloemfontein HQ</span>
+                  </div>
+
+                  {/* Summary Cards */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '24px' }}>
+                    <div style={{ background: '#FFF', padding: '20px', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+                      <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 600 }}>TOTAL APPRECIATION</span>
+                      <div style={{ fontSize: '24px', fontWeight: 800, color: '#0F2942', marginTop: '8px' }}>R25,430.00</div>
+                    </div>
+                    <div style={{ background: '#FFF', padding: '20px', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+                      <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 600 }}>ACTIVE PERSONNEL</span>
+                      <div style={{ fontSize: '24px', fontWeight: 800, color: '#0F2942', marginTop: '8px' }}>532</div>
+                    </div>
+                    <div style={{ background: '#FFF', padding: '20px', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+                      <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 600 }}>CUSTOMER SCANS</span>
+                      <div style={{ fontSize: '24px', fontWeight: 800, color: '#0F2942', marginTop: '8px' }}>1,248</div>
+                    </div>
+                  </div>
+
+                  {/* Dynamic Table Preview */}
+                  <div style={{ background: '#FFF', borderRadius: '12px', padding: '16px', border: '1px solid #E5E7EB' }}>
+                    <h4 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '16px' }}>Recent Appreciations</h4>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #F1F5F9', fontSize: '13px' }}>
+                      <span style={{ fontWeight: 600 }}>Mike Johnson (Sentry Sec)</span>
+                      <span style={{ color: '#12C7B5', fontWeight: 700 }}>+R50.00</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #F1F5F9', fontSize: '13px' }}>
+                      <span style={{ fontWeight: 600 }}>Sarah Williams (SafeZone)</span>
+                      <span style={{ color: '#12C7B5', fontWeight: 700 }}>+R100.00</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Perfect For Every Industry */}
+        <section id="industries" style={{ padding: '100px 24px', background: '#F8FAFC' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+              <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#0F2942', marginBottom: '16px' }}>Perfect for Every Frontline Team</h2>
+              <p style={{ fontSize: '18px', color: '#64748B' }}>Providing cashless convenience across different corporate sectors.</p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+              {['Security Companies', 'Car Guards', 'Fuel Stations', 'Restaurants', 'Hotels', 'Cleaning Services', 'Retail Stores', 'Corporate Offices'].map((industry) => (
+                <div key={industry} style={{ background: '#FFF', padding: '24px', borderRadius: '16px', border: '1px solid #E5E7EB', textAlign: 'center', transition: 'all 0.2s', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)' }}>
+                  <div style={{ fontSize: '28px', marginBottom: '12px' }}>🔒</div>
+                  <span style={{ fontSize: '16px', fontWeight: 700, color: '#0F2942' }}>{industry}</span>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Trust Factors */}
-        <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '6rem 2rem' }}>
-          <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#1a2b3c', textAlign: 'center', marginBottom: '0.75rem', letterSpacing: '-0.01em' }}>Secure and trusted</h2>
-          <p style={{ textAlign: 'center', color: '#6b7f90', fontSize: '17px', marginBottom: '3.5rem' }}>Payments processed through trusted South African payment providers.</p>
-          <div className="four-col">
-            {[
-              { icon: <Lock size={26} color="#1a3a5c" />, label: 'Secure checkout' },
-              { icon: <Zap size={26} color="#1a3a5c" />, label: 'Instant confirmation' },
-              { icon: <QrCode size={26} color="#1a3a5c" />, label: 'No cash required' },
-              { icon: <Smartphone size={26} color="#1a3a5c" />, label: 'Mobile friendly' },
-            ].map((item) => (
-              <div key={item.label} style={{ background: '#f8fafc', borderRadius: '16px', padding: '1.75rem', border: '1px solid #e2e8f0', textAlign: 'center' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>{item.icon}</div>
-                <p style={{ fontSize: '14px', fontWeight: 700, color: '#1a2b3c', margin: 0 }}>{item.label}</p>
+        {/* Company Branding & Customizable Cards */}
+        <section id="branding" style={{ padding: '100px 24px', background: '#FFFFFF' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+              <span style={{ fontSize: '14px', fontWeight: 700, color: '#12C7B5', textTransform: 'uppercase', letterSpacing: '0.1em' }}>White-Label Capabilities</span>
+              <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#0F2942', marginTop: '12px', marginBottom: '16px' }}>Your Brand. Your Identity.</h2>
+              <p style={{ fontSize: '18px', color: '#64748B' }}>Every enterprise can design high-end branded physical cards to match corporate design systems.</p>
+            </div>
+
+            {/* Custom Cards Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+              {/* Blue Card */}
+              <div style={{ background: '#0F2942', color: '#FFF', padding: '32px 24px', borderRadius: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <span style={{ fontSize: '12px', fontWeight: 700, color: '#12C7B5', marginBottom: '16px' }}>SENTRY SECURITY</span>
+                <img src="/ChatGPT Image Jul 12, 2026, 07_42_57 PM" alt="QR" style={{ width: '120px', height: '120px', background: '#FFF', padding: '10px', borderRadius: '12px', marginBottom: '16px' }} />
+                <span style={{ fontWeight: 600 }}>Thank you!</span>
               </div>
-            ))}
+
+              {/* Green Card */}
+              <div style={{ background: '#0F5B46', color: '#FFF', padding: '32px 24px', borderRadius: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <span style={{ fontSize: '12px', fontWeight: 700, color: '#4ADE80', marginBottom: '16px' }}>GREEN FIELD STATIONS</span>
+                <img src="/ChatGPT Image Jul 12, 2026, 07_42_57 PM" alt="QR" style={{ width: '120px', height: '120px', background: '#FFF', padding: '10px', borderRadius: '12px', marginBottom: '16px' }} />
+                <span style={{ fontWeight: 600 }}>Appreciation Portal</span>
+              </div>
+
+              {/* Orange Card */}
+              <div style={{ background: '#C2410C', color: '#FFF', padding: '32px 24px', borderRadius: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <span style={{ fontSize: '12px', fontWeight: 700, color: '#FB923C', marginBottom: '16px' }}>CITY GUARD TEAM</span>
+                <img src="/ChatGPT Image Jul 12, 2026, 07_42_57 PM" alt="QR" style={{ width: '120px', height: '120px', background: '#FFF', padding: '10px', borderRadius: '12px', marginBottom: '16px' }} />
+                <span style={{ fontWeight: 600 }}>Scan to Support</span>
+              </div>
+
+              {/* Red Card */}
+              <div style={{ background: '#991B1B', color: '#FFF', padding: '32px 24px', borderRadius: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <span style={{ fontSize: '12px', fontWeight: 700, color: '#F87171', marginBottom: '16px' }}>PREMIER HOTELS</span>
+                <img src="/ChatGPT Image Jul 12, 2026, 07_42_57 PM" alt="QR" style={{ width: '120px', height: '120px', background: '#FFF', padding: '10px', borderRadius: '12px', marginBottom: '16px' }} />
+                <span style={{ fontWeight: 600 }}>Thank Our Team</span>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* FAQs */}
-        <section style={{ background: '#f8fafc', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0', padding: '6rem 2rem' }}>
+        {/* Pricing */}
+        <section id="pricing" style={{ padding: '100px 24px', background: '#F8FAFC', borderTop: '1px solid #E5E7EB' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+              <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#0F2942', marginBottom: '16px' }}>Flexible Plans For Every Team Size</h2>
+              <p style={{ fontSize: '18px', color: '#64748B' }}>Scaling seamlessly from local operations to multinational enterprises.</p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.1fr 1fr', gap: '32px', alignItems: 'center' }}>
+              {/* Starter */}
+              <div style={{ background: '#FFF', padding: '40px', borderRadius: '20px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+                <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>Starter</h3>
+                <div style={{ fontSize: '32px', fontWeight: 800, color: '#0F2942', marginBottom: '24px' }}>Free <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 500 }}>/ month</span></div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px 0', display: 'flex', flexDirection: 'column', gap: '12px', color: '#475569' }}>
+                  <li>✓ Up to 10 Employees</li>
+                  <li>✓ Standard QR Card Designs</li>
+                  <li>✓ Weekly Transaction Reports</li>
+                  <li>✓ Next-Day Payout Settlement</li>
+                </ul>
+                <a href="mailto:info@scantippr.co.za" style={{ display: 'block', textTransform: 'none', textDecoration: 'none', textAlign: 'center', padding: '12px 0', border: '2px solid #0F2942', color: '#0F2942', borderRadius: '10px', fontWeight: 600 }}>Get Started</a>
+              </div>
+
+              {/* Professional (Highlighted) */}
+              <div style={{ background: '#0F2942', color: '#FFF', padding: '48px', borderRadius: '24px', boxShadow: '0 20px 40px -10px rgba(15, 41, 66, 0.3)', border: '2px solid #12C7B5', transform: 'scale(1.05)' }}>
+                <div style={{ display: 'inline-block', background: '#12C7B5', color: '#0F2942', padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 700, marginBottom: '16px' }}>MOST POPULAR</div>
+                <h3 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '8px' }}>Professional</h3>
+                <div style={{ fontSize: '36px', fontWeight: 800, marginBottom: '24px' }}>Custom pricing <span style={{ fontSize: '14px', color: '#94A3B8', fontWeight: 500 }}>/ branch</span></div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px 0', display: 'flex', flexDirection: 'column', gap: '12px', color: '#94A3B8' }}>
+                  <li style={{ color: '#FFF' }}>✓ Unlimited Employees</li>
+                  <li style={{ color: '#FFF' }}>✓ Custom Branding & White-Labeling</li>
+                  <li style={{ color: '#FFF' }}>✓ Advanced Live Analytics & Dashboards</li>
+                  <li style={{ color: '#FFF' }}>✓ Priority Instant Support SLA</li>
+                </ul>
+                <a href="mailto:info@scantippr.co.za?subject=Professional Plan Request" style={{ display: 'block', textDecoration: 'none', textAlign: 'center', padding: '14px 0', background: '#12C7B5', color: '#0F2942', borderRadius: '10px', fontWeight: 700, boxShadow: '0 4px 12px rgba(18, 199, 181, 0.3)' }}>Contact Sales</a>
+              </div>
+
+              {/* Enterprise */}
+              <div style={{ background: '#FFF', padding: '40px', borderRadius: '20px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+                <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>Enterprise</h3>
+                <div style={{ fontSize: '32px', fontWeight: 800, color: '#0F2942', marginBottom: '24px' }}>Tailored <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 500 }}>/ volume</span></div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px 0', display: 'flex', flexDirection: 'column', gap: '12px', color: '#475569' }}>
+                  <li>✓ Multi-Branch Infrastructure</li>
+                  <li>✓ Dedicated System Account Manager</li>
+                  <li>✓ Integrated Custom Payroll Syncing API</li>
+                  <li>✓ Strict Custom Security Integrations</li>
+                </ul>
+                <a href="mailto:info@scantippr.co.za" style={{ display: 'block', textDecoration: 'none', textAlign: 'center', padding: '12px 0', border: '2px solid #0F2942', color: '#0F2942', borderRadius: '10px', fontWeight: 600 }}>Contact Enterprise</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQs Accordion */}
+        <section style={{ padding: '100px 24px', background: '#FFFFFF' }}>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#1a2b3c', textAlign: 'center', marginBottom: '3.5rem', letterSpacing: '-0.01em' }}>Frequently asked questions</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+              <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#0F2942', marginBottom: '16px' }}>Frequently Asked Questions</h2>
+              <p style={{ fontSize: '18px', color: '#64748B' }}>Everything you need to know about setting up and running ScanTippr.</p>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {[
-                { q: 'Do customers need an app?', a: 'No. Customers simply scan the QR code with their phone camera. No app download required.' },
-                { q: 'Who receives the money?', a: "Payments are made directly to your business's registered merchant account. ScanTippr does not hold customer funds." },
-                { q: 'Does ScanTippr hold any funds?', a: 'No. ScanTippr is a software platform. All payments go directly to the registered business bank account.' },
-                { q: 'How long does setup take?', a: 'Most businesses are set up and ready within a day. Our team will guide you through the process.' },
-                { q: 'Can we add unlimited employees?', a: 'Yes. You can add as many employees as your business requires.' },
-                { q: 'Which industries does ScanTippr support?', a: 'ScanTippr works for any customer-facing business — security companies, fuel stations, restaurants, car washes, hospitality, retail, and more.' },
-              ].map((faq) => (
-                <div key={faq.q} style={{ background: '#fff', borderRadius: '14px', padding: '1.75rem', border: '1px solid #e2e8f0', boxShadow: '0 2px 8px rgba(0,0,0,0.01)' }}>
-                  <p style={{ fontWeight: 700, fontSize: '16px', color: '#1a2b3c', margin: '0 0 10px' }}>{faq.q}</p>
-                  <p style={{ fontSize: '14.5px', color: '#5a6e7f', margin: 0, lineHeight: 1.65 }}>{faq.a}</p>
+                { q: "How does ScanTippr work?", a: "Every employee is assigned a unique, high-quality branded QR card. When a customer scans it with their phone camera, it launches a secure tipping page instantly, allowing the customer to select an appreciation amount and complete payment seamlessly without registering an account." },
+                { q: "How are payments securely processed?", a: "Payments are safely processed using modern secure gateways. We natively integrate with reliable providers supporting leading debit/credit networks, Apple Pay, Google Pay, and secure instant EFT options to maintain top-tier transaction compliance." },
+                { q: "Can we completely customize our QR cards?", a: "Yes, fully! Your company dashboard enables complete control over card branding, logos, accent colors, corporate metadata, and layout presets to ensure every card reflects your brand identity." },
+                { q: "How quickly do our employees receive payouts?", a: "Payout cycles are highly flexible. System administrators can configure automated direct settlement cycles (daily, weekly, or monthly) matching existing enterprise payroll requirements perfectly." },
+                { q: "Can we configure and manage multiple branches?", a: "Yes, ScanTippr supports robust multi-tenant organization models. You can easily partition departments, branches, locations, and direct supervisors while retaining top-level centralized reporting across the company." }
+              ].map((faq, idx) => (
+                <div key={idx} style={{ border: '1px solid #E5E7EB', borderRadius: '12px', padding: '20px', cursor: 'pointer' }} onClick={() => toggleFaq(idx)}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h4 style={{ fontSize: '16px', fontWeight: 700, color: '#0F2942', margin: 0 }}>{faq.q}</h4>
+                    <span style={{ fontSize: '18px', color: '#12C7B5', fontWeight: 'bold' }}>{activeFaq === idx ? '−' : '+'}</span>
+                  </div>
+                  {activeFaq === idx && (
+                    <p style={{ marginTop: '12px', fontSize: '15px', color: '#475569', lineHeight: '1.6', margin: '12px 0 0 0' }}>{faq.a}</p>
+                  )}
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Conversion CTA (Vibrant Teal Highlighted Action) */}
-        <section style={{ background: '#1a3a5c', padding: '6rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-          <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#fff', margin: '0 0 1rem', letterSpacing: '-0.01em' }}>Ready to modernise employee appreciation?</h2>
-          <p style={{ fontSize: '17px', color: '#a3d1f0', margin: '0 0 2.5rem', maxWidth: '600px', marginInline: 'auto' }}>See how ScanTippr can work for your business.</p>
-          <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ display: 'inline-block', padding: '15px 36px', fontSize: '16px', borderRadius: '8px', background: '#1aa39a', color: '#fff', textDecoration: 'none', fontWeight: 700, boxShadow: '0 4px 14px rgba(26,163,154,0.3)', transition: 'transform 0.2s' }}>Request a demo</a>
+        {/* Final CTA Section */}
+        <section style={{ padding: '100px 24px', background: '#0F2942', color: '#FFF', textAlign: 'center' }}>
+          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <h2 style={{ fontSize: '42px', fontWeight: 800, marginBottom: '24px' }}>Ready to modernize employee appreciation?</h2>
+            <p style={{ fontSize: '18px', color: '#94A3B8', marginBottom: '40px' }}>Join leading enterprises making employee feedback secure, structured, and modern.</p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
+              <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{
+                padding: '16px 32px',
+                background: '#12C7B5',
+                color: '#0F2942',
+                borderRadius: '12px',
+                fontWeight: 700,
+                textDecoration: 'none',
+                boxShadow: '0 4px 14px rgba(18, 199, 181, 0.4)'
+              }}>
+                Book a Demo
+              </a>
+              <a href="mailto:info@scantippr.co.za" style={{
+                padding: '16px 32px',
+                border: '2px solid rgba(255, 255, 255, 0.2)',
+                color: '#FFF',
+                borderRadius: '12px',
+                fontWeight: 600,
+                textDecoration: 'none'
+              }}>
+                Contact Sales
+              </a>
+            </div>
+          </div>
         </section>
 
-        <footer style={{ background: '#111e29', padding: '2rem' }}>
-  <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-      <div style={{ 
-        background: '#ffffff', 
-        padding: '6px 14px', 
-        borderRadius: '8px', 
-        display: 'inline-flex', 
-        alignItems: 'center',
-        width: '120px'
-      }}>
-        <img 
-          src="/logo-footer" 
-          alt="ScanTippr Logo" 
-          style={{ 
-            width: '100%', 
-            height: 'auto', 
-            objectFit: 'contain' 
-          }} 
-        />
-      </div>
-    </div>
-  </div> {/* This closes the maxWidth div that was missing! */}
-</footer>
+        {/* Global Footer */}
+        <footer style={{ background: '#111e29', padding: '4rem 2rem 2rem 2rem' }}>
+          <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '48px', marginBottom: '48px' }}>
+              <div>
+                {/* Footer Logo Pill */}
+                <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '1.5rem' }}>
+                  <div style={{ 
+                    background: '#ffffff', 
+                    padding: '8px 18px', 
+                    borderRadius: '8px', 
+                    display: 'inline-flex', 
+                    alignItems: 'center',
+                    width: '140px',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                  }}>
+                    <img 
+                      src="/logo-main" 
+                      alt="ScanTippr Logo" 
+                      style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
+                    />
+                  </div>
+                </div>
+                <p style={{ color: '#94A3B8', fontSize: '14px', lineHeight: '1.6', maxWidth: '240px' }}>
+                  Secure, corporate cashless systems empowering enterprise employee appreciation.
+                </p>
+              </div>
+
+              <div>
+                <h4 style={{ color: '#FFF', fontSize: '15px', fontWeight: 700, marginBottom: '20px' }}>Platform</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '14px' }}>
+                  <a href="#features" style={{ color: '#94A3B8', textDecoration: 'none' }}>Features</a>
+                  <a href="#how-it-works" style={{ color: '#94A3B8', textDecoration: 'none' }}>How It Works</a>
+                  <a href="#pricing" style={{ color: '#94A3B8', textDecoration: 'none' }}>Pricing</a>
+                </div>
+              </div>
+
+              <div>
+                <h4 style={{ color: '#FFF', fontSize: '15px', fontWeight: 700, marginBottom: '20px' }}>Resources</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '14px' }}>
+                  <span style={{ color: '#94A3B8' }}>Help Docs</span>
+                  <span style={{ color: '#94A3B8' }}>Compliance</span>
+                  <span style={{ color: '#94A3B8' }}>Integrations</span>
+                </div>
+              </div>
+
+              <div>
+                <h4 style={{ color: '#FFF', fontSize: '15px', fontWeight: 700, marginBottom: '20px' }}>Contact</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '14px', color: '#94A3B8' }}>
+                  <span>✉️ info@scantippr.co.za</span>
+                  <span>📞 +27 12 345 6789</span>
+                  <span>📍 South Africa</span>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', color: '#64748B' }}>
+              <span>© 2026 ScanTippr. All rights reserved.</span>
+              <div style={{ display: 'flex', gap: '24px' }}>
+                <span style={{ cursor: 'pointer' }}>Privacy Policy</span>
+                <span style={{ cursor: 'pointer' }}>Terms of Service</span>
+              </div>
+            </div>
+          </div>
+        </footer>
+
       </main>
     </>
   );
