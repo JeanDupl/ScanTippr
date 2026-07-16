@@ -123,11 +123,20 @@ export default function Home() {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            <a href="/" style={{ display: 'flex', alignItems: 'center', width: '220px', textDecoration: 'none' }}>
+            {/* Header Logo Wrapper using ScanTippr_header */}
+            <a href="/" style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              textDecoration: 'none',
+              background: '#FFFFFF', 
+              padding: '6px 12px',
+              borderRadius: '6px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+            }}>
               <img 
-                src="/Midel-logo.png" 
+                src="/ScanTippr_header.png"  {/* Updated to use the correct header asset */}
                 alt="ScanTippr Logo" 
-                style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
+                style={{ width: '140px', height: 'auto', objectFit: 'contain' }} 
               />
             </a>
 
