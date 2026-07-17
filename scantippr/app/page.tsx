@@ -423,67 +423,101 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Company Branding & Customizable Cards */}
-        <section id="branding" style={{ padding: '60px 16px', background: '#FFFFFF' }}>
-          <div className="responsive-container">
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#12C7B5', textTransform: 'uppercase', letterSpacing: '0.1em' }}>White-Label Capabilities</span>
-              <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#0F2942', marginTop: '8px', marginBottom: '12px' }}>Your Brand. Your Identity.</h2>
-              <p style={{ fontSize: '16px', color: '#64748B' }}>Every enterprise can design high-end branded physical cards to match corporate design systems.</p>
-            </div>
+        {/* White-Label Capabilities Section */}
+        <section style={{ padding: '80px 0', background: '#FFF' }}>
+          <div className="responsive-container" style={{ textAlign: 'center' }}>
+            <span style={{ fontSize: '12px', fontWeight: 700, uppercase: true, color: '#12C7B5', letterSpacing: '0.05em' }}>
+              WHITE-LABEL CAPABILITIES
+            </span>
+            <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#0F2942', marginTop: '12px', marginBottom: '16px' }}>
+              Your Brand. Your Identity.
+            </h2>
+            <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto 48px auto', lineHeight: 1.6 }}>
+              Every enterprise can design high-end branded physical cards to match corporate design systems.
+            </p>
 
-            <div className="four-col-grid">
-              {/* Blue Card */}
-              {/* FIXED: changed justify_content: 'center' to justifyContent: 'center' */}
-              <div style={{ background: '#0F2942', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span style={{ fontSize: '10px', fontWeight: 700, color: '#12C7B5', marginBottom: '16px', letterSpacing: '0.05em' }}>SENTRY SECURITY</span>
-                <div style={{ background: '#FFF', padding: '12px', borderRadius: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#0F2942" strokeWidth="2">
-                    <rect x="2" y="2" width="6" height="6"/><rect x="16" y="2" width="6" height="6"/><rect x="2" y="16" width="6" height="6"/>
-                    <path d="M10 2h4v4h-4zm0 8h4v4h-4zm6 0h4v4h-4zM2 10h4v4H2zm8 6h4v4h-4zm6 0h4v4h-4z"/>
-                  </svg>
-                </div>
-                <span style={{ fontWeight: 600, fontSize: '13px' }}>Thank you!</span>
+            {/* Branded Cards Grid */}
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', 
+              gap: '24px',
+              maxWidth: '1100px',
+              margin: '0 auto'
+            }}>
+              
+              {/* Card 1: Sentry Security */}
+              <div style={{ background: '#0F2942', padding: '32px 24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '260px', boxShadow: '0 10px 25px rgba(15,41,66,0.1)' }}>
+                <span style={{ color: '#12C7B5', fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em' }}>SENTRY SECURITY</span>
+                
+                {/* Clean, Sharp Vector QR Code */}
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '24px 0' }}>
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                  <rect x="14" y="14" width="3" height="3" />
+                  <rect x="14" y="19" width="3" height="3" />
+                  <rect x="19" y="14" width="3" height="3" />
+                  <rect x="19" y="19" width="3" height="3" />
+                  <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
+                </svg>
+
+                <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 700 }}>Thank you!</span>
               </div>
 
-              {/* Green Card */}
-              {/* FIXED: changed justify_content: 'center' to justifyContent: 'center' */}
-              <div style={{ background: '#0F5B46', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span style={{ fontSize: '10px', fontWeight: 700, color: '#4ADE80', marginBottom: '16px', letterSpacing: '0.05em' }}>GREEN FIELD STATIONS</span>
-                <div style={{ background: '#FFF', padding: '12px', borderRadius: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#0F5B46" strokeWidth="2">
-                    <rect x="2" y="2" width="6" height="6"/><rect x="16" y="2" width="6" height="6"/><rect x="2" y="16" width="6" height="6"/>
-                    <path d="M10 2h4v4h-4zm0 8h4v4h-4zm6 0h4v4h-4zM2 10h4v4H2zm8 6h4v4h-4zm6 0h4v4h-4z"/>
-                  </svg>
-                </div>
-                <span style={{ fontWeight: 600, fontSize: '13px' }}>Appreciation Portal</span>
+              {/* Card 2: Green Field Stations */}
+              <div style={{ background: '#0D5C43', padding: '32px 24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '260px', boxShadow: '0 10px 25px rgba(13,92,67,0.1)' }}>
+                <span style={{ color: '#54D1A3', fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em' }}>GREEN FIELD STATIONS</span>
+                
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '24px 0' }}>
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                  <rect x="14" y="14" width="3" height="3" />
+                  <rect x="14" y="19" width="3" height="3" />
+                  <rect x="19" y="14" width="3" height="3" />
+                  <rect x="19" y="19" width="3" height="3" />
+                  <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
+                </svg>
+
+                <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 700 }}>Appreciation Portal</span>
               </div>
 
-              {/* Orange Card */}
-              {/* FIXED: changed justify_content: 'center' to justifyContent: 'center' */}
-              <div style={{ background: '#C2410C', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span style={{ fontSize: '10px', fontWeight: 700, color: '#FB923C', marginBottom: '16px', letterSpacing: '0.05em' }}>CITY GUARD TEAM</span>
-                <div style={{ background: '#FFF', padding: '12px', borderRadius: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#C2410C" strokeWidth="2">
-                    <rect x="2" y="2" width="6" height="6"/><rect x="16" y="2" width="6" height="6"/><rect x="2" y="16" width="6" height="6"/>
-                    <path d="M10 2h4v4h-4zm0 8h4v4h-4zm6 0h4v4h-4zM2 10h4v4H2zm8 6h4v4h-4zm6 0h4v4h-4z"/>
-                  </svg>
-                </div>
-                <span style={{ fontWeight: 600, fontSize: '13px' }}>Scan to Support</span>
+              {/* Card 3: City Guard Team */}
+              <div style={{ background: '#C2410C', padding: '32px 24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '260px', boxShadow: '0 10px 25px rgba(194,65,12,0.1)' }}>
+                <span style={{ color: '#FFedd5', fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em' }}>CITY GUARD TEAM</span>
+                
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '24px 0' }}>
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                  <rect x="14" y="14" width="3" height="3" />
+                  <rect x="14" y="19" width="3" height="3" />
+                  <rect x="19" y="14" width="3" height="3" />
+                  <rect x="19" y="19" width="3" height="3" />
+                  <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
+                </svg>
+
+                <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 700 }}>Scan to Support</span>
               </div>
 
-              {/* Red Card */}
-              {/* FIXED: changed justify_content: 'center' to justifyContent: 'center' */}
-              <div style={{ background: '#991B1B', color: '#FFF', padding: '24px 16px', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span style={{ fontSize: '10px', fontWeight: 700, color: '#F87171', marginBottom: '16px', letterSpacing: '0.05em' }}>PREMIER HOTELS</span>
-                <div style={{ background: '#FFF', padding: '12px', borderRadius: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#991B1B" strokeWidth="2">
-                    <rect x="2" y="2" width="6" height="6"/><rect x="16" y="2" width="6" height="6"/><rect x="2" y="16" width="6" height="6"/>
-                    <path d="M10 2h4v4h-4zm0 8h4v4h-4zm6 0h4v4h-4zM2 10h4v4H2zm8 6h4v4h-4zm6 0h4v4h-4z"/>
-                  </svg>
-                </div>
-                <span style={{ fontWeight: 600, fontSize: '13px' }}>Thank Our Team</span>
+              {/* Card 4: Premier Hotels */}
+              <div style={{ background: '#991B1B', padding: '32px 24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '260px', boxShadow: '0 10px 25px rgba(153,27,27,0.1)' }}>
+                <span style={{ color: '#FEE2E2', fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em' }}>PREMIER HOTELS</span>
+                
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '24px 0' }}>
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                  <rect x="14" y="14" width="3" height="3" />
+                  <rect x="14" y="19" width="3" height="3" />
+                  <rect x="19" y="14" width="3" height="3" />
+                  <rect x="19" y="19" width="3" height="3" />
+                  <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
+                </svg>
+
+                <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 700 }}>Thank Our Team</span>
               </div>
+
             </div>
           </div>
         </section>
