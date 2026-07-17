@@ -164,62 +164,75 @@ export default function Home() {
         </header>
 
         {/* Hero Section */}
-        <section style={{ padding: '40px 0 60px 0', background: '#FFF' }}>
+        <section style={{ padding: '60px 0', background: '#FFF' }}>
           <div className="responsive-container" style={{ 
             display: 'grid', 
             gridTemplateColumns: '1fr', 
             gap: '48px', 
-            // Changed from 'center' to 'start' to pull the left column up,
-            // and added a desktop media query alignment rule or top padding if needed
-            alignItems: 'start' 
+            alignItems: 'center' 
           }}>
-            <div style={{ textAlign: 'left', paddingTop: '40px' }}>
-              <h1 style={{ fontSize: '48px', fontWeight: 800, color: '#0F2942', lineHeight: 1.1, marginBottom: '16px' }}>
-                Cashless appreciation <br />
-                <span style={{ color: '#12C7B5' }}>for your employees.</span>
-              </h1>
-              <p style={{ fontSize: '18px', color: '#64748B', lineHeight: 1.6, marginBottom: '32px', maxWidth: '540px' }}>
-                Let customers thank your security guards, car guards, fuel attendants and frontline staff with a simple QR scan.
-              </p>
-              <div style={{ display: 'flex', gap: '16px', marginBottom: '32px' }}>
-                <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ padding: '14px 28px', background: '#0F2942', color: '#FFF', textDecoration: 'none', borderRadius: '8px', fontWeight: 600 }}>Book a Demo</a>
-                <a href="#how-it-works" style={{ padding: '14px 28px', background: '#FFF', color: '#0F2942', textDecoration: 'none', borderRadius: '8px', fontWeight: 600, border: '1px solid #E2E8F0' }}>Watch Demo</a>
+            {/* Custom Desktop CSS Override injected here to force two columns side-by-side */}
+            <style jsx>{`
+              @media (min-width: 768px) {
+                .hero-grid-split {
+                  grid-template-columns: 1.2fr 0.8fr !important;
+                  align-items: start !important;
+                }
+              }
+            `}</style>
+
+            <div className="hero-grid-split" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '48px', width: '100%' }}>
+              
+              {/* Left Column Content - Pulled up closer to header using a small negative margin */}
+              <div style={{ textAlign: 'left', marginTop: '-20px' }}>
+                <h1 style={{ fontSize: '48px', fontWeight: 800, color: '#0F2942', lineHeight: 1.1, marginBottom: '16px' }}>
+                  Cashless appreciation <br />
+                  <span style={{ color: '#12C7B5' }}>for your employees.</span>
+                </h1>
+                <p style={{ fontSize: '18px', color: '#64748B', lineHeight: 1.6, marginBottom: '32px', maxWidth: '540px' }}>
+                  Let customers thank your security guards, car guards, fuel attendants and frontline staff with a simple QR scan.
+                </p>
+                <div style={{ display: 'flex', gap: '16px', marginBottom: '32px' }}>
+                  <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ padding: '14px 28px', background: '#0F2942', color: '#FFF', textDecoration: 'none', borderRadius: '8px', fontWeight: 600 }}>Book a Demo</a>
+                  <a href="#how-it-works" style={{ padding: '14px 28px', background: '#FFF', color: '#0F2942', textDecoration: 'none', borderRadius: '8px', fontWeight: 600, border: '1px solid #E2E8F0' }}>Watch Demo</a>
+                </div>
+
+                {/* Core Features list under buttons */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 24px', maxWidth: '500px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontSize: '14px', fontWeight: 500 }}>
+                    <span style={{ color: '#12C7B5' }}>✓</span> Secure Payments
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontSize: '14px', fontWeight: 500 }}>
+                    <span style={{ color: '#12C7B5' }}>✓</span> Instant Appreciation
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontSize: '14px', fontWeight: 500 }}>
+                    <span style={{ color: '#12C7B5' }}>✓</span> Real-time Reporting
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontSize: '14px', fontWeight: 500 }}>
+                    <span style={{ color: '#12C7B5' }}>✓</span> QR Management
+                  </div>
+                </div>
               </div>
 
-              {/* Core Features list under buttons */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 24px', maxWidth: '500px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontSize: '14px', fontWeight: 500 }}>
-                  <span style={{ color: '#12C7B5' }}>✓</span> Secure Payments
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontSize: '14px', fontWeight: 500 }}>
-                  <span style={{ color: '#12C7B5' }}>✓</span> Instant Appreciation
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontSize: '14px', fontWeight: 500 }}>
-                  <span style={{ color: '#12C7B5' }}>✓</span> Real-time Reporting
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontSize: '14px', fontWeight: 500 }}>
-                  <span style={{ color: '#12C7B5' }}>✓</span> QR Management
+              {/* Right Column Content - Phone Image */}
+              <div className="floating-mockup" style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
+                <div style={{
+                  width: '100%',
+                  maxWidth: '350px',
+                  filter: 'drop-shadow(0 20px 35px rgba(15, 41, 66, 0.15))'
+                }}>
+                  <img 
+                    src="/Cell-Phone.png" 
+                    alt="ScanTippr Mobile Payment Screen" 
+                    style={{ 
+                      width: '100%', 
+                      height: 'auto', 
+                      display: 'block' 
+                    }} 
+                  />
                 </div>
               </div>
-            </div>
 
-            {/* Phone Mockup Image */}
-            <div className="floating-mockup" style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
-              <div style={{
-                width: '100%',
-                maxWidth: '350px',
-                filter: 'drop-shadow(0 20px 35px rgba(15, 41, 66, 0.15))'
-              }}>
-                <img 
-                  src="/Cell-Phone.png" 
-                  alt="ScanTippr Mobile Payment Screen" 
-                  style={{ 
-                    width: '100%', 
-                    height: 'auto', 
-                    display: 'block' 
-                  }} 
-                />
-              </div>
             </div>
           </div>
         </section>
