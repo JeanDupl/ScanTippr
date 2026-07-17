@@ -227,37 +227,33 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* NEW QR Card Section (added here) */}
+              {/* NEW QR Card Section (Frameless & Larger) */}
               <div style={{ 
                 marginTop: '40px', 
-                padding: '24px', 
-                background: '#F8FAFC', 
-                borderRadius: '16px', 
-                border: '1px solid #E2E8F0',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '24px',
+                gap: '32px',
                 maxWidth: '540px'
               }}>
                 <img 
                   src="/QR_Card.png" 
                   alt="ScanTippr Employee QR Card" 
                   style={{ 
-                    width: '100px', 
+                    width: '160px', 
                     height: 'auto', 
-                    borderRadius: '8px',
-                    filter: 'drop-shadow(0 4px 10px rgba(15, 41, 66, 0.08))'
+                    borderRadius: '12px',
+                    filter: 'drop-shadow(0 15px 30px rgba(15, 41, 66, 0.08))'
                   }} 
                 />
                 <div>
-                  <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', margin: '0 0 8px 0' }}>Employee QR Card</h3>
-                  <p style={{ fontSize: '14px', color: '#64748B', lineHeight: 1.6, margin: 0 }}>
+                  <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#0F2942', margin: '0 0 8px 0' }}>
+                    Employee QR Card
+                  </h3>
+                  <p style={{ fontSize: '15px', color: '#64748B', lineHeight: 1.6, margin: 0 }}>
                     Every employee receives a unique branded QR code.
                   </p>
                 </div>
               </div>
-
-            </div>
 
             {/* Right Column Content - Phone Image */}
             <div className="floating-mockup" style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
