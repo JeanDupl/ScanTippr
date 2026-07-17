@@ -192,7 +192,7 @@ export default function Home() {
                 </a>
               </div>
 
-              {/* Four Horizontal Features with Icons (unchanged) */}
+              {/* Four Horizontal Features */}
               <div style={{ 
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
@@ -227,7 +227,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* NEW QR Card Section (Frameless & Larger) */}
+              {/* NEW QR Card Section */}
               <div style={{ 
                 marginTop: '40px', 
                 display: 'flex',
@@ -254,6 +254,8 @@ export default function Home() {
                   </p>
                 </div>
               </div>
+
+            </div>
 
             {/* Right Column Content - Phone Image */}
             <div className="floating-mockup" style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
