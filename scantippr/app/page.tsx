@@ -164,62 +164,94 @@ export default function Home() {
         </header>
 
         {/* Hero Section */}
-        <section style={{ padding: '60px 0', background: '#FFF' }}>
-          <div className="responsive-container" style={{ 
-            display: 'grid', 
-            // This naturally splits to 2 columns on desktop and stacks on mobile with zero media queries!
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
-            gap: '48px', 
-            alignItems: 'start' 
-          }}>
+        <section style={{ padding: '60px 0 20px 0', background: '#FFF' }}>
+          <div className="responsive-container" style={{ display: 'flex', flexDirection: 'column', gap: '60px' }}>
             
-            {/* Left Column Content - Pulled up closer to header using a small negative margin */}
-            <div style={{ textAlign: 'left', marginTop: '-20px' }}>
-              <h1 style={{ fontSize: '48px', fontWeight: 800, color: '#0F2942', lineHeight: 1.1, marginBottom: '16px' }}>
-                Cashless appreciation <br />
-                <span style={{ color: '#12C7B5' }}>for your employees.</span>
-              </h1>
-              <p style={{ fontSize: '18px', color: '#64748B', lineHeight: 1.6, marginBottom: '32px', maxWidth: '540px' }}>
-                Let customers thank your security guards, car guards, fuel attendants and frontline staff with a simple QR scan.
-              </p>
-              <div style={{ display: 'flex', gap: '16px', marginBottom: '32px' }}>
-                <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ padding: '14px 28px', background: '#0F2942', color: '#FFF', textDecoration: 'none', borderRadius: '8px', fontWeight: 600 }}>Book a Demo</a>
-                <a href="#how-it-works" style={{ padding: '14px 28px', background: '#FFF', color: '#0F2942', textDecoration: 'none', borderRadius: '8px', fontWeight: 600, border: '1px solid #E2E8F0' }}>Watch Demo</a>
+            {/* Top Row: Content & Image Side-by-Side */}
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
+              gap: '48px', 
+              alignItems: 'start' 
+            }}>
+              
+              {/* Left Column Content */}
+              <div style={{ textAlign: 'left', marginTop: '20px' }}>
+                <h1 style={{ fontSize: '48px', fontWeight: 800, color: '#0F2942', lineHeight: 1.1, marginBottom: '16px' }}>
+                  Cashless appreciation <br />
+                  <span style={{ color: '#12C7B5' }}>for your employees.</span>
+                </h1>
+                <p style={{ fontSize: '18px', color: '#64748B', lineHeight: 1.6, marginBottom: '32px', maxWidth: '540px' }}>
+                  Let customers thank your security guards, car guards, fuel attendants and frontline staff with a simple QR scan.
+                </p>
+                <div style={{ display: 'flex', gap: '16px' }}>
+                  <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 28px', background: '#0F2942', color: '#FFF', textDecoration: 'none', borderRadius: '8px', fontWeight: 600 }}>
+                    Book a Demo <span>→</span>
+                  </a>
+                  <a href="#how-it-works" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 28px', background: '#FFF', color: '#12C7B5', textDecoration: 'none', borderRadius: '8px', fontWeight: 600, border: '2px solid #12C7B5' }}>
+                    <span>▷</span> Watch Demo
+                  </a>
+                </div>
               </div>
 
-              {/* Core Features list under buttons */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 24px', maxWidth: '500px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontSize: '14px', fontWeight: 500 }}>
-                  <span style={{ color: '#12C7B5' }}>✓</span> Secure Payments
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontSize: '14px', fontWeight: 500 }}>
-                  <span style={{ color: '#12C7B5' }}>✓</span> Instant Appreciation
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontSize: '14px', fontWeight: 500 }}>
-                  <span style={{ color: '#12C7B5' }}>✓</span> Real-time Reporting
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontSize: '14px', fontWeight: 500 }}>
-                  <span style={{ color: '#12C7B5' }}>✓</span> QR Management
+              {/* Right Column Content - Phone Image */}
+              <div className="floating-mockup" style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
+                <div style={{
+                  width: '100%',
+                  maxWidth: '350px',
+                  filter: 'drop-shadow(0 20px 35px rgba(15, 41, 66, 0.15))'
+                }}>
+                  <img 
+                    src="/Cell-Phone.png" 
+                    alt="ScanTippr Mobile Payment Screen" 
+                    style={{ 
+                      width: '100%', 
+                      height: 'auto', 
+                      display: 'block' 
+                    }} 
+                />
                 </div>
               </div>
             </div>
 
-            {/* Right Column Content - Phone Image */}
-            <div className="floating-mockup" style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
-              <div style={{
-                width: '100%',
-                maxWidth: '350px',
-                filter: 'drop-shadow(0 20px 35px rgba(15, 41, 66, 0.15))'
-              }}>
-                <img 
-                  src="/Cell-Phone.png" 
-                  alt="ScanTippr Mobile Payment Screen" 
-                  style={{ 
-                    width: '100%', 
-                    height: 'auto', 
-                    display: 'block' 
-                  }} 
-                />
+            {/* Bottom Row: Horizontal Features with Icons matching your image layout */}
+            <div style={{ 
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+              gap: '24px',
+              paddingTop: '40px',
+              borderTop: '1px solid #F1F5F9'
+            }}>
+              {/* Feature 1 */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ fontSize: '24px', color: '#0F2942', display: 'flex', alignItems: 'center' }}>🛡️</div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F2942', lineHeight: 1.2 }}>
+                  Secure<br /><span style={{ fontWeight: 500, color: '#64748B' }}>Payments</span>
+                </div>
+              </div>
+
+              {/* Feature 2 */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ fontSize: '24px', color: '#0F2942', display: 'flex', alignItems: 'center' }}>⚡</div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F2942', lineHeight: 1.2 }}>
+                  Instant<br /><span style={{ fontWeight: 500, color: '#64748B' }}>Appreciation</span>
+                </div>
+              </div>
+
+              {/* Feature 3 */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ fontSize: '24px', color: '#0F2942', display: 'flex', alignItems: 'center' }}>📊</div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F2942', lineHeight: 1.2 }}>
+                  Real-time<br /><span style={{ fontWeight: 500, color: '#64748B' }}>Reporting</span>
+                </div>
+              </div>
+
+              {/* Feature 4 */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ fontSize: '24px', color: '#0F2942', display: 'flex', alignItems: 'center' }}>📱</div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F2942', lineHeight: 1.2 }}>
+                  Easy QR<br /><span style={{ fontWeight: 500, color: '#64748B' }}>Management</span>
+                </div>
               </div>
             </div>
 
