@@ -424,17 +424,19 @@ export default function Home() {
         </section>
 
         {/* White-Label Capabilities Section */}
-        <section style={{ padding: '80px 0', background: '#FFF' }}>
-          <div className="responsive-container" style={{ textAlign: 'center' }}>
-            <span style={{ fontSize: '12px', fontWeight: 700, uppercase: true, color: '#12C7B5', letterSpacing: '0.05em' }}>
-              WHITE-LABEL CAPABILITIES
-            </span>
-            <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#0F2942', marginTop: '12px', marginBottom: '16px' }}>
-              Your Brand. Your Identity.
-            </h2>
-            <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto 48px auto', lineHeight: 1.6 }}>
-              Every enterprise can design high-end branded physical cards to match corporate design systems.
-            </p>
+        <section id="branding" style={{ padding: '80px 16px', background: '#FFFFFF' }}>
+          <div className="responsive-container">
+            <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', color: '#12C7B5', letterSpacing: '0.1em' }}>
+                White-Label Capabilities
+              </span>
+              <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#0F2942', marginTop: '12px', marginBottom: '16px' }}>
+                Your Brand. Your Identity.
+              </h2>
+              <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
+                Every enterprise can design high-end branded physical cards to match corporate design systems.
+              </p>
+            </div>
 
             {/* Branded Cards Grid */}
             <div style={{ 
