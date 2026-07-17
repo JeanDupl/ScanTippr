@@ -192,7 +192,7 @@ export default function Home() {
                 </a>
               </div>
 
-              {/* Horizontal Features Row - Placed directly under the buttons on the left */}
+              {/* Four Horizontal Features with Icons (unchanged) */}
               <div style={{ 
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
@@ -201,36 +201,59 @@ export default function Home() {
                 borderTop: '1px solid #F1F5F9',
                 maxWidth: '540px'
               }}>
-                {/* Feature 1 */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}>🛡️</div>
                   <div style={{ fontSize: '12px', fontWeight: 700, color: '#0F2942', lineHeight: 1.2 }}>
                     Secure<br /><span style={{ fontWeight: 500, color: '#64748B' }}>Payments</span>
                   </div>
                 </div>
-
-                {/* Feature 2 */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}>⚡</div>
                   <div style={{ fontSize: '12px', fontWeight: 700, color: '#0F2942', lineHeight: 1.2 }}>
                     Instant<br /><span style={{ fontWeight: 500, color: '#64748B' }}>Appreciation</span>
                   </div>
                 </div>
-
-                {/* Feature 3 */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}>📊</div>
                   <div style={{ fontSize: '12px', fontWeight: 700, color: '#0F2942', lineHeight: 1.2 }}>
                     Real-time<br /><span style={{ fontWeight: 500, color: '#64748B' }}>Reporting</span>
                   </div>
                 </div>
-
-                {/* Feature 4 */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}>📱</div>
                   <div style={{ fontSize: '12px', fontWeight: 700, color: '#0F2942', lineHeight: 1.2 }}>
                     Easy QR<br /><span style={{ fontWeight: 500, color: '#64748B' }}>Management</span>
                   </div>
+                </div>
+              </div>
+
+              {/* NEW QR Card Section (added here) */}
+              <div style={{ 
+                marginTop: '40px', 
+                padding: '24px', 
+                background: '#F8FAFC', 
+                borderRadius: '16px', 
+                border: '1px solid #E2E8F0',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '24px',
+                maxWidth: '540px'
+              }}>
+                <img 
+                  src="/QR_Card.png" 
+                  alt="ScanTippr Employee QR Card" 
+                  style={{ 
+                    width: '100px', 
+                    height: 'auto', 
+                    borderRadius: '8px',
+                    filter: 'drop-shadow(0 4px 10px rgba(15, 41, 66, 0.08))'
+                  }} 
+                />
+                <div>
+                  <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', margin: '0 0 8px 0' }}>Employee QR Card</h3>
+                  <p style={{ fontSize: '14px', color: '#64748B', lineHeight: 1.6, margin: 0 }}>
+                    Every employee receives a unique branded QR code.
+                  </p>
                 </div>
               </div>
 
