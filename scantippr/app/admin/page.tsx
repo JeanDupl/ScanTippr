@@ -19,15 +19,12 @@ export default async function AdminPage() {
     .from('transactions')
     .select('*')
     .order('created_at', { ascending: false })
-    .limit(20)
+    .limit(100)
 
   const { data: guards } = await supabase
     .from('guards')
     .select('id, first_name, last_name')
 
-  const { data: companiesList } = await supabase
-    .from('companies')
-    .select('id, name')
 
   return (
     <main className="min-h-screen bg-gray-50 p-8">
@@ -79,7 +76,7 @@ export default async function AdminPage() {
 
       <CollapsibleSection title="Recent Transactions">
         <div className="grid gap-4">
-          {companiesList?.map((company) => {
+          {companies?.map((company) => {
             const companyTransactions = transactions?.filter(tx => tx.company_id === company.id) ?? []
             if (companyTransactions.length === 0) return null
             return (
