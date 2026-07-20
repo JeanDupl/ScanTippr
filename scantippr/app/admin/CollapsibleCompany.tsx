@@ -45,38 +45,49 @@ export default function CollapsibleCompany({ company }: { company: any }) {
   const cancelEdit = () => setEditingId(null)
 
   const saveEdit = async (guardId: string) => {
-    setSaving(true)
-    await supabase
-      .from('guards')
-      .update({
-        first_name: editFirst.trim(),
-        last_name: editLast.trim(),
-        job_title: editJob.trim() || null,
-      })
-      .eq('id', guardId)
+  setSaving(true)
+  const { error } = await supabase
+    .from('guards')
+    .update({
+      first_name: editFirst.trim(),
+      last_name: editLast.trim(),
+      job_title: editJob.trim() || null,
+    })
+    .eq('id', guardId)
 
-    setGuards((prev: any[]) =>
-      prev.map((g) =>
-        g.id === guardId
-          ? { ...g, first_name: editFirst.trim(), last_name: editLast.trim(), job_title: editJob.trim() || null }
-          : g
-      )
-    )
-    setEditingId(null)
+  if (error) {
+    alert('Failed to save. Please try again.')
     setSaving(false)
+    return
   }
+
+  setGuards((prev: any[]) =>
+    prev.map((g) =>
+      g.id === guardId
+        ? { ...g, first_name: editFirst.trim(), last_name: editLast.trim(), job_title: editJob.trim() || null }
+        : g
+    )
+  )
+  setEditingId(null)
+  setSaving(false)
+}
 
   const toggleActive = async (guard: any) => {
-    const newStatus = !guard.is_active
-    await supabase
-      .from('guards')
-      .update({ is_active: newStatus })
-      .eq('id', guard.id)
+  const newStatus = !guard.is_active
+  const { error } = await supabase
+    .from('guards')
+    .update({ is_active: newStatus })
+    .eq('id', guard.id)
 
-    setGuards((prev: any[]) =>
-      prev.map((g) => (g.id === guard.id ? { ...g, is_active: newStatus } : g))
-    )
+  if (error) {
+    alert('Failed to update status. Please try again.')
+    return
   }
+
+  setGuards((prev: any[]) =>
+    prev.map((g) => (g.id === guard.id ? { ...g, is_active: newStatus } : g))
+  )
+}
 
   return (
     <div className="bg-white rounded-xl shadow p-6">
