@@ -183,14 +183,20 @@ export default function Home() {
               </p>
               
               {/* Buttons */}
-              <div style={{ display: 'flex', gap: '16px', marginBottom: '48px' }}>
-                <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 28px', background: '#0F2942', color: '#FFF', textDecoration: 'none', borderRadius: '8px', fontWeight: 600 }}>
-                  Book a Demo <span>→</span>
-                </a>
-                <a href="#how-it-works" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 28px', background: '#FFF', color: '#12C7B5', textDecoration: 'none', borderRadius: '8px', fontWeight: 600, border: '2px solid #12C7B5' }}>
-                  <span>▷</span> Watch Demo
-                </a>
-              </div>
+<div className="flex flex-col sm:flex-row gap-4 mb-12 w-full sm:w-auto">
+  <a 
+    href="mailto:info@scantippr.co.za?subject=Demo Request" 
+    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#0F2942] text-white rounded-lg font-semibold whitespace-nowrap transition-all text-center"
+  >
+    Book a Demo <span>→</span>
+  </a>
+  <a 
+    href="#how-it-works" 
+    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-white text-[#12C7B5] border-2 border-[#12C7B5] rounded-lg font-semibold whitespace-nowrap transition-all text-center"
+  >
+    <span>▷</span> Watch Demo
+  </a>
+</div>
 
               {/* Four Horizontal Features */}
               <div style={{ 
