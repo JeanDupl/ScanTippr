@@ -74,12 +74,13 @@ export default function CollapsibleCompany({ company }: { company: any }) {
 
   const toggleActive = async (guard: any) => {
   const newStatus = !guard.is_active
-  const { error } = await supabase
-    .from('guards')
-    .update({ is_active: newStatus })
-    .eq('id', guard.id)
+  const res = await fetch('/api/toggle-guard', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ guardId: guard.id, isActive: newStatus }),
+  })
 
-  if (error) {
+  if (!res.ok) {
     alert('Failed to update status. Please try again.')
     return
   }
