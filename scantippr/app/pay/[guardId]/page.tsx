@@ -41,7 +41,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
   }, [guardId]);
 
   async function handlePayment() {
-    if (!displayAmount || displayAmount <= 0) return;
+    if (!displayAmount || displayAmount < 10) return;
     setProcessing(true);
     setPaymentError(null);
 
@@ -166,10 +166,10 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
         {/* 7. Added transition and scale interaction to main action button */}
         <button
           onClick={handlePayment}
-          disabled={!displayAmount || displayAmount <= 0 || processing}
+          disabled={!displayAmount || displayAmount < 10 || processing}
           className="w-full bg-blue-500 text-white rounded-xl py-4 font-bold text-xl hover:bg-blue-600 transition-all duration-150 active:scale-[0.98] disabled:scale-100 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
-          {processing ? 'Processing...' : displayAmount ? `Send R${displayAmount}` : 'Select an amount'}
+          {processing ? 'Processing...' : !displayAmount ? 'Select an amount' : displayAmount < 10 ? 'Minimum amount is R10' : `Send R${displayAmount}`}
         </button>
 
         {/* 8. Polished and highlighted secure badge banner */}
