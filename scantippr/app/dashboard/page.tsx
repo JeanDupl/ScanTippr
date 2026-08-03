@@ -9,7 +9,7 @@ const supabase = createClient(
 export const revalidate = 0
 
 export default async function DashboardPage() {
-  const companyId = '3ad6e9c1-992b-4d69-8203-7053e098'
+  const companyId = '3ad6e9c1-992b-4d69-8203-7053e0985bce'
 
   const { data: company } = await supabase
     .from('companies')
