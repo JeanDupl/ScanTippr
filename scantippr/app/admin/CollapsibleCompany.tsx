@@ -14,6 +14,7 @@ export default function CollapsibleCompany({ company }: { company: any }) {
   const [editFirst, setEditFirst] = useState('')
   const [editLast, setEditLast] = useState('')
   const [editJob, setEditJob] = useState('')
+  const [editLocation, setEditLocation] = useState('')
   const [saving, setSaving] = useState(false)
 
   // Company edit state
@@ -40,6 +41,7 @@ export default function CollapsibleCompany({ company }: { company: any }) {
     setEditFirst(guard.first_name)
     setEditLast(guard.last_name)
     setEditJob(guard.job_title ?? '')
+    setEditLocation(guard.location ?? '')
   }
 
   const cancelEdit = () => setEditingId(null)
@@ -52,6 +54,7 @@ export default function CollapsibleCompany({ company }: { company: any }) {
       first_name: editFirst.trim(),
       last_name: editLast.trim(),
       job_title: editJob.trim() || null,
+      location: editLocation.trim() || null,
     })
     .eq('id', guardId)
 
@@ -64,7 +67,7 @@ export default function CollapsibleCompany({ company }: { company: any }) {
   setGuards((prev: any[]) =>
     prev.map((g) =>
       g.id === guardId
-        ? { ...g, first_name: editFirst.trim(), last_name: editLast.trim(), job_title: editJob.trim() || null }
+        ? { ...g, first_name: editFirst.trim(), last_name: editLast.trim(), job_title: editJob.trim() || null, location: editLocation.trim() || null }
         : g
     )
   )
@@ -172,6 +175,7 @@ export default function CollapsibleCompany({ company }: { company: any }) {
                     </td>
                     <td className="py-2">
                       <input value={editJob} onChange={(e) => setEditJob(e.target.value)} className="border rounded px-2 py-1 text-xs w-32" placeholder="Job title" />
+                      <input value={editLocation} onChange={(e) => setEditLocation(e.target.value)} className="border rounded px-2 py-1 text-xs w-32" placeholder="Location" />
                     </td>
                     <td className="py-2 text-gray-500 text-xs">{guard.id}</td>
                     <td className="py-2">
