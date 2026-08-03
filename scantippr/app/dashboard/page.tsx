@@ -5,7 +5,6 @@ import Sidebar from '@/components/dashboard/Sidebar';
 import ThemeDrawer from '@/components/dashboard/ThemeDrawer';
 import { 
   Palette, 
-  TrendingUp, 
   Users, 
   QrCode, 
   Download, 
@@ -17,19 +16,17 @@ export default function CustomerDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isThemeOpen, setIsThemeOpen] = useState(false);
   
-  // Theme state
+  // Theme state with correct HEX formatting (#FF5A00)
   const [theme, setTheme] = useState({
     primary: '#FF5A00',
     light: '#FFF0E6'
   });
 
-  // Dynamic theme update function
   const handleUpdateTheme = (primaryColor: string, lightColor?: string) => {
-    const computedLight = lightColor || `${primaryColor}15`; // 15% opacity fallback
+    const computedLight = lightColor || `${primaryColor}15`;
     const updated = { primary: primaryColor, light: computedLight };
     setTheme(updated);
 
-    // Apply directly to DOM CSS variables
     if (typeof document !== 'undefined') {
       document.documentElement.style.setProperty('--brand-primary', primaryColor);
       document.documentElement.style.setProperty('--brand-primary-light', computedLight);
@@ -42,31 +39,27 @@ export default function CustomerDashboard() {
 
   return (
     <div className="flex min-h-screen bg-zinc-100/60 font-sans text-zinc-900">
-      {/* 1. Sidebar with Monochrome Icons */}
+      {/* 1. Sidebar Component */}
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* 2. Main Content Area */}
       <main className="flex-1 p-8 overflow-y-auto">
-        {/* Header Bar */}
         <header className="flex items-center justify-between pb-6 mb-8 border-b border-zinc-200">
           <div>
             <h1 className="text-2xl font-bold text-zinc-900">Welcome back, Security Plus 👋</h1>
             <p className="text-sm text-zinc-500">Here is what is happening with your tips today.</p>
           </div>
 
-          <div className="flex items-center gap-4">
-            {/* Customize Theme Toggle Button */}
-            <button
-              onClick={() => setIsThemeOpen(true)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-zinc-200 text-sm font-semibold text-zinc-700 hover:border-zinc-300 transition-all shadow-sm"
-            >
-              <Palette className="w-4 h-4 text-brand" />
-              <span>Customize Theme</span>
-            </button>
-          </div>
+          <button
+            onClick={() => setIsThemeOpen(true)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-zinc-200 text-sm font-semibold text-zinc-700 hover:border-zinc-300 transition-all shadow-sm cursor-pointer"
+          >
+            <Palette className="w-4 h-4 text-brand" />
+            <span>Customize Theme</span>
+          </button>
         </header>
 
-        {/* 3. Top KPI Summary Cards */}
+        {/* Top KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
             <div className="flex items-center justify-between mb-2">
@@ -106,10 +99,8 @@ export default function CustomerDashboard() {
           </div>
         </div>
 
-        {/* 4. Middle Section: Top Earners & Master QR Code */}
+        {/* Performers & QR Code Block */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          
-          {/* Top Earners Leaderboard (2 Columns) */}
           <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-bold text-zinc-900 text-lg">Top Performers This Month</h3>
@@ -142,36 +133,9 @@ export default function CustomerDashboard() {
                 </div>
                 <span className="font-extrabold text-zinc-900">R740</span>
               </div>
-
-              <div className="p-4 rounded-xl border border-zinc-100 bg-zinc-50/50 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-brand-light text-brand font-bold flex items-center justify-center text-sm">
-                    SB
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-zinc-900 text-sm">Sipho Bhengu</h4>
-                    <p className="text-xs text-zinc-500">Access Control</p>
-                  </div>
-                </div>
-                <span className="font-extrabold text-zinc-900">R680</span>
-              </div>
-
-              <div className="p-4 rounded-xl border border-zinc-100 bg-zinc-50/50 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-brand-light text-brand font-bold flex items-center justify-center text-sm">
-                    NM
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-zinc-900 text-sm">Nokuthula Mthembu</h4>
-                    <p className="text-xs text-zinc-500">Parking Attendant</p>
-                  </div>
-                </div>
-                <span className="font-extrabold text-zinc-900">R510</span>
-              </div>
             </div>
           </div>
 
-          {/* Master Company QR Quick Download (1 Column) */}
           <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm flex flex-col justify-between">
             <div>
               <h3 className="font-bold text-zinc-900 text-lg mb-1">Company Master QR</h3>
@@ -193,11 +157,10 @@ export default function CustomerDashboard() {
               </button>
             </div>
           </div>
-
         </div>
       </main>
 
-      {/* 5. Collapsible Theme Drawer */}
+      {/* 3. Theme Drawer Component */}
       <ThemeDrawer
         isOpen={isThemeOpen}
         onClose={() => setIsThemeOpen(false)}
