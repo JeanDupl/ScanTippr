@@ -7,6 +7,7 @@ interface Guard {
   first_name: string;
   last_name: string;
   job_title: string | null;
+  location: string | null;
   photo_url: string | null;
   companies: { name: string; logo_url: string | null } | { name: string; logo_url: string | null }[];
 }
@@ -26,7 +27,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
     async function fetchGuard() {
       const { data, error } = await supabase
         .from('guards')
-        .select('first_name, last_name, job_title, photo_url, companies(name, logo_url)')
+        .select('first_name, last_name, job_title, location, photo_url, companies(name, logo_url)')
         .eq('id', guardId)
         .eq('is_active', true)
         .limit(1);
@@ -121,8 +122,8 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
           
           {/* 4. Polished visual hierarchy for Company and Job Title */}
           <p className="text-gray-600 font-medium text-sm">{company?.name}</p>
-          {guard.job_title && (
-            <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mt-0.5">{guard.job_title}</p>
+          {(guard.job_title || guard.location) && (
+            <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mt-0.5">{guard.job_title}{guard.job_title && guard.location ? ' • ' : ''}{guard.location}</p>
           )}
         </div>
 

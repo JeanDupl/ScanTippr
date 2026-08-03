@@ -15,6 +15,7 @@ export default function AddGuardPage() {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [jobTitle, setJobTitle] = useState('')
+  const [location, setLocation] = useState('')
   const [companyId, setCompanyId] = useState('')
   const [photoFile, setPhotoFile] = useState<File | null>(null)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
@@ -57,6 +58,7 @@ export default function AddGuardPage() {
       first_name: firstName.trim(),
       last_name: lastName.trim(),
       job_title: jobTitle.trim() || null,
+      location: location.trim() || null,
       company_id: companyId,
       photo_url,
       is_active: true,
@@ -128,6 +130,21 @@ export default function AddGuardPage() {
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
             placeholder="e.g. Security Officer, Petrol Attendant, Waiter"
+            style={{
+              width: '100%', padding: '10px 12px', borderRadius: '8px',
+              border: '1px solid #e0e8f0', fontSize: '15px', boxSizing: 'border-box',
+            }}
+          />
+        </div>
+        <div style={{ marginBottom: '1rem' }}>
+          <label style={{ display: 'block', fontSize: '13px', color: '#6b7f90', marginBottom: '6px' }}>
+            Location <span style={{ color: '#b0bec5' }}>(optional)</span>
+          </label>
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="e.g. Gate 1, Parking Area, Front Entrance"
             style={{
               width: '100%', padding: '10px 12px', borderRadius: '8px',
               border: '1px solid #e0e8f0', fontSize: '15px', boxSizing: 'border-box',

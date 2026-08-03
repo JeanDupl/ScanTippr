@@ -196,6 +196,7 @@ export default function CollapsibleCompany({ company }: { company: any }) {
                   <>
                     <td className="py-2 font-medium">{guard.first_name} {guard.last_name}</td>
                     <td className="py-2 text-gray-500">{guard.job_title || '—'}</td>
+                    <td className="py-2 text-gray-400 text-sm">{guard.location || '—'}</td>
                     <td className="py-2 text-gray-500 text-xs">{guard.id}</td>
                     <td className="py-2">
                       <span className={guard.is_active ? 'px-2 py-1 rounded-full text-xs bg-green-100 text-green-700' : 'px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-500'}>
