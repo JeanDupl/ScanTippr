@@ -3,7 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-    color-scheme: light;
+  color-scheme: light;
+
+  /* ScanTippr brand theme — updated by ThemeDrawer */
+  --brand-primary: #FF5A00;
+  --brand-primary-light: #FFF0E6;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,3 +32,8 @@ body {
 input {
   color: #1f2937;
 }
+
+.bg-brand { background-color: var(--brand-primary); }
+.text-brand { color: var(--brand-primary); }
+.bg-brand-light { background-color: var(--brand-primary-light); }
+.border-brand { border-color: var(--brand-primary); }
