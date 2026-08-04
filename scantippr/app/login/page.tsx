@@ -1,4 +1,5 @@
 'use client'
+
 import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useRouter } from 'next/navigation'
@@ -13,12 +14,31 @@ export default function LoginPage() {
   const handleLogin = async () => {
     setLoading(true)
     setError('')
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) {
-      setError(error.message)
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+
+      if (error) {
+        setError(error.message)
+        setLoading(false)
+        return
+      }
+
+      if (data?.session) {
+        // Set cookie so middleware and server component can read the session
+        const cookieName = 'sb-fpagcvbhxzrfrqsbcsuw-auth-token'
+        const cookieValue = JSON.stringify(data.session)
+        
+        // 7 days expiration
+        const maxAge = 60 * 60 * 24 * 7 
+        document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)}; path=/; max-age=${maxAge}; SameSite=Lax`
+
+        // Force dynamic redirect & reload session context
+        window.location.href = '/dashboard'
+      }
+    } catch (err: any) {
+      setError(err.message || 'An unexpected error occurred')
       setLoading(false)
-    } else {
-      router.push('/dashboard')
     }
   }
 
