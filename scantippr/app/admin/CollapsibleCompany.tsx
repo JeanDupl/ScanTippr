@@ -175,6 +175,8 @@ export default function CollapsibleCompany({ company }: { company: any }) {
                     </td>
                     <td className="py-2">
                       <input value={editJob} onChange={(e) => setEditJob(e.target.value)} className="border rounded px-2 py-1 text-xs w-32" placeholder="Job title" />
+                    </td>
+                    <td className="py-2">
                       <input value={editLocation} onChange={(e) => setEditLocation(e.target.value)} className="border rounded px-2 py-1 text-xs w-32" placeholder="Location" />
                     </td>
                     <td className="py-2 text-gray-500 text-xs">{guard.id}</td>
