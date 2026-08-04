@@ -1,15 +1,42 @@
 import { createClient } from '@supabase/supabase-js'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import DashboardShell from '../../components/dashboard/DashboardShell'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 export const revalidate = 0
 
 export default async function DashboardPage() {
-  const companyId = '3ad6e9c1-992b-4d69-8203-7053e0985bce'
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
+  // Get session from cookie
+  const cookieStore = await cookies()
+  const allCookies = cookieStore.getAll()
+  const authCookie = allCookies.find(c => c.name.includes('auth-token'))
+
+  if (!authCookie) redirect('/login')
+
+  let userId: string | null = null
+  try {
+    const token = JSON.parse(authCookie.value)
+    userId = token?.user?.id ?? null
+  } catch {
+    redirect('/login')
+  }
+
+  if (!userId) redirect('/login')
+
+  // Get company_id from profiles
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('company_id')
+    .eq('id', userId)
+    .single()
+
+  const companyId = profile?.company_id
+  if (!companyId) redirect('/login')
 
   const { data: company } = await supabase
     .from('companies')
@@ -41,15 +68,11 @@ export default async function DashboardPage() {
   return (
     <DashboardShell>
       <div className="space-y-8">
-        {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">
-            {company?.name || 'Company Dashboard'}
-          </h1>
+          <h1 className="text-2xl font-bold text-slate-900">{company?.name || 'Company Dashboard'}</h1>
           <p className="text-slate-500 text-sm mt-1">Real-time tipping performance</p>
         </div>
 
-        {/* Stat cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-medium text-slate-500">Total tips collected</p>
@@ -67,7 +90,6 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Transactions table */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="p-6 border-b border-slate-100">
             <h2 className="text-lg font-bold text-slate-900">Recent transactions</h2>
