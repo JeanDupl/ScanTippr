@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  // Protect /admin with Basic Auth (unchanged)
+  // Protect /admin with Basic Auth
   if (pathname.startsWith('/admin')) {
     if (req.method === 'POST') return NextResponse.next()
     const authHeader = req.headers.get('authorization')
@@ -20,9 +19,9 @@ export async function middleware(req: NextRequest) {
     })
   }
 
-  // Protect /dashboard with Supabase Auth
+  // Protect /dashboard
   if (pathname.startsWith('/dashboard')) {
-    const token = req.cookies.get('sb-fpagcvbhxzrfrqsbcsuw-auth-token')?.value
+    const token = req.cookies.get('sb_access_token')?.value
     if (!token) {
       return NextResponse.redirect(new URL('/login', req.url))
     }

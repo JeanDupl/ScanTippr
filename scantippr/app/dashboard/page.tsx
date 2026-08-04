@@ -11,20 +11,8 @@ export default async function DashboardPage() {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  // Get session from cookie
   const cookieStore = await cookies()
-  const allCookies = cookieStore.getAll()
-  const authCookie = allCookies.find(c => c.name.includes('auth-token'))
-
-  if (!authCookie) redirect('/login')
-
-  let userId: string | null = null
-  try {
-    const token = JSON.parse(authCookie.value)
-    userId = token?.user?.id ?? null
-  } catch {
-    redirect('/login')
-  }
+  const userId = cookieStore.get('sb_user_id')?.value
 
   if (!userId) redirect('/login')
 

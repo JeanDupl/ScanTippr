@@ -2,10 +2,8 @@
 
 import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
-import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
-  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -25,15 +23,12 @@ export default function LoginPage() {
       }
 
       if (data?.session) {
-        // Set cookie so middleware and server component can read the session
-        const cookieName = 'sb-fpagcvbhxzrfrqsbcsuw-auth-token'
-        const cookieValue = JSON.stringify(data.session)
-        
-        // 7 days expiration
-        const maxAge = 60 * 60 * 24 * 7 
-        document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)}; path=/; max-age=${maxAge}; SameSite=Lax`
+        // Save access_token directly into a simple cookie
+        const maxAge = 60 * 60 * 24 * 7 // 7 days
+        document.cookie = `sb_access_token=${data.session.access_token}; path=/; max-age=${maxAge}; SameSite=Lax`
+        document.cookie = `sb_user_id=${data.user.id}; path=/; max-age=${maxAge}; SameSite=Lax`
 
-        // Force dynamic redirect & reload session context
+        // Direct reload to dashboard
         window.location.href = '/dashboard'
       }
     } catch (err: any) {
