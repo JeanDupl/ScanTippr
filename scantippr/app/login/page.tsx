@@ -9,9 +9,10 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleLogin = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault()
-    
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
     if (!email || !password) {
       setError('Please enter both email and password.')
       return
@@ -34,16 +35,16 @@ export default function LoginPage() {
 
       if (data?.session) {
         const maxAge = 60 * 60 * 24 * 7 // 7 days
-        document.cookie = `sb_access_token=${data.session.access_token}; path=/; max-age=${maxAge}; SameSite=Lax`
         document.cookie = `sb_user_id=${data.user.id}; path=/; max-age=${maxAge}; SameSite=Lax`
-
+        
+        // Hard redirect to dashboard
         window.location.href = '/dashboard'
       } else {
         setError('Login failed: No session established.')
         setLoading(false)
       }
     } catch (err: any) {
-      setError(err?.message || JSON.stringify(err) || 'Unexpected error during sign in.')
+      setError(err?.message || 'Unexpected error during sign in.')
       setLoading(false)
     }
   }
