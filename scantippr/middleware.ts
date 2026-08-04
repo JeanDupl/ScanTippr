@@ -3,7 +3,17 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  // Protect /admin with Basic Auth
+  // 1. Allow public routes & static assets freely
+  if (
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api') ||
+    pathname.includes('.')
+  ) {
+    return NextResponse.next()
+  }
+
+  // 2. Protect /admin with Basic Auth
   if (pathname.startsWith('/admin')) {
     if (req.method === 'POST') return NextResponse.next()
     const authHeader = req.headers.get('authorization')
@@ -19,10 +29,12 @@ export async function middleware(req: NextRequest) {
     })
   }
 
-  // Protect /dashboard
+  // 3. Protect /dashboard
   if (pathname.startsWith('/dashboard')) {
     const token = req.cookies.get('sb_access_token')?.value
-    if (!token) {
+    const userId = req.cookies.get('sb_user_id')?.value
+
+    if (!token || !userId) {
       return NextResponse.redirect(new URL('/login', req.url))
     }
   }
@@ -31,5 +43,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/dashboard/:path*'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 }
