@@ -10,29 +10,47 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      setError('Please enter both email and password.')
+      return
+    }
+
     setLoading(true)
     setError('')
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      console.log('Attempting sign-in with:', email)
+
+      const authPromise = supabase.auth.signInWithPassword({ email, password })
+      
+      // Fallback timeout to prevent infinite loading state
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Sign-in request timed out. Please check your Supabase credentials.')), 10000)
+      )
+
+      const { data, error }: any = await Promise.race([authPromise, timeoutPromise])
 
       if (error) {
+        console.error('Supabase Auth Error:', error)
         setError(error.message)
         setLoading(false)
         return
       }
 
       if (data?.session) {
-        // Save access_token directly into a simple cookie
+        console.log('Sign-in successful, setting cookies...')
         const maxAge = 60 * 60 * 24 * 7 // 7 days
         document.cookie = `sb_access_token=${data.session.access_token}; path=/; max-age=${maxAge}; SameSite=Lax`
         document.cookie = `sb_user_id=${data.user.id}; path=/; max-age=${maxAge}; SameSite=Lax`
 
-        // Direct reload to dashboard
         window.location.href = '/dashboard'
+      } else {
+        setError('No session returned. Please check your credentials.')
+        setLoading(false)
       }
     } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred')
+      console.error('Login Exception:', err)
+      setError(err.message || 'An unexpected error occurred during sign in.')
       setLoading(false)
     }
   }
