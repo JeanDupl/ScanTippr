@@ -35,6 +35,7 @@ export default function LoginPage() {
 
       if (data?.session) {
         const maxAge = 60 * 60 * 24 * 7 // 7 days
+        document.cookie = `sb_access_token=${data.session.access_token}; path=/; max-age=${maxAge}; SameSite=Lax`
         document.cookie = `sb_user_id=${data.user.id}; path=/; max-age=${maxAge}; SameSite=Lax`
         
         // Hard redirect to dashboard
