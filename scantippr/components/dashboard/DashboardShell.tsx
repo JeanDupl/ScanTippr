@@ -7,7 +7,7 @@ import ThemeDrawer from './ThemeDrawer'
 const DEFAULT_THEME = { primary: '#FF5A00', light: '#FFF0E6' }
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
-  const [activeTab, setActiveTab] = useState('dashboard')
+  
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [theme, setTheme] = useState(DEFAULT_THEME)
 
@@ -31,7 +31,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
         <div className="bg-white border-b border-zinc-200 px-8 py-4 flex items-center justify-between sticky top-0 z-10">
           <h1 className="text-xl font-bold text-zinc-900">ScanTippr</h1>
