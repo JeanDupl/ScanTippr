@@ -33,6 +33,12 @@ export default async function ReportsPage() {
     .order('created_at', { ascending: false })
     .limit(100)
 
+  const { data: company } = await supabase
+    .from('companies')
+    .select('name')
+    .eq('id', companyId)
+    .single()
+
   const { data: employees } = await supabase
     .from('guards')
     .select('id, first_name, last_name, location')
@@ -40,7 +46,7 @@ export default async function ReportsPage() {
 
   return (
     <DashboardShell>
-      <ReportsClient transactions={transactions ?? []} employees={employees ?? []} />
+      <ReportsClient transactions={transactions ?? []} employees={employees ?? []} companyName={company?.name ?? 'Company'} />
     </DashboardShell>
   )
 }
