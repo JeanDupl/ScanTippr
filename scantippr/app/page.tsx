@@ -604,7 +604,7 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section style={{ padding: '60px 16px', background: '#111111', color: '#FFF', textAlign: 'center' }}>
+        <section style={{ padding: '60px 16px 0 16px', background: '#111111', color: '#FFF', textAlign: 'center' }}>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <h2 style={{ fontSize: '32px', fontWeight: 800, marginBottom: '16px' }}>Ready to modernize employee appreciation?</h2>
             <p style={{ fontSize: '16px', color: '#94A3B8', marginBottom: '32px' }}>Join leading enterprises making employee feedback secure, structured, and modern.</p>
@@ -632,6 +632,7 @@ export default function Home() {
               </a>
             </div>
           </div>
+          <div style={{ marginTop: '60px', borderTop: '1px solid rgba(249, 115, 22, 0.3)', width: '100%' }} />
         </section>
 
         {/* Global Footer */}
@@ -651,7 +652,7 @@ export default function Home() {
                     marginLeft: '0'
                   }} 
                 />
-                <p style={{ color: '#94A3B8', fontSize: '13px', lineHeight: '1.6', maxWidth: '240px', margin: '0' }}>
+                <p style={{ color: '#64748B', fontSize: '13px', lineHeight: '1.6', maxWidth: '240px', margin: '0', textDecoration: 'none' }}>
                   Secure, corporate cashless systems empowering enterprise employee appreciation.
                 </p>
               </div>
