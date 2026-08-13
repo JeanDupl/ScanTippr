@@ -114,8 +114,7 @@ export default function Home() {
           backdropFilter: 'blur(8px)',
           borderBottom: '1px solid #E5E7EB',
           zIndex: 100,
-          padding: '0 16px',
-          height: '70px'
+          padding: '10px 16px',
         }}>
           <div style={{
             maxWidth: '1200px',
@@ -123,7 +122,6 @@ export default function Home() {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            height: '100%'
           }}>
             <a href="/" style={{ 
               display: 'flex', 
@@ -166,7 +164,7 @@ export default function Home() {
         </header>
 
         {/* Hero Section */}
-        <section style={{ padding: '60px 0 20px 0', background: '#FFF' }}>
+        <section style={{ padding: '32px 0 20px 0', background: '#FFF' }}>
           <div className="responsive-container" style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
