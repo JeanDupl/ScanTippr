@@ -136,11 +136,11 @@ export default function Home() {
             </a>
 
             <nav className="nav-links">
-              <a href="#features" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>Features</a>
-              <a href="#how-it-works" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>How It Works</a>
-              <a href="#industries" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>Industries</a>
-              <a href="#branding" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>Branding</a>
-              <a href="#pricing" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>Pricing</a>
+              <a href="#features" style={{ textDecoration: 'none', color: '#475569', fontSize: '15px', fontWeight: 700 }}>Features</a>
+              <a href="#how-it-works" style={{ textDecoration: 'none', color: '#475569', fontSize: '15px', fontWeight: 700 }}>How It Works</a>
+              <a href="#industries" style={{ textDecoration: 'none', color: '#475569', fontSize: '15px', fontWeight: 700 }}>Industries</a>
+              <a href="#branding" style={{ textDecoration: 'none', color: '#475569', fontSize: '15px', fontWeight: 700 }}>Branding</a>
+              <a href="#pricing" style={{ textDecoration: 'none', color: '#475569', fontSize: '15px', fontWeight: 700 }}>Pricing</a>
             </nav>
 
             <div>
@@ -643,12 +643,12 @@ export default function Home() {
                   <div style={{ 
                     display: 'inline-flex', 
                     alignItems: 'center',
-                    width: '180px'
+                    width: '240px'
                   }}>
                     <img 
                       src="/Midelpage-logo.png" 
                       alt="ScanTippr Logo" 
-                      style={{ width: '220px', height: 'auto', objectFit: 'contain' }} 
+                      style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
                     />
                   </div>
                 </div>
