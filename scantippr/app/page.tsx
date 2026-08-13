@@ -131,7 +131,7 @@ export default function Home() {
               <img 
                 src="/ScanTippr_header.png"
                 alt="ScanTippr Logo" 
-                style={{ width: '180px', height: 'auto', objectFit: 'contain' }} 
+                style={{ width: '220px', height: 'auto', objectFit: 'contain' }} 
               />
             </a>
 
@@ -648,7 +648,7 @@ export default function Home() {
                     <img 
                       src="/Midelpage-logo.png" 
                       alt="ScanTippr Logo" 
-                      style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
+                      style={{ width: '220px', height: 'auto', objectFit: 'contain' }} 
                     />
                   </div>
                 </div>
