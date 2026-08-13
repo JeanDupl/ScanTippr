@@ -437,7 +437,7 @@ export default function Home() {
         <section id="branding" style={{ padding: '80px 16px', background: '#FFFFFF' }}>
           <div className="responsive-container">
             {/* Fully Custom Image */}
-            <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
               <img
                 src="/Fully_Custom.png"
                 alt="Fully Customisable Branded QR Cards"
