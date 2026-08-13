@@ -131,7 +131,7 @@ export default function Home() {
               <img 
                 src="/ScanTippr_header.png"
                 alt="ScanTippr Logo" 
-                style={{ width: '220px', height: 'auto', objectFit: 'contain' }} 
+                style={{ width: '240px', height: 'auto', objectFit: 'contain' }} 
               />
             </a>
 
@@ -426,7 +426,7 @@ export default function Home() {
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', background: '#FFF7ED', borderRadius: '50%' }}>
                     {industry.icon}
                   </div>
-                  <span style={{ fontSize: '14px', fontWeight: 700, color: '#000000' }}>{industry.name}</span>
+                  <span style={{ fontSize: '15px', fontWeight: 700, color: '#000000' }}>{industry.name}</span>
                 </div>
               ))}
             </div>
@@ -470,7 +470,7 @@ export default function Home() {
                   <rect x="19" y="19" width="3" height="3" />
                   <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
                 </svg>
-                <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 700 }}>Thank you!</span>
+                <span style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: 700 }}>Thank you!</span>
               </div>
 
               {/* Card 2: Green Field Stations */}
@@ -486,7 +486,7 @@ export default function Home() {
                   <rect x="19" y="19" width="3" height="3" />
                   <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
                 </svg>
-                <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 700 }}>Appreciation Portal</span>
+                <span style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: 700 }}>Appreciation Portal</span>
               </div>
 
               {/* Card 3: City Guard Team */}
@@ -502,7 +502,7 @@ export default function Home() {
                   <rect x="19" y="19" width="3" height="3" />
                   <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
                 </svg>
-                <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 700 }}>Scan to Support</span>
+                <span style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: 700 }}>Scan to Support</span>
               </div>
 
               {/* Card 4: Premier Hotels */}
@@ -518,7 +518,7 @@ export default function Home() {
                   <rect x="19" y="19" width="3" height="3" />
                   <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
                 </svg>
-                <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 700 }}>Thank Our Team</span>
+                <span style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: 700 }}>Thank Our Team</span>
               </div>
 
             </div>
@@ -591,7 +591,7 @@ export default function Home() {
               ].map((faq, idx) => (
                 <div key={idx} style={{ border: '1px solid #E5E7EB', borderRadius: '10px', padding: '16px', cursor: 'pointer' }} onClick={() => toggleFaq(idx)}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#000000', margin: 0 }}>{faq.q}</h4>
+                    <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#000000', margin: 0 }}>{faq.q}</h4>
                     <span style={{ fontSize: '16px', color: '#F97316', fontWeight: 'bold' }}>{activeFaq === idx ? '−' : '+'}</span>
                   </div>
                   {activeFaq === idx && (
@@ -639,26 +639,25 @@ export default function Home() {
           <div className="responsive-container">
             <div className="footer-grid" style={{ marginBottom: '32px' }}>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '1rem' }}>
-                  <div style={{ 
-                    display: 'inline-flex', 
-                    alignItems: 'center',
-                    width: '240px'
-                  }}>
-                    <img 
-                      src="/Midelpage-logo.png" 
-                      alt="ScanTippr Logo" 
-                      style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
-                    />
-                  </div>
-                </div>
-                <p style={{ color: '#94A3B8', fontSize: '13px', lineHeight: '1.6', maxWidth: '240px' }}>
+                <img 
+                  src="/Midelpage-logo.png" 
+                  alt="ScanTippr Logo" 
+                  style={{ 
+                    width: '200px', 
+                    height: 'auto', 
+                    objectFit: 'contain',
+                    display: 'block',
+                    marginBottom: '16px',
+                    marginLeft: '0'
+                  }} 
+                />
+                <p style={{ color: '#94A3B8', fontSize: '13px', lineHeight: '1.6', maxWidth: '240px', margin: '0' }}>
                   Secure, corporate cashless systems empowering enterprise employee appreciation.
                 </p>
               </div>
 
               <div>
-                <h4 style={{ color: '#FFF', fontSize: '14px', fontWeight: 700, marginBottom: '16px' }}>Platform</h4>
+                <h4 style={{ color: '#FFF', fontSize: '15px', fontWeight: 700, marginBottom: '16px' }}>Platform</h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px' }}>
                   <a href="#features" style={{ color: '#94A3B8', textDecoration: 'none' }}>Features</a>
                   <a href="#how-it-works" style={{ color: '#94A3B8', textDecoration: 'none' }}>How It Works</a>
@@ -667,7 +666,7 @@ export default function Home() {
               </div>
 
               <div>
-                <h4 style={{ color: '#FFF', fontSize: '14px', fontWeight: 700, marginBottom: '16px' }}>Resources</h4>
+                <h4 style={{ color: '#FFF', fontSize: '15px', fontWeight: 700, marginBottom: '16px' }}>Resources</h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px' }}>
                   <span style={{ color: '#94A3B8' }}>Help Docs</span>
                   <span style={{ color: '#94A3B8' }}>Compliance</span>
@@ -675,7 +674,7 @@ export default function Home() {
               </div>
 
               <div>
-                <h4 style={{ color: '#FFF', fontSize: '14px', fontWeight: 700, marginBottom: '16px' }}>Contact</h4>
+                <h4 style={{ color: '#FFF', fontSize: '15px', fontWeight: 700, marginBottom: '16px' }}>Contact</h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', color: '#94A3B8' }}>
                   <span>✉️ info@scantippr.co.za</span>
                   <span>📍 South Africa</span>
