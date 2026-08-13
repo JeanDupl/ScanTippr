@@ -114,7 +114,7 @@ export default function Home() {
           backdropFilter: 'blur(8px)',
           borderBottom: '1px solid #E5E7EB',
           zIndex: 100,
-          padding: '10px 16px',
+          padding: '6px 16px',
         }}>
           <div style={{
             maxWidth: '1200px',
@@ -147,7 +147,7 @@ export default function Home() {
               <a 
                 href="mailto:info@scantippr.co.za?subject=Demo Request" 
                 style={{ 
-                  padding: '10px 16px', 
+                  padding: '6px 16px', 
                   fontSize: '13px', 
                   borderRadius: '6px', 
                   background: '#F97316', 
@@ -448,79 +448,18 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Branded Cards Grid */}
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', 
-              gap: '24px',
-              maxWidth: '1100px',
-              margin: '0 auto'
-            }}>
-              
-              {/* Card 1: Sentry Security - now black/orange */}
-              <div style={{ background: '#111111', padding: '32px 24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '260px', boxShadow: '0 10px 25px rgba(0,0,0,0.2)' }}>
-                <span style={{ color: '#F97316', fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em' }}>SENTRY SECURITY</span>
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '24px 0' }}>
-                  <rect x="3" y="3" width="7" height="7" />
-                  <rect x="14" y="3" width="7" height="7" />
-                  <rect x="3" y="14" width="7" height="7" />
-                  <rect x="14" y="14" width="3" height="3" />
-                  <rect x="14" y="19" width="3" height="3" />
-                  <rect x="19" y="14" width="3" height="3" />
-                  <rect x="19" y="19" width="3" height="3" />
-                  <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
-                </svg>
-                <span style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: 700 }}>Thank you!</span>
-              </div>
-
-              {/* Card 2: Green Field Stations */}
-              <div style={{ background: '#0D5C43', padding: '32px 24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '260px', boxShadow: '0 10px 25px rgba(13,92,67,0.1)' }}>
-                <span style={{ color: '#54D1A3', fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em' }}>GREEN FIELD STATIONS</span>
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '24px 0' }}>
-                  <rect x="3" y="3" width="7" height="7" />
-                  <rect x="14" y="3" width="7" height="7" />
-                  <rect x="3" y="14" width="7" height="7" />
-                  <rect x="14" y="14" width="3" height="3" />
-                  <rect x="14" y="19" width="3" height="3" />
-                  <rect x="19" y="14" width="3" height="3" />
-                  <rect x="19" y="19" width="3" height="3" />
-                  <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
-                </svg>
-                <span style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: 700 }}>Appreciation Portal</span>
-              </div>
-
-              {/* Card 3: City Guard Team */}
-              <div style={{ background: '#C2410C', padding: '32px 24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '260px', boxShadow: '0 10px 25px rgba(194,65,12,0.1)' }}>
-                <span style={{ color: '#FFedd5', fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em' }}>CITY GUARD TEAM</span>
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '24px 0' }}>
-                  <rect x="3" y="3" width="7" height="7" />
-                  <rect x="14" y="3" width="7" height="7" />
-                  <rect x="3" y="14" width="7" height="7" />
-                  <rect x="14" y="14" width="3" height="3" />
-                  <rect x="14" y="19" width="3" height="3" />
-                  <rect x="19" y="14" width="3" height="3" />
-                  <rect x="19" y="19" width="3" height="3" />
-                  <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
-                </svg>
-                <span style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: 700 }}>Scan to Support</span>
-              </div>
-
-              {/* Card 4: Premier Hotels */}
-              <div style={{ background: '#991B1B', padding: '32px 24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '260px', boxShadow: '0 10px 25px rgba(153,27,27,0.1)' }}>
-                <span style={{ color: '#FEE2E2', fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em' }}>PREMIER HOTELS</span>
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '24px 0' }}>
-                  <rect x="3" y="3" width="7" height="7" />
-                  <rect x="14" y="3" width="7" height="7" />
-                  <rect x="3" y="14" width="7" height="7" />
-                  <rect x="14" y="14" width="3" height="3" />
-                  <rect x="14" y="19" width="3" height="3" />
-                  <rect x="19" y="14" width="3" height="3" />
-                  <rect x="19" y="19" width="3" height="3" />
-                  <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
-                </svg>
-                <span style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: 700 }}>Thank Our Team</span>
-              </div>
-
+            {/* Fully Custom Image */}
+            <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+              <img
+                src="/Fully_Custom.png"
+                alt="Fully Customisable Branded QR Cards"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  display: 'block',
+                  borderRadius: '16px',
+                }}
+              />
             </div>
           </div>
         </section>
