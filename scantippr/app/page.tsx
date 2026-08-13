@@ -174,7 +174,7 @@ export default function Home() {
             
             {/* Left Column Content */}
             <div style={{ textAlign: 'left', marginTop: '20px' }}>
-              <h1 style={{ fontSize: '48px', fontWeight: 800, color: '#000000', lineHeight: 1.1, marginBottom: '16px' }}>
+              <h1 style={{ fontSize: '52px', fontWeight: 900, color: '#000000', lineHeight: 1.1, letterSpacing: '-0.02em', marginBottom: '16px' }}>
                 Cashless appreciation <br />
                 <span style={{ color: '#F97316' }}>for your employees.</span>
               </h1>
@@ -310,7 +310,7 @@ export default function Home() {
         <section id="how-it-works" style={{ padding: '60px 16px', background: '#F8FAFC' }}>
           <div className="responsive-container">
             <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-              <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#000000', marginBottom: '12px' }}>How ScanTippr Works</h2>
+              <h2 style={{ fontSize: '42px', fontWeight: 900, color: '#000000', letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '12px'  }}>How ScanTippr Works</h2>
               <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto' }}>Three simple steps to modernize appreciation without physical cash.</p>
             </div>
 
@@ -374,7 +374,7 @@ export default function Home() {
           <div className="responsive-container">
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
               <span style={{ fontSize: '12px', color: '#F97316', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Management Suite</span>
-              <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#000000', marginTop: '8px', marginBottom: '12px' }}>Powerful Corporate Dashboard</h2>
+              <h2 style={{ fontSize: '42px', fontWeight: 900, color: '#000000', letterSpacing: '-0.02em', lineHeight: 1.1, marginTop: '8px', marginBottom: '12px'  }}>Powerful Corporate Dashboard</h2>
               <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto' }}>
                 Complete command over your branch locations, personnel profiles, transaction logs, and performance metrics.
               </p>
@@ -407,7 +407,7 @@ export default function Home() {
         <section id="industries" style={{ padding: '60px 16px', background: '#F8FAFC' }}>
           <div className="responsive-container">
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#000000', marginBottom: '12px' }}>Perfect for Every Frontline Team</h2>
+              <h2 style={{ fontSize: '42px', fontWeight: 900, color: '#000000', letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '12px'  }}>Perfect for Every Frontline Team</h2>
               <p style={{ fontSize: '16px', color: '#64748B' }}>Providing cashless convenience across different corporate sectors.</p>
             </div>
 
@@ -456,7 +456,7 @@ export default function Home() {
         <section id="pricing" style={{ padding: '60px 16px', background: '#F8FAFC', borderTop: '1px solid #E5E7EB' }}>
           <div className="responsive-container">
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#000000', marginBottom: '12px' }}>Flexible Plans For Every Team Size</h2>
+              <h2 style={{ fontSize: '42px', fontWeight: 900, color: '#000000', letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '12px'  }}>Flexible Plans For Every Team Size</h2>
               <p style={{ fontSize: '16px', color: '#64748B' }}>Scaling seamlessly from local operations to multinational enterprises.</p>
             </div>
 
@@ -505,7 +505,7 @@ export default function Home() {
         <section style={{ padding: '60px 16px', background: '#FFFFFF' }}>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#000000', marginBottom: '12px' }}>Frequently Asked Questions</h2>
+              <h2 style={{ fontSize: '42px', fontWeight: 900, color: '#000000', letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '12px'  }}>Frequently Asked Questions</h2>
               <p style={{ fontSize: '16px', color: '#64748B' }}>Everything you need to know about setting up and running ScanTippr.</p>
             </div>
 
@@ -533,7 +533,7 @@ export default function Home() {
         {/* CTA Section */}
         <section style={{ padding: '60px 16px 0 16px', background: '#111111', color: '#FFF', textAlign: 'center' }}>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: '32px', fontWeight: 800, marginBottom: '16px' }}>Ready to modernize employee appreciation?</h2>
+            <h2 style={{ fontSize: '42px', fontWeight: 900, marginBottom: '16px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>Ready to modernize employee appreciation?</h2>
             <p style={{ fontSize: '16px', color: '#94A3B8', marginBottom: '32px' }}>Join leading enterprises making employee feedback secure, structured, and modern.</p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
               <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{
