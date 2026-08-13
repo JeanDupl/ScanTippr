@@ -436,18 +436,6 @@ export default function Home() {
         {/* White-Label Capabilities Section */}
         <section id="branding" style={{ padding: '80px 16px', background: '#FFFFFF' }}>
           <div className="responsive-container">
-            <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', color: '#F97316', letterSpacing: '0.1em' }}>
-                White-Label Capabilities
-              </span>
-              <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#000000', marginTop: '12px', marginBottom: '16px' }}>
-                Your Brand. Your Identity.
-              </h2>
-              <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
-                Every enterprise can design high-end branded physical cards to match corporate design systems.
-              </p>
-            </div>
-
             {/* Fully Custom Image */}
             <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
               <img
