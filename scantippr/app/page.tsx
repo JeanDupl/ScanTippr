@@ -150,11 +150,11 @@ export default function Home() {
                   padding: '10px 16px', 
                   fontSize: '13px', 
                   borderRadius: '6px', 
-                  background: '#12C7B5', 
+                  background: '#F97316', 
                   color: '#fff', 
                   textDecoration: 'none', 
                   fontWeight: 600,
-                  boxShadow: '0 4px 12px rgba(18, 199, 181, 0.2)'
+                  boxShadow: '0 4px 12px rgba(249, 115, 22, 0.3)'
                 }}
               >
                 Book a Demo
@@ -174,29 +174,35 @@ export default function Home() {
             
             {/* Left Column Content */}
             <div style={{ textAlign: 'left', marginTop: '20px' }}>
-              <h1 style={{ fontSize: '48px', fontWeight: 800, color: '#0F2942', lineHeight: 1.1, marginBottom: '16px' }}>
+              <h1 style={{ fontSize: '48px', fontWeight: 800, color: '#000000', lineHeight: 1.1, marginBottom: '16px' }}>
                 Cashless appreciation <br />
-                <span style={{ color: '#12C7B5' }}>for your employees.</span>
+                <span style={{ color: '#F97316' }}>for your employees.</span>
               </h1>
               <p style={{ fontSize: '18px', color: '#64748B', lineHeight: 1.6, marginBottom: '32px', maxWidth: '540px' }}>
                 Let customers thank your security guards, car guards, fuel attendants and frontline staff with a simple QR scan.
               </p>
               
               {/* Buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 mb-12 w-full sm:w-auto">
-                  <a 
-                    href="mailto:info@scantippr.co.za?subject=Demo Request" 
-                    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#0F2942] text-white rounded-lg font-semibold whitespace-nowrap transition-all text-center"
-                  >
-                    Book a Demo <span>→</span>
-                    </a>
-                  <a 
-                      href="#how-it-works" 
-                      className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-white text-[#12C7B5] border-2 border-[#12C7B5] rounded-lg font-semibold whitespace-nowrap transition-all text-center"
-                  >
+              <div className="flex flex-col sm:flex-row gap-4 mb-12 w-full sm:w-auto">
+                <a 
+                  href="mailto:info@scantippr.co.za?subject=Demo Request" 
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg font-semibold whitespace-nowrap transition-all text-center"
+                  style={{ background: '#111111', color: '#fff', textDecoration: 'none', padding: '14px 28px', borderRadius: '8px', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                >
+                  Book a Demo <span>→</span>
+                </a>
+                <a 
+                  href="#how-it-works" 
+                  style={{ 
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                    padding: '14px 28px', background: '#fff', color: '#F97316', 
+                    border: '2px solid #F97316', borderRadius: '8px', fontWeight: 600, 
+                    textDecoration: 'none', whiteSpace: 'nowrap'
+                  }}
+                >
                   <span>▷</span> Watch Demo
-              </a>
-          </div>
+                </a>
+              </div>
 
               {/* Four Horizontal Features */}
               <div style={{ 
@@ -209,31 +215,31 @@ export default function Home() {
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}>🛡️</div>
-                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#0F2942', lineHeight: 1.2 }}>
+                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#000000', lineHeight: 1.2 }}>
                     Secure<br /><span style={{ fontWeight: 500, color: '#64748B' }}>Payments</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}>⚡</div>
-                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#0F2942', lineHeight: 1.2 }}>
+                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#000000', lineHeight: 1.2 }}>
                     Instant<br /><span style={{ fontWeight: 500, color: '#64748B' }}>Appreciation</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}>📊</div>
-                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#0F2942', lineHeight: 1.2 }}>
+                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#000000', lineHeight: 1.2 }}>
                     Real-time<br /><span style={{ fontWeight: 500, color: '#64748B' }}>Reporting</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}>📱</div>
-                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#0F2942', lineHeight: 1.2 }}>
+                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#000000', lineHeight: 1.2 }}>
                     Easy QR<br /><span style={{ fontWeight: 500, color: '#64748B' }}>Management</span>
                   </div>
                 </div>
               </div>
 
-              {/* NEW QR Card Section */}
+              {/* QR Card Section */}
               <div style={{ 
                 marginTop: '40px', 
                 display: 'flex',
@@ -252,7 +258,7 @@ export default function Home() {
                   }} 
                 />
                 <div>
-                  <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#0F2942', margin: '0 0 8px 0' }}>
+                  <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#000000', margin: '0 0 8px 0' }}>
                     Employee QR Card
                   </h3>
                   <p style={{ fontSize: '15px', color: '#64748B', lineHeight: 1.6, margin: 0 }}>
@@ -304,25 +310,24 @@ export default function Home() {
         <section id="how-it-works" style={{ padding: '60px 16px', background: '#F8FAFC' }}>
           <div className="responsive-container">
             <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-              <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#0F2942', marginBottom: '12px' }}>How ScanTippr Works</h2>
+              <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#000000', marginBottom: '12px' }}>How ScanTippr Works</h2>
               <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto' }}>Three simple steps to modernize appreciation without physical cash.</p>
             </div>
 
             <div className="three-col-grid">
               {/* Step 1 - Scan */}
               <div style={{ background: '#FFF', padding: '32px 24px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 10px 25px -5px rgba(15, 41, 66, 0.05)' }}>
-                {/* Fixed snake_case typo here: changed justify_content to justifyContent */}
-                <div style={{ width: '64px', height: '64px', background: 'rgba(18, 199, 181, 0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', marginBottom: '20px', marginLeft: 'auto', marginRight: 'auto', justifyContent: 'center' }}>
+                <div style={{ width: '64px', height: '64px', background: 'rgba(249, 115, 22, 0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', marginBottom: '20px', marginLeft: 'auto', marginRight: 'auto', justifyContent: 'center' }}>
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4 8V6C4 4.89543 4.89543 4 6 4H8" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
-                    <path d="M20 8V6C20 4.89543 19.1046 4 18 4H16" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
-                    <path d="M4 16V18C4 19.1046 4.89543 20 6 20H8" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
-                    <path d="M20 16V18C20 19.1046 19.1046 20 18 20H16" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
-                    <rect x="8" y="8" width="8" height="8" rx="1.5" stroke="#0F2942" strokeWidth="2" />
-                    <rect x="11" y="11" width="2" height="2" fill="#0F2942" />
+                    <path d="M4 8V6C4 4.89543 4.89543 4 6 4H8" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round" />
+                    <path d="M20 8V6C20 4.89543 19.1046 4 18 4H16" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round" />
+                    <path d="M4 16V18C4 19.1046 4.89543 20 6 20H8" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round" />
+                    <path d="M20 16V18C20 19.1046 19.1046 20 18 20H16" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round" />
+                    <rect x="8" y="8" width="8" height="8" rx="1.5" stroke="#000000" strokeWidth="2" />
+                    <rect x="11" y="11" width="2" height="2" fill="#000000" />
                   </svg>
                 </div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px', textAlign: 'center' }}>1. Scan QR Code</h3>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#000000', marginBottom: '8px', textAlign: 'center' }}>1. Scan QR Code</h3>
                 <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0, textAlign: 'center' }}>
                   Customer scans the employee's unique QR code card using any native smartphone camera. No app download required.
                 </p>
@@ -330,16 +335,16 @@ export default function Home() {
 
               {/* Step 2 - Choose Amount */}
               <div style={{ background: '#FFF', padding: '32px 24px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 10px 25px -5px rgba(15, 41, 66, 0.05)' }}>
-                <div style={{ width: '64px', height: '64px', background: 'rgba(18, 199, 181, 0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', marginLeft: 'auto', marginRight: 'auto' }}>
+                <div style={{ width: '64px', height: '64px', background: 'rgba(249, 115, 22, 0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', marginLeft: 'auto', marginRight: 'auto' }}>
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="4" width="18" height="12" rx="2" stroke="#0F2942" strokeWidth="2" />
-                    <circle cx="12" cy="10" r="3" stroke="#12C7B5" strokeWidth="2" />
-                    <path d="M3 10H5M19 10H21" stroke="#0F2942" strokeWidth="2" strokeLinecap="round" />
-                    <path d="M7 20H17" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
-                    <path d="M12 17V20" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" />
+                    <rect x="3" y="4" width="18" height="12" rx="2" stroke="#000000" strokeWidth="2" />
+                    <circle cx="12" cy="10" r="3" stroke="#F97316" strokeWidth="2" />
+                    <path d="M3 10H5M19 10H21" stroke="#000000" strokeWidth="2" strokeLinecap="round" />
+                    <path d="M7 20H17" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round" />
+                    <path d="M12 17V20" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round" />
                   </svg>
                 </div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px', textAlign: 'center' }}>2. Select Amount</h3>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#000000', marginBottom: '8px', textAlign: 'center' }}>2. Select Amount</h3>
                 <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0, textAlign: 'center' }}>
                   Select predefined appreciation options like R20, R50, or type in a completely custom amount instantly.
                 </p>
@@ -347,15 +352,15 @@ export default function Home() {
 
               {/* Step 3 - Secure Payment */}
               <div style={{ background: '#FFF', padding: '32px 24px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 10px 25px -5px rgba(15, 41, 66, 0.05)' }}>
-                <div style={{ width: '64px', height: '64px', background: 'rgba(18, 199, 181, 0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', marginLeft: 'auto', marginRight: 'auto' }}>
+                <div style={{ width: '64px', height: '64px', background: 'rgba(249, 115, 22, 0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', marginLeft: 'auto', marginRight: 'auto' }}>
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="6" width="18" height="12" rx="2" stroke="#0F2942" strokeWidth="2" />
-                    <path d="M3 10H21" stroke="#0F2942" strokeWidth="2" />
-                    <path d="M7 14H9" stroke="#12C7B5" strokeWidth="2" strokeLinecap="round" />
-                    <path d="M14 13.5L16.5 16L21 11" stroke="#12C7B5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <rect x="3" y="6" width="18" height="12" rx="2" stroke="#000000" strokeWidth="2" />
+                    <path d="M3 10H21" stroke="#000000" strokeWidth="2" />
+                    <path d="M7 14H9" stroke="#F97316" strokeWidth="2" strokeLinecap="round" />
+                    <path d="M14 13.5L16.5 16L21 11" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px', textAlign: 'center' }}>3. Pay Securely</h3>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#000000', marginBottom: '8px', textAlign: 'center' }}>3. Pay Securely</h3>
                 <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0, textAlign: 'center' }}>
                   Complete checkout in seconds using secure credit/debit card gateways, Apple Pay, Google Pay, or secure instant EFT.
                 </p>
@@ -368,14 +373,13 @@ export default function Home() {
         <section id="how-it-works" style={{ padding: '80px 0', background: '#F8FAFC' }}>
           <div className="responsive-container">
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <span style={{ fontSize: '12px', color: '#12C7B5', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Management Suite</span>
-              <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#0F2942', marginTop: '8px', marginBottom: '12px' }}>Powerful Corporate Dashboard</h2>
+              <span style={{ fontSize: '12px', color: '#F97316', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Management Suite</span>
+              <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#000000', marginTop: '8px', marginBottom: '12px' }}>Powerful Corporate Dashboard</h2>
               <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto' }}>
                 Complete command over your branch locations, personnel profiles, transaction logs, and performance metrics.
               </p>
             </div>
 
-            {/* High-Fidelity Dashboard Mockup Image Container */}
             <div style={{ 
               background: '#FFF', 
               borderRadius: '24px', 
@@ -403,26 +407,26 @@ export default function Home() {
         <section id="industries" style={{ padding: '60px 16px', background: '#F8FAFC' }}>
           <div className="responsive-container">
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#0F2942', marginBottom: '12px' }}>Perfect for Every Frontline Team</h2>
+              <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#000000', marginBottom: '12px' }}>Perfect for Every Frontline Team</h2>
               <p style={{ fontSize: '16px', color: '#64748B' }}>Providing cashless convenience across different corporate sectors.</p>
             </div>
 
             <div className="four-col-grid">
               {[
-                { name: 'Security Companies', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> },
-                { name: 'Car Guards', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><rect x="1" y="3" width="22" height="13" rx="2"/><path d="M7 21h10M12 16v5"/></svg> },
-                { name: 'Fuel Stations', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><path d="M3 22V2h12v20M15 6h4v4h-4M19 10l2 3v5h-4"/></svg> },
-                { name: 'Restaurants', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><path d="M12 2v20M17 5H7a2 2 0 00-2 2v3a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2z"/></svg> },
-                { name: 'Hotels', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 7h2M9 11h2M13 7h2M13 11h2"/></svg> },
-                { name: 'Cleaning Services', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><path d="M12 22a7 7 0 100-14 7 7 0 000 14zM12 2v6M4.93 4.93l4.24 4.24M19.07 4.93l-4.24 4.24"/></svg> },
-                { name: 'Retail Stores', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0"/></svg> },
-                { name: 'Corporate Offices', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#12C7B5" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M6 21h12M12 17v4"/></svg> }
+                { name: 'Security Companies', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> },
+                { name: 'Car Guards', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><rect x="1" y="3" width="22" height="13" rx="2"/><path d="M7 21h10M12 16v5"/></svg> },
+                { name: 'Fuel Stations', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><path d="M3 22V2h12v20M15 6h4v4h-4M19 10l2 3v5h-4"/></svg> },
+                { name: 'Restaurants', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><path d="M12 2v20M17 5H7a2 2 0 00-2 2v3a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2z"/></svg> },
+                { name: 'Hotels', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 7h2M9 11h2M13 7h2M13 11h2"/></svg> },
+                { name: 'Cleaning Services', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><path d="M12 22a7 7 0 100-14 7 7 0 000 14zM12 2v6M4.93 4.93l4.24 4.24M19.07 4.93l-4.24 4.24"/></svg> },
+                { name: 'Retail Stores', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0"/></svg> },
+                { name: 'Corporate Offices', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M6 21h12M12 17v4"/></svg> }
               ].map((industry) => (
                 <div key={industry.name} style={{ background: '#FFF', padding: '24px 16px', borderRadius: '12px', border: '1px solid #E5E7EB', textAlign: 'center', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.01)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', background: '#F1F5F9', borderRadius: '50%' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', background: '#FFF7ED', borderRadius: '50%' }}>
                     {industry.icon}
                   </div>
-                  <span style={{ fontSize: '14px', fontWeight: 700, color: '#0F2942' }}>{industry.name}</span>
+                  <span style={{ fontSize: '14px', fontWeight: 700, color: '#000000' }}>{industry.name}</span>
                 </div>
               ))}
             </div>
@@ -433,10 +437,10 @@ export default function Home() {
         <section id="branding" style={{ padding: '80px 16px', background: '#FFFFFF' }}>
           <div className="responsive-container">
             <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', color: '#12C7B5', letterSpacing: '0.1em' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', color: '#F97316', letterSpacing: '0.1em' }}>
                 White-Label Capabilities
               </span>
-              <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#0F2942', marginTop: '12px', marginBottom: '16px' }}>
+              <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#000000', marginTop: '12px', marginBottom: '16px' }}>
                 Your Brand. Your Identity.
               </h2>
               <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
@@ -453,11 +457,9 @@ export default function Home() {
               margin: '0 auto'
             }}>
               
-              {/* Card 1: Sentry Security */}
-              <div style={{ background: '#0F2942', padding: '32px 24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '260px', boxShadow: '0 10px 25px rgba(15,41,66,0.1)' }}>
-                <span style={{ color: '#12C7B5', fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em' }}>SENTRY SECURITY</span>
-                
-                {/* Clean, Sharp Vector QR Code */}
+              {/* Card 1: Sentry Security - now black/orange */}
+              <div style={{ background: '#111111', padding: '32px 24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '260px', boxShadow: '0 10px 25px rgba(0,0,0,0.2)' }}>
+                <span style={{ color: '#F97316', fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em' }}>SENTRY SECURITY</span>
                 <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '24px 0' }}>
                   <rect x="3" y="3" width="7" height="7" />
                   <rect x="14" y="3" width="7" height="7" />
@@ -468,14 +470,12 @@ export default function Home() {
                   <rect x="19" y="19" width="3" height="3" />
                   <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
                 </svg>
-
                 <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 700 }}>Thank you!</span>
               </div>
 
               {/* Card 2: Green Field Stations */}
               <div style={{ background: '#0D5C43', padding: '32px 24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '260px', boxShadow: '0 10px 25px rgba(13,92,67,0.1)' }}>
                 <span style={{ color: '#54D1A3', fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em' }}>GREEN FIELD STATIONS</span>
-                
                 <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '24px 0' }}>
                   <rect x="3" y="3" width="7" height="7" />
                   <rect x="14" y="3" width="7" height="7" />
@@ -486,14 +486,12 @@ export default function Home() {
                   <rect x="19" y="19" width="3" height="3" />
                   <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
                 </svg>
-
                 <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 700 }}>Appreciation Portal</span>
               </div>
 
               {/* Card 3: City Guard Team */}
               <div style={{ background: '#C2410C', padding: '32px 24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '260px', boxShadow: '0 10px 25px rgba(194,65,12,0.1)' }}>
                 <span style={{ color: '#FFedd5', fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em' }}>CITY GUARD TEAM</span>
-                
                 <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '24px 0' }}>
                   <rect x="3" y="3" width="7" height="7" />
                   <rect x="14" y="3" width="7" height="7" />
@@ -504,14 +502,12 @@ export default function Home() {
                   <rect x="19" y="19" width="3" height="3" />
                   <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
                 </svg>
-
                 <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 700 }}>Scan to Support</span>
               </div>
 
               {/* Card 4: Premier Hotels */}
               <div style={{ background: '#991B1B', padding: '32px 24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '260px', boxShadow: '0 10px 25px rgba(153,27,27,0.1)' }}>
                 <span style={{ color: '#FEE2E2', fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em' }}>PREMIER HOTELS</span>
-                
                 <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '24px 0' }}>
                   <rect x="3" y="3" width="7" height="7" />
                   <rect x="14" y="3" width="7" height="7" />
@@ -522,7 +518,6 @@ export default function Home() {
                   <rect x="19" y="19" width="3" height="3" />
                   <path d="M7 7h.01M18 7h.01M7 18h.01" strokeWidth="3" />
                 </svg>
-
                 <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 700 }}>Thank Our Team</span>
               </div>
 
@@ -534,26 +529,26 @@ export default function Home() {
         <section id="pricing" style={{ padding: '60px 16px', background: '#F8FAFC', borderTop: '1px solid #E5E7EB' }}>
           <div className="responsive-container">
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#0F2942', marginBottom: '12px' }}>Flexible Plans For Every Team Size</h2>
+              <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#000000', marginBottom: '12px' }}>Flexible Plans For Every Team Size</h2>
               <p style={{ fontSize: '16px', color: '#64748B' }}>Scaling seamlessly from local operations to multinational enterprises.</p>
             </div>
 
             <div className="pricing-grid">
               {/* Starter Plan */}
               <div style={{ background: '#FFF', padding: '24px', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>Starter</h3>
-                <div style={{ fontSize: '28px', fontWeight: 800, color: '#0F2942', marginBottom: '16px' }}>Free <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>/ month</span></div>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#000000', marginBottom: '8px' }}>Starter</h3>
+                <div style={{ fontSize: '28px', fontWeight: 800, color: '#000000', marginBottom: '16px' }}>Free <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>/ month</span></div>
                 <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px 0', display: 'flex', flexDirection: 'column', gap: '8px', color: '#475569', fontSize: '13px' }}>
                   <li>✓ Up to 10 Employees</li>
                   <li>✓ Standard QR Designs</li>
                   <li>✓ Weekly Reports</li>
                 </ul>
-                <a href="mailto:info@scantippr.co.za" style={{ display: 'block', textDecoration: 'none', textAlign: 'center', padding: '10px 0', border: '2px solid #0F2942', color: '#0F2942', borderRadius: '8px', fontWeight: 600, fontSize: '13px' }}>Get Started</a>
+                <a href="mailto:info@scantippr.co.za" style={{ display: 'block', textDecoration: 'none', textAlign: 'center', padding: '10px 0', border: '2px solid #000000', color: '#000000', borderRadius: '8px', fontWeight: 600, fontSize: '13px' }}>Get Started</a>
               </div>
 
               {/* Professional Plan */}
-              <div style={{ background: '#0F2942', color: '#FFF', padding: '32px 24px', borderRadius: '20px', border: '2px solid #12C7B5' }}>
-                <div style={{ display: 'inline-block', background: '#12C7B5', color: '#0F2942', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 700, marginBottom: '12px' }}>MOST POPULAR</div>
+              <div style={{ background: '#111111', color: '#FFF', padding: '32px 24px', borderRadius: '20px', border: '2px solid #F97316' }}>
+                <div style={{ display: 'inline-block', background: '#F97316', color: '#FFF', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 700, marginBottom: '12px' }}>MOST POPULAR</div>
                 <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '8px' }}>Professional</h3>
                 <div style={{ fontSize: '32px', fontWeight: 800, marginBottom: '16px' }}>Custom pricing</div>
                 <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px 0', display: 'flex', flexDirection: 'column', gap: '8px', color: '#94A3B8', fontSize: '13px' }}>
@@ -561,19 +556,19 @@ export default function Home() {
                   <li style={{ color: '#FFF' }}>✓ Custom Branding</li>
                   <li style={{ color: '#FFF' }}>✓ Live Analytics</li>
                 </ul>
-                <a href="mailto:info@scantippr.co.za?subject=Professional Plan Request" style={{ display: 'block', textDecoration: 'none', textAlign: 'center', padding: '12px 0', background: '#12C7B5', color: '#0F2942', borderRadius: '8px', fontWeight: 700, fontSize: '13px' }}>Contact Sales</a>
+                <a href="mailto:info@scantippr.co.za?subject=Professional Plan Request" style={{ display: 'block', textDecoration: 'none', textAlign: 'center', padding: '12px 0', background: '#F97316', color: '#FFF', borderRadius: '8px', fontWeight: 700, fontSize: '13px' }}>Contact Sales</a>
               </div>
 
               {/* Enterprise Plan */}
               <div style={{ background: '#FFF', padding: '24px', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F2942', marginBottom: '8px' }}>Enterprise</h3>
-                <div style={{ fontSize: '28px', fontWeight: 800, color: '#0F2942', marginBottom: '16px' }}>Tailored Pricing</div>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#000000', marginBottom: '8px' }}>Enterprise</h3>
+                <div style={{ fontSize: '28px', fontWeight: 800, color: '#000000', marginBottom: '16px' }}>Tailored Pricing</div>
                 <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px 0', display: 'flex', flexDirection: 'column', gap: '8px', color: '#475569', fontSize: '13px' }}>
                   <li>✓ Multi-Branch Admin</li>
                   <li>✓ Dedicated Manager</li>
                   <li>✓ Custom API Syncs</li>
                 </ul>
-                <a href="mailto:info@scantippr.co.za" style={{ display: 'block', textDecoration: 'none', textAlign: 'center', padding: '10px 0', border: '2px solid #0F2942', color: '#0F2942', borderRadius: '8px', fontWeight: 600, fontSize: '13px' }}>Contact Enterprise</a>
+                <a href="mailto:info@scantippr.co.za" style={{ display: 'block', textDecoration: 'none', textAlign: 'center', padding: '10px 0', border: '2px solid #000000', color: '#000000', borderRadius: '8px', fontWeight: 600, fontSize: '13px' }}>Contact Enterprise</a>
               </div>
             </div>
           </div>
@@ -583,7 +578,7 @@ export default function Home() {
         <section style={{ padding: '60px 16px', background: '#FFFFFF' }}>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#0F2942', marginBottom: '12px' }}>Frequently Asked Questions</h2>
+              <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#000000', marginBottom: '12px' }}>Frequently Asked Questions</h2>
               <p style={{ fontSize: '16px', color: '#64748B' }}>Everything you need to know about setting up and running ScanTippr.</p>
             </div>
 
@@ -596,8 +591,8 @@ export default function Home() {
               ].map((faq, idx) => (
                 <div key={idx} style={{ border: '1px solid #E5E7EB', borderRadius: '10px', padding: '16px', cursor: 'pointer' }} onClick={() => toggleFaq(idx)}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#0F2942', margin: 0 }}>{faq.q}</h4>
-                    <span style={{ fontSize: '16px', color: '#12C7B5', fontWeight: 'bold' }}>{activeFaq === idx ? '−' : '+'}</span>
+                    <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#000000', margin: 0 }}>{faq.q}</h4>
+                    <span style={{ fontSize: '16px', color: '#F97316', fontWeight: 'bold' }}>{activeFaq === idx ? '−' : '+'}</span>
                   </div>
                   {activeFaq === idx && (
                     <p style={{ marginTop: '10px', fontSize: '13px', color: '#475569', lineHeight: '1.6', margin: '10px 0 0 0' }}>{faq.a}</p>
@@ -609,19 +604,19 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section style={{ padding: '60px 16px', background: '#0F2942', color: '#FFF', textAlign: 'center' }}>
+        <section style={{ padding: '60px 16px', background: '#111111', color: '#FFF', textAlign: 'center' }}>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <h2 style={{ fontSize: '32px', fontWeight: 800, marginBottom: '16px' }}>Ready to modernize employee appreciation?</h2>
             <p style={{ fontSize: '16px', color: '#94A3B8', marginBottom: '32px' }}>Join leading enterprises making employee feedback secure, structured, and modern.</p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
               <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{
                 padding: '14px 28px',
-                background: '#12C7B5',
-                color: '#0F2942',
+                background: '#F97316',
+                color: '#FFF',
                 borderRadius: '10px',
                 fontWeight: 700,
                 textDecoration: 'none',
-                boxShadow: '0 4px 14px rgba(18, 199, 181, 0.4)'
+                boxShadow: '0 4px 14px rgba(249, 115, 22, 0.4)'
               }}>
                 Book a Demo
               </a>
@@ -640,12 +635,11 @@ export default function Home() {
         </section>
 
         {/* Global Footer */}
-        <footer style={{ background: '#111e29', padding: '40px 16px 24px 16px' }}>
+        <footer style={{ background: '#0a0a0a', padding: '40px 16px 24px 16px' }}>
           <div className="responsive-container">
             <div className="footer-grid" style={{ marginBottom: '32px' }}>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '1rem' }}>
-                  {/* Blended Logo Container (No white background block) */}
                   <div style={{ 
                     display: 'inline-flex', 
                     alignItems: 'center',
@@ -689,7 +683,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: '#64748B', flexWrap: 'wrap', gap: '12px' }}>
+            <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: '#64748B', flexWrap: 'wrap', gap: '12px' }}>
               <span>© 2026 ScanTippr. All rights reserved.</span>
               <div style={{ display: 'flex', gap: '16px' }}>
                 <span style={{ cursor: 'pointer' }}>Privacy Policy</span>
