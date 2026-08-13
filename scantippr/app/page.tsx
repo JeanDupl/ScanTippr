@@ -370,7 +370,7 @@ export default function Home() {
         </section>
 
         {/* Management Suite section featuring the Dashboard Mockup */}
-        <section id="how-it-works" style={{ padding: '80px 0', background: '#F8FAFC' }}>
+        <section id="features" style={{ padding: '80px 0', background: '#F8FAFC' }}>
           <div className="responsive-container">
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
               <span style={{ fontSize: '12px', color: '#F97316', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Management Suite</span>
