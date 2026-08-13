@@ -114,14 +114,16 @@ export default function Home() {
           backdropFilter: 'blur(8px)',
           borderBottom: '1px solid #E5E7EB',
           zIndex: 100,
-          padding: '8px 16px'
+          padding: '0 16px',
+          height: '70px'
         }}>
           <div style={{
             maxWidth: '1200px',
             margin: '0 auto',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'center',
+            height: '100%'
           }}>
             <a href="/" style={{ 
               display: 'flex', 
