@@ -114,7 +114,7 @@ export default function Home() {
           backdropFilter: 'blur(8px)',
           borderBottom: '1px solid #E5E7EB',
           zIndex: 100,
-          padding: '12px 16px'
+          padding: '8px 16px'
         }}>
           <div style={{
             maxWidth: '1200px',
@@ -644,7 +644,7 @@ export default function Home() {
                   src="/Midelpage-logo.png" 
                   alt="ScanTippr Logo" 
                   style={{ 
-                    width: '200px', 
+                    width: '260px', 
                     height: 'auto', 
                     objectFit: 'contain',
                     display: 'block',
