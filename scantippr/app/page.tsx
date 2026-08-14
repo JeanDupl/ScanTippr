@@ -436,19 +436,82 @@ export default function Home() {
         {/* White-Label Capabilities Section */}
         <section id="branding" style={{ padding: '80px 16px', background: '#FFFFFF' }}>
           <div className="responsive-container">
-            {/* Fully Custom Image */}
-            <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+
+            {/* Header */}
+            <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '16px' }}>
+                <span style={{ fontSize: '20px' }}>🎨</span>
+                <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', color: '#F97316', letterSpacing: '0.12em' }}>
+                  Fully Customisable
+                </span>
+              </div>
+              <h2 style={{ fontSize: '42px', fontWeight: 900, color: '#000000', letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '16px' }}>
+                Your Brand. <span style={{ color: '#F97316' }}>Your Identity.</span>
+              </h2>
+              <div style={{ width: '48px', height: '3px', background: '#F97316', margin: '0 auto 20px auto', borderRadius: '2px' }} />
+              <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '560px', margin: '0 auto', lineHeight: 1.6 }}>
+                Every enterprise can design high-end branded physical cards to match corporate design systems.
+              </p>
+            </div>
+
+            {/* Two Card Images */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr',
+              gap: '24px',
+              maxWidth: '1100px',
+              margin: '0 auto 56px auto'
+            }}>
               <img
-                src="/Fully_Custom.png"
-                alt="Fully Customisable Branded QR Cards"
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  display: 'block',
-                  borderRadius: '16px',
-                }}
+                src="/Fully_custom1.png"
+                alt="Branded QR Cards - Protecta Security and GreenLeaf"
+                style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '16px' }}
+              />
+              <img
+                src="/Fully_custom2.png"
+                alt="Branded QR Cards - Nexus Logistics and Halo Cleaning"
+                style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '16px' }}
               />
             </div>
+
+            {/* 4 Feature Bullets */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: '32px',
+              maxWidth: '1100px',
+              margin: '0 auto'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                <div style={{ fontSize: '28px', flexShrink: 0 }}>🎨</div>
+                <div>
+                  <h4 style={{ fontSize: '15px', fontWeight: 800, color: '#000000', margin: '0 0 6px 0', textTransform: 'uppercase', letterSpacing: '0.03em' }}>Brand Freedom</h4>
+                  <p style={{ fontSize: '14px', color: '#64748B', margin: 0, lineHeight: 1.6 }}>Use your brand colours, fonts, and logo.</p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                <div style={{ fontSize: '28px', flexShrink: 0 }}>🖨️</div>
+                <div>
+                  <h4 style={{ fontSize: '15px', fontWeight: 800, color: '#000000', margin: '0 0 6px 0', textTransform: 'uppercase', letterSpacing: '0.03em' }}>High Quality Print</h4>
+                  <p style={{ fontSize: '14px', color: '#64748B', margin: 0, lineHeight: 1.6 }}>Premium cards that represent your brand.</p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                <div style={{ fontSize: '28px', flexShrink: 0 }}>📱</div>
+                <div>
+                  <h4 style={{ fontSize: '15px', fontWeight: 800, color: '#000000', margin: '0 0 6px 0', textTransform: 'uppercase', letterSpacing: '0.03em' }}>Smart & Scan Ready</h4>
+                  <p style={{ fontSize: '14px', color: '#64748B', margin: 0, lineHeight: 1.6 }}>Optimised QR codes for fast, reliable scans.</p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                <div style={{ fontSize: '28px', flexShrink: 0 }}>🏆</div>
+                <div>
+                  <h4 style={{ fontSize: '15px', fontWeight: 800, color: '#000000', margin: '0 0 6px 0', textTransform: 'uppercase', letterSpacing: '0.03em' }}>Professional Impact</h4>
+                  <p style={{ fontSize: '14px', color: '#64748B', margin: 0, lineHeight: 1.6 }}>Elevate brand presence with every interaction.</p>
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
 
