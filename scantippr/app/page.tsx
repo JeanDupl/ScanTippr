@@ -459,7 +459,7 @@ export default function Home() {
               display: 'grid',
               gridTemplateColumns: '1fr',
               gap: '24px',
-              maxWidth: '480px',
+              maxWidth: '680px',
               margin: '0 auto 56px auto'
             }}>
               <img
