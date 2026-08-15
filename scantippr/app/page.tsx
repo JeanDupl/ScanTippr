@@ -367,6 +367,29 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          {/* Video Section */}
+          <div style={{ 
+            maxWidth: '900px', 
+            margin: '56px auto 0 auto',
+            borderRadius: '20px',
+            overflow: 'hidden',
+            boxShadow: '0 20px 60px -10px rgba(0,0,0,0.15)',
+            position: 'relative'
+          }}>
+            <video
+              controls
+              autoPlay
+              muted
+              loop
+              playsInline
+              style={{ width: '100%', height: 'auto', display: 'block' }}
+            >
+              <source src="/Scan_QR.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
         </section>
 
         {/* Management Suite section featuring the Dashboard Mockup */}
