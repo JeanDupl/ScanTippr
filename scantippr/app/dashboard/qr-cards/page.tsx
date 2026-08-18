@@ -25,9 +25,10 @@ export default async function QRCardsPage() {
   const companyId = profile?.company_id
   if (!companyId) redirect('/login')
 
+  // 👇 CHANGED — was .select('name'), now includes theme columns too
   const { data: company } = await supabase
     .from('companies')
-    .select('name')
+    .select('name, brand_primary, brand_light, sidebar_mode')
     .eq('id', companyId)
     .single()
 
@@ -39,7 +40,14 @@ export default async function QRCardsPage() {
     .order('first_name', { ascending: true })
 
   return (
-    <DashboardShell>
+    <DashboardShell
+      companyId={companyId}
+      initialTheme={{
+        primary: company?.brand_primary || '#FF5A00',
+        light: company?.brand_light || '#FFF0E6',
+      }}
+      initialSidebarMode={company?.sidebar_mode || 'dark'}
+    >
       <QRCardsClient employees={employees ?? []} companyName={company?.name ?? 'Company'} />
     </DashboardShell>
   )

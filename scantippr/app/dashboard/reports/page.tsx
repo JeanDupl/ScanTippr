@@ -35,7 +35,7 @@ export default async function ReportsPage() {
 
   const { data: company } = await supabase
     .from('companies')
-    .select('name')
+    .select('name, brand_primary, brand_light, sidebar_mode')
     .eq('id', companyId)
     .single()
 
@@ -45,7 +45,14 @@ export default async function ReportsPage() {
     .eq('company_id', companyId)
 
   return (
-    <DashboardShell>
+    <DashboardShell
+      companyId={companyId}
+      initialTheme={{
+        primary: company?.brand_primary || '#FF5A00',
+        light: company?.brand_light || '#FFF0E6',
+      }}
+      initialSidebarMode={company?.sidebar_mode || 'dark'}
+    >
       <ReportsClient transactions={transactions ?? []} employees={employees ?? []} companyName={company?.name ?? 'Company'} />
     </DashboardShell>
   )

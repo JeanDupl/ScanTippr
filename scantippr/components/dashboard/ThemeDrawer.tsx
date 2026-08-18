@@ -1,21 +1,30 @@
-import React from 'react';
-import { Palette, X, RotateCcw } from 'lucide-react';
+import React, { useState } from 'react';
+import { Palette, X, RotateCcw, Sun, Moon, Loader2 } from 'lucide-react';
 
 interface ThemeDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  companyId: string;
   currentTheme: { primary: string; light: string };
+  sidebarMode: 'light' | 'dark';
   updateTheme: (primary: string, light?: string) => void;
+  updateSidebarMode: (mode: 'light' | 'dark') => void;
   resetTheme: () => void;
 }
 
-export default function ThemeDrawer({ 
-  isOpen, 
-  onClose, 
-  currentTheme, 
-  updateTheme, 
-  resetTheme 
+export default function ThemeDrawer({
+  isOpen,
+  onClose,
+  companyId,
+  currentTheme,
+  sidebarMode,
+  updateTheme,
+  updateSidebarMode,
+  resetTheme,
 }: ThemeDrawerProps) {
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   if (!isOpen) return null;
 
   const presets = [
@@ -26,10 +35,35 @@ export default function ThemeDrawer({
     { name: 'Charcoal Dark', primary: '#18181B', light: '#F4F4F5' },
   ];
 
+  const handleSave = async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/save-branding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          companyId,
+          brand_primary: currentTheme.primary,
+          brand_light: currentTheme.light,
+          sidebar_mode: sidebarMode,
+        }),
+      });
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Failed to save theme');
+
+      onClose();
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <div className="fixed inset-y-0 right-0 w-80 bg-white border-l border-zinc-200 shadow-2xl p-6 z-50 flex flex-col justify-between transition-all">
       <div>
-        {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-zinc-100 mb-6">
           <div className="flex items-center gap-2">
             <Palette className="w-5 h-5 text-brand" />
@@ -78,18 +112,53 @@ export default function ThemeDrawer({
             />
           </div>
         </div>
+
+        {/* Light / Dark Sidebar Toggle */}
+        <div className="mb-6">
+          <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-3">
+            Sidebar Mode
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => updateSidebarMode('light')}
+              className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
+                sidebarMode === 'light'
+                  ? 'bg-zinc-900 text-white border-zinc-900'
+                  : 'bg-white text-zinc-500 border-zinc-200 hover:bg-zinc-50'
+              }`}
+            >
+              <Sun className="w-4 h-4" /> Light
+            </button>
+            <button
+              onClick={() => updateSidebarMode('dark')}
+              className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
+                sidebarMode === 'dark'
+                  ? 'bg-zinc-900 text-white border-zinc-900'
+                  : 'bg-white text-zinc-500 border-zinc-200 hover:bg-zinc-50'
+              }`}
+            >
+              <Moon className="w-4 h-4" /> Dark
+            </button>
+          </div>
+        </div>
+
+        {error && (
+          <p className="text-xs text-red-500 mb-4">{error}</p>
+        )}
       </div>
 
       {/* Action Buttons */}
       <div className="space-y-2 pt-4 border-t border-zinc-100">
-        <button 
-          onClick={onClose} 
-          className="w-full bg-brand text-white font-semibold py-2.5 rounded-xl text-sm shadow-sm hover:opacity-90 transition-opacity"
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="w-full flex items-center justify-center gap-2 bg-brand text-white font-semibold py-2.5 rounded-xl text-sm shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60"
         >
-          Save Theme
+          {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+          {saving ? 'Saving...' : 'Save Theme'}
         </button>
-        <button 
-          onClick={resetTheme} 
+        <button
+          onClick={resetTheme}
           className="w-full flex items-center justify-center gap-2 text-zinc-500 py-2 rounded-xl text-xs hover:bg-zinc-50 transition-colors"
         >
           <RotateCcw className="w-3.5 h-3.5" /> Reset to Default

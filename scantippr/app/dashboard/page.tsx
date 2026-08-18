@@ -54,7 +54,14 @@ export default async function DashboardPage() {
     .reduce((sum, tx) => sum + Number(tx.amount), 0)
 
   return (
-    <DashboardShell>
+    <DashboardShell
+      companyId={companyId}
+      initialTheme={{
+        primary: company?.brand_primary || '#FF5A00',
+        light: company?.brand_light || '#FFF0E6',
+      }}
+      initialSidebarMode={company?.sidebar_mode || 'dark'}
+    >
       <div className="space-y-8">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">{company?.name || 'Company Dashboard'}</h1>

@@ -24,6 +24,12 @@ export default async function EmployeesPage() {
   const companyId = profile?.company_id
   if (!companyId) redirect('/login')
 
+  const { data: company } = await supabase
+    .from('companies')
+    .select('brand_primary, brand_light, sidebar_mode')
+    .eq('id', companyId)
+    .single()
+
   const { data: employees } = await supabase
     .from('guards')
     .select('*')
@@ -31,7 +37,14 @@ export default async function EmployeesPage() {
     .order('first_name', { ascending: true })
 
   return (
-    <DashboardShell>
+    <DashboardShell
+      companyId={companyId}
+      initialTheme={{
+        primary: company?.brand_primary || '#FF5A00',
+        light: company?.brand_light || '#FFF0E6',
+      }}
+      initialSidebarMode={company?.sidebar_mode || 'dark'}
+    >
       <div className="space-y-8">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Employees</h1>
