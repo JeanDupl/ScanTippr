@@ -29,7 +29,6 @@ function SuccessContent() {
 
   const company = guard?.companies as any;
 
-  // Truncate reference for beautiful UI display (e.g., TIP-1388ef51)
   const displayReference = reference 
     ? (reference.length > 12 ? reference.slice(0, 12) : reference) 
     : '';
@@ -55,7 +54,6 @@ function SuccessContent() {
         border: '1px solid #e2e8f0'
       }}>
         
-        {/* Status Icon Indicator */}
         <div style={{
           width: '72px',
           height: '72px',
@@ -74,16 +72,31 @@ function SuccessContent() {
           )}
         </div>
 
-        {/* Dynamic Header */}
         <h2 style={{ fontSize: '28px', fontWeight: 800, color: '#1a3a5c', margin: '0 0 1rem', letterSpacing: '-0.5px' }}>
           {cancelled ? 'Payment cancelled' : 'Thank you!'}
         </h2>
 
-        {/* Dynamic Detail Text */}
         {cancelled ? (
-          <p style={{ fontSize: '16px', color: '#64748b', lineHeight: '1.6', margin: '0 0 2rem' }}>
-            Your transaction was not completed. No funds were transferred.
-          </p>
+          <>
+            <p style={{ fontSize: '16px', color: '#64748b', lineHeight: '1.6', margin: '0 0 1.5rem' }}>
+              Your transaction was not completed. No funds were transferred.
+            </p>
+            <a
+              href={`/pay/${guardId}`}
+              style={{
+                display: 'inline-block',
+                padding: '12px 28px',
+                background: '#3b82f6',
+                color: '#fff',
+                borderRadius: '10px',
+                fontWeight: 700,
+                textDecoration: 'none',
+                marginBottom: '2rem',
+              }}
+            >
+              Try again
+            </a>
+          </>
         ) : (
           <>
             {guard && (
@@ -93,14 +106,12 @@ function SuccessContent() {
               </p>
             )}
             
-            {/* Brand Slogan Integration */}
             <p style={{ fontSize: '15px', color: '#10b981', fontWeight: 600, margin: '0 0 2rem', background: '#f0fdf4', padding: '8px 16px', borderRadius: '30px', display: 'inline-block' }}>
               Your cashless appreciation makes a real impact.
             </p>
           </>
         )}
 
-        {/* Copyable Reference Box (Hidden if payment is cancelled or no ref exists) */}
         {reference && !cancelled && (
           <div style={{ 
             background: '#f8fafc', 
@@ -133,7 +144,6 @@ function SuccessContent() {
           </div>
         )}
 
-        {/* Security / Compliance Footer */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', borderTop: '1px solid #f1f5f9', paddingTop: '1.25rem' }}>
           <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>Powered by</span>
           <span style={{ fontSize: '13px', fontWeight: 800, color: '#1a3a5c', letterSpacing: '-0.3px' }}>Scan<span style={{ color: '#185fa5' }}>Tippr</span></span>
