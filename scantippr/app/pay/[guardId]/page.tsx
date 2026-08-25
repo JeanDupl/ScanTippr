@@ -41,7 +41,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
     fetchGuard();
   }, [guardId]);
 
-  async function handlePayment() {
+  async function handlePayment(institutionId?: string) {
     if (!displayAmount || displayAmount < 10) return;
     setProcessing(true);
     setPaymentError(null);
@@ -50,7 +50,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
       const res = await fetch('/api/initiate-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ guardId, amount: displayAmount }),
+        body: JSON.stringify({ guardId, amount: displayAmount, institutionId }),
       });
 
       const data = await res.json();
@@ -173,6 +173,26 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
           {processing ? 'Processing...' : !displayAmount ? 'Select an amount' : displayAmount < 10 ? 'Minimum amount is R10' : `Send R${displayAmount}`}
         </button>
 
+                {/* Standalone bank buttons */}
+        <div className="flex gap-2 mt-3">
+          <button
+            onClick={() => handlePayment('8F0B5AD2-2A44-4FF2-B052-D4E1E426587D')}
+            disabled={!displayAmount || displayAmount < 10 || processing}
+            className="flex-1 flex items-center justify-center gap-2 border-2 border-[#C00] text-[#C00] rounded-xl py-3 font-bold text-sm hover:bg-red-50 transition-all duration-150 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <span>Pay with</span>
+            <span className="font-extrabold">ABSA</span>
+          </button>
+          <button
+            onClick={() => handlePayment('913999FA-3A32-4E3D-82F0-A1DF7E9E4F7B')}
+            disabled={!displayAmount || displayAmount < 10 || processing}
+            className="flex-1 flex items-center justify-center gap-2 border-2 border-[#0066CC] text-[#0066CC] rounded-xl py-3 font-bold text-sm hover:bg-blue-50 transition-all duration-150 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <span>Pay with</span>
+            <span className="font-extrabold">Capitec</span>
+          </button>
+        </div>
+        
         {/* 8. Polished and highlighted secure badge banner */}
         <div className="mt-5 pt-4 border-t border-gray-100 text-center">
           <div className="inline-flex items-center gap-1.5 bg-green-50 text-green-700 px-3 py-1.5 rounded-full text-xs font-medium mb-3">

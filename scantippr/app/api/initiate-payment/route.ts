@@ -1,18 +1,17 @@
-import { supabase } from '@/lib/supabase';
-import crypto from 'crypto';
+import { createClient } from '@supabase/supabase-js';
+import { createOzowPayment } from '@/lib/ozow';
 
-function generatePeachSignature(params: Record<string, string>, secretToken: string): string {
-  const sortedKeys = Object.keys(params).sort();
-  const signatureString = sortedKeys.map((key) => `${key}${params[key]}`).join('');
-  return crypto.createHmac('sha256', secretToken).update(signatureString).digest('hex');
-}
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function POST(request: Request) {
-  const { guardId, amount } = await request.json();
+  const { guardId, amount, institutionId } = await request.json();
 
   const { data: guard, error } = await supabase
     .from('guards')
-    .select('id, first_name, last_name, company_id, companies(name)')
+    .select('id, first_name, last_name, company_id')
     .eq('id', guardId)
     .maybeSingle();
 
@@ -20,47 +19,33 @@ export async function POST(request: Request) {
     return Response.json({ error: 'Guard not found' }, { status: 404 });
   }
 
-  const entityId = process.env.PEACH_ENTITY_ID!;
-  const secretToken = process.env.PEACH_SECRET_TOKEN!;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
-  const merchantTransactionId = `TIP-${guardId}-${Date.now()}`;
-  const nonce = crypto.randomBytes(16).toString('hex');
+  const merchantReference = `TIP-${guardId.slice(0, 8)}-${Date.now()}`;
 
-  const params: Record<string, string> = {
-    'authentication.entityId': entityId,
-    amount: amount.toFixed(2),
-    currency: 'ZAR',
-    merchantTransactionId,
-    nonce,
-    paymentType: 'DB',
-    shopperResultUrl: `${siteUrl}/pay/${guardId}/success-handler`,
-    'customParameters[guard_id]': guardId,
-    'customParameters[guard_name]': `${guard.first_name} ${guard.last_name}`,
-  };
+  try {
+        const payment = await createOzowPayment({
+      amount,
+      merchantReference,
+      returnUrl: `${siteUrl}/pay/${guardId}/success-handler?ref=${merchantReference}`,
+      institutionId,
+    });
 
-  const signature = generatePeachSignature(params, secretToken);
+    // Save a pending transaction row so we have something to update when the customer returns
+    await supabase.from('transactions').insert({
+      guard_id: guardId,
+      company_id: guard.company_id,
+      amount,
+      paystack_reference: merchantReference,
+      status: 'pending',
+      ozow_payment_id: payment.id,
+    });
 
-  const body = new URLSearchParams({ ...params, signature });
-
-  const peachRes = await fetch('https://testsecure.peachpayments.com/checkout/initiate', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Accept: 'application/json',
-      Referer: siteUrl,
-    },
-    body: body.toString(),
-  });
-
-  const peachData = await peachRes.json();
-
-  if (!peachData.redirectUrl) {
-    console.error('Peach error:', peachData);
+    return Response.json({
+      authorization_url: payment.redirectUrl,
+      reference: merchantReference,
+    });
+  } catch (err: any) {
+    console.error('Ozow initiate error:', err.message);
     return Response.json({ error: 'Failed to initialize payment' }, { status: 500 });
   }
-
-  return Response.json({
-    authorization_url: peachData.redirectUrl,
-    reference: merchantTransactionId,
-  });
 }
