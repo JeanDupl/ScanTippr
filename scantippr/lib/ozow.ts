@@ -38,6 +38,7 @@ export async function createOzowPayment({
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
+      'Idempotency-Key': merchantReference,
     },
         body: JSON.stringify({
         siteCode: process.env.OZOW_SITE_CODE,
