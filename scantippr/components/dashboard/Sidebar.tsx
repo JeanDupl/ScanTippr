@@ -39,9 +39,7 @@ export default function Sidebar({ mode = 'light' }: SidebarProps) {
     >
       <div>
         <div className={`p-6 border-b flex items-center gap-3 ${isDark ? 'border-zinc-800' : 'border-zinc-100'}`}>
-          <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center text-white font-bold text-lg">
-            S
-          </div>
+            <img src="/Icon.png" alt="ScanTippr" className="w-8 h-8 rounded-lg object-contain" />
           <div>
             <h2 className={`font-bold leading-tight ${isDark ? 'text-white' : 'text-zinc-900'}`}>
               ScanTippr
