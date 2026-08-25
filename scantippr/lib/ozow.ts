@@ -1,4 +1,4 @@
-const OZOW_BASE_URL = 'https://stagingone.ozow.com/v1';
+const OZOW_BASE_URL = 'https://one.ozow.com/v1';
 
 export async function getOzowAccessToken(): Promise<string> {
   const res = await fetch(`${OZOW_BASE_URL}/token`, {
