@@ -54,7 +54,7 @@ export default function LoginPage() {
     <main style={{ minHeight: '100vh', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui, sans-serif' }}>
       <form onSubmit={handleLogin} style={{ background: '#fff', borderRadius: '16px', padding: '2.5rem 2rem', width: '100%', maxWidth: '400px', boxShadow: '0 10px 25px rgba(0,0,0,0.08)', border: '1px solid #e2e8f0' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ width: '48px', height: '48px', background: '#FF5A00', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', fontSize: '22px', fontWeight: 700, color: '#fff' }}>S</div>
+          <img src="/Icon.png" alt="ScanTippr" style={{ width: '48px', height: '48px', borderRadius: '12px', margin: '0 auto 1rem', display: 'block', objectFit: 'contain' }} />
           <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#1a1a1a', margin: 0 }}>ScanTippr</h1>
           <p style={{ fontSize: '14px', color: '#64748b', marginTop: '4px' }}>Sign in to your company portal</p>
         </div>
