@@ -5,7 +5,8 @@ export async function GET() {
   try {
     const payment = await createOzowPayment({
       amount: 25.00,
-      merchantReference: `TEST-${Date.now()}`,
+      merchantReference: `TEST${Date.now()}`,
+      beneficiaryReference: `TEST${Date.now()}`.slice(0, 20),
       returnUrl: 'https://example.com/payment-return',
     });
     return NextResponse.json({ success: true, payment });
