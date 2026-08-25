@@ -38,7 +38,7 @@ console.log('Payment request - amount:', formattedAmount, typeof formattedAmount
     await supabase.from('transactions').insert({
       guard_id: guardId,
       company_id: guard.company_id,
-      amount,
+      amount: formattedAmount,
       paystack_reference: merchantReference,
       status: 'pending',
       ozow_payment_id: payment.id,
