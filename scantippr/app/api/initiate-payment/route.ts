@@ -8,6 +8,8 @@ const supabase = createClient(
 
 export async function POST(request: Request) {
   const { guardId, amount, institutionId } = await request.json();
+const formattedAmount = Number(parseFloat(amount).toFixed(2));
+console.log('Payment request - amount:', formattedAmount, typeof formattedAmount);
 
   const { data: guard, error } = await supabase
     .from('guards')
@@ -24,8 +26,8 @@ export async function POST(request: Request) {
   const beneficiaryReference = `TIP${guardId.replace(/-/g, '').slice(0, 15)}`.toUpperCase();
 
   try {
-            const payment = await createOzowPayment({
-      amount,
+        const payment = await createOzowPayment({
+      amount: formattedAmount,
       merchantReference,
       beneficiaryReference,
       returnUrl: `${siteUrl}/pay/${guardId}/success-handler?ref=${merchantReference}`,
