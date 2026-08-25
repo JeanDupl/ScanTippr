@@ -45,6 +45,7 @@ export async function createOzowPayment({
         region: 'ZA',
         amount: { currency: 'ZAR', value: amount },
         merchantReference,
+        beneficiaryReference: merchantReference,
         expireAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
         returnUrl,
         ...(institutionId && { institutionId }),
