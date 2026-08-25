@@ -21,7 +21,7 @@ export async function POST(request: Request) {
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
   const merchantReference = `TIP-${guardId.slice(0, 8)}-${Date.now()}`;
-  const beneficiaryReference = `TIP${guardId.replace(/-/g, '').slice(0, 17)}`.toUpperCase();
+  const beneficiaryReference = `TIP${guardId.replace(/-/g, '').slice(0, 15)}`.toUpperCase();
 
   try {
             const payment = await createOzowPayment({
