@@ -166,7 +166,7 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
 
         {/* 7. Added transition and scale interaction to main action button */}
         <button
-          onClick={handlePayment}
+          onClick={() => handlePayment()}
           disabled={!displayAmount || displayAmount < 10 || processing}
           className="w-full bg-blue-500 text-white rounded-xl py-4 font-bold text-xl hover:bg-blue-600 transition-all duration-150 active:scale-[0.98] disabled:scale-100 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
