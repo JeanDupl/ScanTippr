@@ -21,11 +21,13 @@ export async function POST(request: Request) {
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
   const merchantReference = `TIP-${guardId.slice(0, 8)}-${Date.now()}`;
+  const beneficiaryReference = `TIP${guardId.slice(0, 8)}`.toUpperCase();
 
   try {
-        const payment = await createOzowPayment({
+            const payment = await createOzowPayment({
       amount,
       merchantReference,
+      beneficiaryReference,
       returnUrl: `${siteUrl}/pay/${guardId}/success-handler?ref=${merchantReference}`,
       institutionId,
     });

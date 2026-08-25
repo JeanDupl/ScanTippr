@@ -24,11 +24,13 @@ export async function getOzowAccessToken(): Promise<string> {
 export async function createOzowPayment({
   amount,
   merchantReference,
+  beneficiaryReference,
   returnUrl,
   institutionId,
 }: {
   amount: number;
   merchantReference: string;
+  beneficiaryReference: string;
   returnUrl: string;
   institutionId?: string;
 }) {
