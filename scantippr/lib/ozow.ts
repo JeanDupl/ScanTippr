@@ -42,12 +42,13 @@ export async function createOzowPayment({
       Authorization: `Bearer ${token}`,
       'Idempotency-Key': merchantReference,
     },
-        body: JSON.stringify({
+              body: JSON.stringify({
         siteCode: process.env.OZOW_SITE_CODE,
         region: 'ZA',
         amount: { currency: 'ZAR', value: amount },
         merchantReference,
-        beneficiaryReference: merchantReference,
+        bankReference: beneficiaryReference,
+        beneficiaryReference,
         expireAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
         returnUrl,
         ...(institutionId && { institutionId }),
