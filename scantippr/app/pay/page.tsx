@@ -12,9 +12,7 @@ export default function PayPage() {
           It looks like you followed an invalid link. Please scan the QR code again to tip your employee.
         </p>
         
-          href="https://www.scantippr.co.za"
-          className="inline-block bg-blue-500 text-white rounded-xl px-6 py-3 font-bold text-sm hover:bg-blue-600 transition-all duration-150"
-        >
+          <a href="https://www.scantippr.co.za" className="inline-block bg-blue-500 text-white rounded-xl px-6 py-3 font-bold text-sm hover:bg-blue-600 transition-all duration-150">
           Go to ScanTippr
         </a>
       </div>
