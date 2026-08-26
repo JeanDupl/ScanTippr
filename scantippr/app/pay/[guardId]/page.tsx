@@ -170,11 +170,18 @@ export default function PayPage({ params }: { params: Promise<{ guardId: string 
           disabled={!displayAmount || displayAmount < 10 || processing}
           className="w-full bg-blue-500 text-white rounded-xl py-4 font-bold text-xl hover:bg-blue-600 transition-all duration-150 active:scale-[0.98] disabled:scale-100 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
-          {processing ? 'Processing...' : !displayAmount ? 'Select an amount' : displayAmount < 10 ? 'Minimum amount is R10' : `Send R${displayAmount}`}
+                    {processing ? 'Processing...' : !displayAmount ? 'Select an amount' : displayAmount < 10 ? 'Minimum amount is R10' : `Pay with EFT — R${displayAmount}`}
         </button>
 
-                {/* Standalone bank buttons */}
-        <div className="flex gap-2 mt-3">
+                        {/* Divider */}
+        <div className="relative flex items-center my-3">
+          <div className="flex-grow border-t border-gray-200"></div>
+          <span className="mx-3 text-xs text-gray-400 font-medium">or pay directly with</span>
+          <div className="flex-grow border-t border-gray-200"></div>
+        </div>
+
+        {/* Standalone bank buttons */}
+        <div className="flex gap-2">
           <button
             onClick={() => handlePayment('8F0B5AD2-2A44-4FF2-B052-D4E1E426587D')}
             disabled={!displayAmount || displayAmount < 10 || processing}
