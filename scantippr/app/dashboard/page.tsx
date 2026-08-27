@@ -40,7 +40,7 @@ export default async function DashboardPage() {
 
   const { data: transactions } = await supabase
     .from('transactions')
-    .select('id, amount, currency, created_at, paystack_reference, status, guard_id')
+    .select('id, amount, currency, created_at, status, guard_id, ozow_payment_id')
     .eq('company_id', companyId)
     .order('created_at', { ascending: false })
     .limit(10)
@@ -105,7 +105,7 @@ export default async function DashboardPage() {
                   <td className="p-4">{new Date(tx.created_at).toLocaleDateString('en-ZA')}</td>
                   <td className="p-4 font-medium text-slate-900">{guardMap[tx.guard_id] || 'Unassigned'}</td>
                   <td className="p-4 font-semibold text-emerald-600">R{Number(tx.amount).toFixed(2)}</td>
-                  <td className="p-4 text-xs font-mono text-slate-400">{tx.paystack_reference}</td>
+                  <td className="p-4 text-xs font-mono text-slate-400">{tx.ozow_payment_id || '—'}</td>
                   <td className="p-4">
                     <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800">
                       {tx.status}
