@@ -27,7 +27,7 @@ export default async function ReportsPage() {
 
   const { data: transactions } = await supabase
     .from('transactions')
-    .select('id, amount, currency, created_at, paystack_reference, status, guard_id')
+    .select('id, amount, currency, created_at, status, guard_id, ozow_payment_id')
     .eq('company_id', companyId)
     .eq('status', 'success')
     .order('created_at', { ascending: false })

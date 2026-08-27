@@ -8,7 +8,7 @@ interface Transaction {
   amount: number
   currency: string
   created_at: string
-  paystack_reference: string
+  ozow_payment_id: string | null
   status: string
   guard_id: string
 }
@@ -91,7 +91,7 @@ export default function ReportsClient({ transactions, employees, companyName }: 
         guardMap[tx.guard_id] || '—',
         locationMap[tx.guard_id] || '—',
         `R${Number(tx.amount).toFixed(2)}`,
-        tx.paystack_reference,
+        tx.ozow_payment_id || '—',
       ]
     })
     const csv = [headers, ...rows].map((r) => r.join(',')).join('\n')
@@ -295,7 +295,7 @@ export default function ReportsClient({ transactions, employees, companyName }: 
                     <td className="px-4 py-3 font-medium text-slate-900">{guardMap[tx.guard_id] || '—'}</td>
                     <td className="px-4 py-3 text-slate-600">{locationMap[tx.guard_id] || '—'}</td>
                     <td className="px-4 py-3 text-right font-semibold text-slate-900">R{Number(tx.amount).toFixed(2)}</td>
-                    <td className="px-4 py-3 text-xs font-mono text-slate-400 print:hidden">{tx.paystack_reference}</td>
+                    <td className="px-4 py-3 text-xs font-mono text-slate-400 print:hidden">{tx.ozow_payment_id || '—'}</td>
                   </tr>
                 )
               })}
