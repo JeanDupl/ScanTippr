@@ -35,14 +35,18 @@ console.log('Payment request - amount:', formattedAmount, typeof formattedAmount
     });
 
     // Save a pending transaction row so we have something to update when the customer returns
-    await supabase.from('transactions').insert({
-      guard_id: guardId,
-      company_id: guard.company_id,
-      amount: formattedAmount,
-      paystack_reference: merchantReference,
-      status: 'pending',
-      ozow_payment_id: payment.id,
-    });
+    const { error: insertError } = await supabase.from('transactions').insert({
+  guard_id: guardId,
+  company_id: guard.company_id,
+  amount: formattedAmount,
+  _deprecated_paystack_reference: merchantReference,
+  status: 'pending',
+  payment_status: 'pending',
+  ozow_payment_id: payment.id,
+});
+if (insertError) {
+  console.error('Transaction insert error:', insertError);
+}
 
     return Response.json({
       authorization_url: payment.redirectUrl,
