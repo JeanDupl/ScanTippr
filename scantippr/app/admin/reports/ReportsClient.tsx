@@ -8,7 +8,9 @@ type Transaction = {
   company_id: string
   amount: number
   currency: string
-  paystack_reference: string
+  paystack_reference?: string
+  ozow_payment_id?: string
+  _deprecated_paystack_reference?: string
   status: string
   created_at: string
 }
