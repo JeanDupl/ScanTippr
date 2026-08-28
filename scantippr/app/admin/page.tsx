@@ -110,12 +110,11 @@ export default async function AdminDashboard() {
               position: 'relative',
               overflow: 'hidden',
             }}>
-              {card.accent && (
-                <div style={{
-                  position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
-                  background: '#F97316',
+              <div style={{
+               position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
+               background: '#F97316',
                 }} />
-              )}
+                
               <p style={{ margin: '0 0 10px', fontSize: '11.5px', fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
                 {card.label}
               </p>
