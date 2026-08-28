@@ -16,15 +16,15 @@ const PAYOUT_BASE_URL = process.env.OZOW_PAYOUT_ENV === 'staging'
   ? 'https://stagingpayoutsapi.ozow.com/v1'
   : 'https://payoutsapi.ozow.com/v1'
 
-const SITE_CODE = process.env.OZOW_SITE_CODE!           // SCA-SCA-007
-const API_KEY   = process.env.OZOW_PAYOUT_API_KEY!      // provisioned by Teyla
+const SITE_CODE  = process.env.OZOW_SITE_CODE!
+const API_KEY    = process.env.OZOW_PAYOUT_API_KEY ?? ''
 const NOTIFY_URL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/ozow/payout-webhook`
 
 // ── Types ─────────────────────────────────────────────────────
 export interface OzowPayoutInstruction {
-  amount: number           // rands (e.g. 350.00)
+  amount: number            // rands (e.g. 350.00)
   bank: BankSnapshot
-  reference: string        // merchantReference — max 20 chars
+  reference: string         // merchantReference — max 20 chars
   customerReference: string // appears on recipient bank statement — max 20 chars
   payoutPeriodId: string
   description?: string
@@ -33,6 +33,7 @@ export interface OzowPayoutInstruction {
 export interface OzowPayoutResult {
   success: boolean
   ozowPayoutId?: string
+  encryptionKey?: string    // must be stored so verification webhook can return it
   status?: number
   subStatus?: number
   error?: string
@@ -44,20 +45,16 @@ function sha512(input: string): string {
 }
 
 // ── AES-256-CBC account number encryption ────────────────────
-// Ozow requires bank account numbers to be encrypted per request
-// IV = first 16 chars of SHA512(merchantRef + amountInCents + encryptionKey).toLowerCase()
 function encryptAccountNumber(
   accountNumber: string,
   encryptionKey: string,
   merchantReference: string,
   amountInCents: number
-): { encryptedAccountNumber: string; encryptionKey: string } {
-  // Pad/truncate key to 32 bytes
+): string {
   let key = encryptionKey
   while (key.length < 32) key += key
   key = key.substring(0, 32)
 
-  // IV: SHA512(merchantRef + amountCents + encryptionKey) → first 16 chars
   const ivString = `${merchantReference}${amountInCents}${encryptionKey}`.toLowerCase()
   const iv = sha512(ivString).substring(0, 16)
 
@@ -72,16 +69,10 @@ function encryptAccountNumber(
     cipher.final()
   ])
 
-  return {
-    encryptedAccountNumber: encrypted.toString('base64'),
-    encryptionKey,
-  }
+  return encrypted.toString('base64')
 }
 
 // ── Generate request hash ─────────────────────────────────────
-// Concatenate in order: siteCode, amountCents, merchantRef, customerRef,
-// isRtc, notifyUrl, bankGroupId, encryptedAccountNumber, branchCode, apiKey
-// → lowercase → SHA512
 function generateHashCheck(params: {
   siteCode: string
   amountCents: number
@@ -110,7 +101,7 @@ function generateHashCheck(params: {
   return sha512(input)
 }
 
-// ── Get available banks (returns BankGroupId per bank) ────────
+// ── Get available banks ───────────────────────────────────────
 export async function getOzowPayoutBanks(): Promise<Array<{
   bankGroupId: string
   bankGroupName: string
@@ -124,30 +115,8 @@ export async function getOzowPayoutBanks(): Promise<Array<{
       'Accept':   'application/json',
     },
   })
-
-  if (!res.ok) {
-    throw new Error(`Ozow getavailablebanks failed: ${res.status}`)
-  }
-
+  if (!res.ok) throw new Error(`Ozow getavailablebanks failed: ${res.status}`)
   return res.json()
-}
-
-// ── Bank name → BankGroupId lookup ───────────────────────────
-// Maps common SA bank names to their Ozow BankGroupIds
-// Call getOzowPayoutBanks() to get the live list with real UUIDs
-const BANK_NAME_MAP: Record<string, string> = {
-  'ABSA':                        '', // populated at runtime from getavailablebanks
-  'Capitec Bank':                '',
-  'Capitec':                     '',
-  'First National Bank (FNB)':   '',
-  'FNB':                         '',
-  'Nedbank':                     '',
-  'Standard Bank':               '',
-  'African Bank':                '',
-  'Bidvest Bank':                '',
-  'Discovery Bank':              '',
-  'Investec':                    '',
-  'TymeBank':                    '',
 }
 
 // ── Main payout function ──────────────────────────────────────
@@ -155,26 +124,27 @@ export async function createOzowPayout(
   instruction: OzowPayoutInstruction
 ): Promise<OzowPayoutResult> {
 
-  // ── STUB CHECK ────────────────────────────────────────────
-  if (!process.env.OZOW_PAYOUT_API_KEY) {
-    console.log('[ozowPayout] STUB — OZOW_PAYOUT_API_KEY not set, logging instruction only:')
+  // Stub if API key not yet configured
+  if (!API_KEY) {
+    console.log('[ozowPayout] STUB — OZOW_PAYOUT_API_KEY not set:')
     console.log(JSON.stringify({
-      amount:           instruction.amount,
-      reference:        instruction.reference,
-      bankName:         instruction.bank.bankName,
-      accountHolder:    instruction.bank.bankAccountHolder,
-      accountNumber:    `****${instruction.bank.bankAccountNumber.slice(-4)}`,
-      payoutPeriodId:   instruction.payoutPeriodId,
+      amount:         instruction.amount,
+      reference:      instruction.reference,
+      bankName:       instruction.bank.bankName,
+      accountHolder:  instruction.bank.bankAccountHolder,
+      accountNumber:  `****${instruction.bank.bankAccountNumber.slice(-4)}`,
+      payoutPeriodId: instruction.payoutPeriodId,
     }, null, 2))
+    const stubKey = crypto.randomBytes(8).toString('hex')
     return {
-      success:      true,
-      ozowPayoutId: `STUB-${instruction.payoutPeriodId}-${Date.now()}`,
+      success:         true,
+      ozowPayoutId:    `STUB-${instruction.payoutPeriodId}-${Date.now()}`,
+      encryptionKey:   stubKey,
     }
   }
-  // ── END STUB CHECK ────────────────────────────────────────
 
   try {
-    // 1. Get available banks to find the BankGroupId
+    // 1. Get available banks
     const banks = await getOzowPayoutBanks()
     const bankName = instruction.bank.bankName.trim()
     const matchedBank = banks.find(b =>
@@ -186,23 +156,22 @@ export async function createOzowPayout(
     if (!matchedBank) {
       return {
         success: false,
-        error: `Bank "${bankName}" not found in Ozow available banks list. Available: ${banks.map(b => b.bankGroupName).join(', ')}`,
+        error: `Bank "${bankName}" not found. Available: ${banks.map(b => b.bankGroupName).join(', ')}`,
       }
     }
 
-    const bankGroupId    = matchedBank.bankGroupId
-    const branchCode     = matchedBank.universalBranchCode
-    const amountInCents  = Math.round(instruction.amount * 100)
+    const bankGroupId   = matchedBank.bankGroupId
+    const branchCode    = matchedBank.universalBranchCode
+    const amountInCents = Math.round(instruction.amount * 100)
 
-    // Truncate references to 20 chars (Ozow limit)
     const merchantReference     = instruction.reference.substring(0, 20)
     const customerBankReference = instruction.customerReference.substring(0, 20)
 
-    // 2. Generate a unique encryption key for this request
+    // 2. Generate unique encryption key for this request (must be stored)
     const encryptionKey = crypto.randomBytes(16).toString('hex').substring(0, 16)
 
     // 3. Encrypt account number
-    const { encryptedAccountNumber } = encryptAccountNumber(
+    const encryptedAccountNumber = encryptAccountNumber(
       instruction.bank.bankAccountNumber,
       encryptionKey,
       merchantReference,
@@ -215,7 +184,7 @@ export async function createOzowPayout(
       amountCents:            amountInCents,
       merchantReference,
       customerBankReference,
-      isRtc:                  false,  // RTC not available on staging; set to false
+      isRtc:                  false,
       notifyUrl:              NOTIFY_URL,
       bankGroupId,
       encryptedAccountNumber,
@@ -223,7 +192,7 @@ export async function createOzowPayout(
       apiKey:                 API_KEY,
     })
 
-    // 5. Submit payout request
+    // 5. Submit payout
     const body = {
       siteCode:             SITE_CODE,
       amount:               instruction.amount,
@@ -239,11 +208,11 @@ export async function createOzowPayout(
       hashCheck,
     }
 
-    console.log('[ozowPayout] Submitting payout:', {
-      amount:           instruction.amount,
+    console.log('[ozowPayout] Submitting:', {
+      amount: instruction.amount,
       merchantReference,
       bankGroupId,
-      payoutPeriodId:   instruction.payoutPeriodId,
+      payoutPeriodId: instruction.payoutPeriodId,
     })
 
     const res = await fetch(`${PAYOUT_BASE_URL}/requestpayout`, {
@@ -268,26 +237,25 @@ export async function createOzowPayout(
     }
 
     const payoutStatus = data.payoutStatus
-    const isSuccess = payoutStatus?.status === 1 ||  // PayoutReceived
-                      payoutStatus?.status === 2 ||  // Verification
-                      payoutStatus?.status === 3     // SubmittedForProcessing
+    const isSuccess = [1, 2, 3].includes(payoutStatus?.status)
 
     console.log('[ozowPayout] Response:', {
-      payoutId:   data.payoutId,
-      status:     payoutStatus?.status,
-      subStatus:  payoutStatus?.subStatus,
+      payoutId:  data.payoutId,
+      status:    payoutStatus?.status,
+      subStatus: payoutStatus?.subStatus,
     })
 
     return {
-      success:      isSuccess,
-      ozowPayoutId: data.payoutId,
-      status:       payoutStatus?.status,
-      subStatus:    payoutStatus?.subStatus,
-      error:        isSuccess ? undefined : payoutStatus?.errorMessage,
+      success:       isSuccess,
+      ozowPayoutId:  data.payoutId,
+      encryptionKey, // IMPORTANT: orchestrator must store this in payout_periods.encryption_key
+      status:        payoutStatus?.status,
+      subStatus:     payoutStatus?.subStatus,
+      error:         isSuccess ? undefined : payoutStatus?.errorMessage,
     }
 
   } catch (err: any) {
-    console.error('[ozowPayout] Unexpected error:', err)
+    console.error('[ozowPayout] Error:', err)
     return { success: false, error: err.message }
   }
 }

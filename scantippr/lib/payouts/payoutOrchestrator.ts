@@ -34,16 +34,16 @@ function getSupabase() {
 
 // ── Input for the orchestrator ────────────────────────────────
 export interface OrchestratorInput {
-  periodMonth:     number           // 1–12
-  periodYear:      number           // e.g. 2026
-  feeDisposalMode: FeeDisposalMode  // how ScanTippr fee is handled
+  periodMonth:     number
+  periodYear:      number
+  feeDisposalMode: FeeDisposalMode
 }
 
 export interface OrchestratorResult {
-  success:       boolean
+  success:         boolean
   payoutPeriodId?: string
-  summary?:      PayoutSummary
-  error?:        string
+  summary?:        PayoutSummary
+  error?:          string
 }
 
 // ── Guard against double-processing ──────────────────────────
@@ -106,7 +106,6 @@ async function createLineItems(
   summary: PayoutSummary
 ): Promise<boolean> {
   for (const li of summary.lineItems) {
-    // Insert line item
     const { data: lineItem, error: liError } = await supabase
       .from('payout_line_items')
       .insert({
@@ -128,7 +127,6 @@ async function createLineItems(
       return false
     }
 
-    // Insert join table rows (one per transaction)
     if (li.transactionIds.length > 0) {
       const joinRows = li.transactionIds.map((txId) => ({
         payout_line_item_id: lineItem.id,
@@ -215,6 +213,11 @@ async function createFeeRecord(
   }
 }
 
+// ── Short alphanumeric reference for bank statements ─────────
+function shortRef(prefix: string, year: number, month: number): string {
+  return `${prefix}-${year}-${String(month).padStart(2, '0')}`
+}
+
 // ── Main orchestrator: company-managed ───────────────────────
 
 export async function runCompanyPayout(
@@ -257,16 +260,17 @@ export async function runCompanyPayout(
   let ozowFeePayoutId: string | null = null
   if (!summary.hasZeroFee && feeDisposalMode === 'payout_to_scantippr') {
     const feeResult = await createOzowPayout({
-      amount:         summary.totalFee,
+      amount:            summary.totalFee,
       bank: {
         bankAccountNumber: process.env.SCANTIPPR_BANK_ACCOUNT_NUMBER!,
         bankName:          process.env.SCANTIPPR_BANK_NAME!,
         bankAccountHolder: process.env.SCANTIPPR_BANK_ACCOUNT_HOLDER!,
         bankAccountType:   process.env.SCANTIPPR_BANK_ACCOUNT_TYPE!,
       },
-      reference:      `FEE-${periodYear}-${periodMonth}-${payoutPeriodId.slice(0, 8)}`,
+      reference:         shortRef('FEE', periodYear, periodMonth),
+      customerReference: shortRef('FEE', periodYear, periodMonth),
       payoutPeriodId,
-      description:    `ScanTippr fee — ${company.name} — ${periodMonth}/${periodYear}`,
+      description:       `ScanTippr fee — ${company.name} — ${periodMonth}/${periodYear}`,
     })
 
     if (feeResult.success) {
@@ -294,11 +298,12 @@ export async function runCompanyPayout(
   // 8. Net payout instruction
   if (!summary.hasZeroNet) {
     const netResult = await createOzowPayout({
-      amount:         summary.totalNet,
-      bank:           summary.bankSnapshot,
-      reference:      `NET-${periodYear}-${periodMonth}-${payoutPeriodId.slice(0, 8)}`,
+      amount:            summary.totalNet,
+      bank:              summary.bankSnapshot,
+      reference:         shortRef('NET', periodYear, periodMonth),
+      customerReference: shortRef('NET', periodYear, periodMonth),
       payoutPeriodId,
-      description:    `Net payout — ${company.name} — ${periodMonth}/${periodYear}`,
+      description:       `Net payout — ${company.name} — ${periodMonth}/${periodYear}`,
     })
 
     if (netResult.success) {
@@ -306,6 +311,7 @@ export async function runCompanyPayout(
         net_payout_status:  'submitted',
         net_ozow_payout_id: netResult.ozowPayoutId ?? null,
         net_submitted_at:   new Date().toISOString(),
+        encryption_key:     netResult.encryptionKey ?? null,
       })
     } else {
       await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
@@ -355,20 +361,21 @@ export async function runIndividualPayout(
   // 5. Mark transactions as included
   await markTransactionsIncluded(supabase, summary, payoutPeriodId)
 
-  // 6. Fee payout (same logic as company)
+  // 6. Fee payout
   let ozowFeePayoutId: string | null = null
   if (!summary.hasZeroFee && feeDisposalMode === 'payout_to_scantippr') {
     const feeResult = await createOzowPayout({
-      amount:         summary.totalFee,
+      amount:            summary.totalFee,
       bank: {
         bankAccountNumber: process.env.SCANTIPPR_BANK_ACCOUNT_NUMBER!,
         bankName:          process.env.SCANTIPPR_BANK_NAME!,
         bankAccountHolder: process.env.SCANTIPPR_BANK_ACCOUNT_HOLDER!,
         bankAccountType:   process.env.SCANTIPPR_BANK_ACCOUNT_TYPE!,
       },
-      reference:      `FEE-${periodYear}-${periodMonth}-${payoutPeriodId.slice(0, 8)}`,
+      reference:         shortRef('FEE', periodYear, periodMonth),
+      customerReference: shortRef('FEE', periodYear, periodMonth),
       payoutPeriodId,
-      description:    `ScanTippr fee — ${guard.first_name} ${guard.last_name} — ${periodMonth}/${periodYear}`,
+      description:       `ScanTippr fee — ${guard.first_name} ${guard.last_name} — ${periodMonth}/${periodYear}`,
     })
 
     if (feeResult.success) {
@@ -395,11 +402,12 @@ export async function runIndividualPayout(
   // 8. Net payout
   if (!summary.hasZeroNet) {
     const netResult = await createOzowPayout({
-      amount:         summary.totalNet,
-      bank:           summary.bankSnapshot,
-      reference:      `NET-${periodYear}-${periodMonth}-${payoutPeriodId.slice(0, 8)}`,
+      amount:            summary.totalNet,
+      bank:              summary.bankSnapshot,
+      reference:         shortRef('NET', periodYear, periodMonth),
+      customerReference: shortRef('NET', periodYear, periodMonth),
       payoutPeriodId,
-      description:    `Net payout — ${guard.first_name} ${guard.last_name} — ${periodMonth}/${periodYear}`,
+      description:       `Net payout — ${guard.first_name} ${guard.last_name} — ${periodMonth}/${periodYear}`,
     })
 
     if (netResult.success) {
@@ -407,6 +415,7 @@ export async function runIndividualPayout(
         net_payout_status:  'submitted',
         net_ozow_payout_id: netResult.ozowPayoutId ?? null,
         net_submitted_at:   new Date().toISOString(),
+        encryption_key:     netResult.encryptionKey ?? null,
       })
     } else {
       await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
@@ -417,4 +426,3 @@ export async function runIndividualPayout(
 
   return { success: true, payoutPeriodId, summary }
 }
-
