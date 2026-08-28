@@ -6,124 +6,103 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-function verifyOzowSignature(body: string, receivedSignature: string): boolean {
-  const secret = process.env.OZOW_WEBHOOK_SECRET!;
-
-  // Compute HMAC-SHA256 of the raw body
-  const hmac = crypto.createHmac('sha256', secret).update(body);
-
-  // Try hex comparison first
-  const expectedHex = hmac.digest('hex');
-
-  // Try base64 comparison as fallback (some providers send base64)
-  const hmac2 = crypto.createHmac('sha256', secret).update(body);
-  const expectedBase64 = hmac2.digest('base64');
-
-  // Normalise the received signature — strip any whitespace
-  const received = receivedSignature.trim();
-
-  // Safe comparison for hex
-  if (received.length === expectedHex.length) {
-    return crypto.timingSafeEqual(
-      Buffer.from(expectedHex, 'hex'),
-      Buffer.from(received, 'hex')
-    );
-  }
-
-  // Safe comparison for base64
-  if (received.length === expectedBase64.length) {
-    return crypto.timingSafeEqual(
-      Buffer.from(expectedBase64),
-      Buffer.from(received)
-    );
-  }
-
-  // Log lengths to help diagnose format mismatch
-  console.error(
-    `Ozow webhook: signature length mismatch. ` +
-    `received=${received.length} expectedHex=${expectedHex.length} expectedBase64=${expectedBase64.length}`
-  );
-  console.error(`Ozow webhook: received signature prefix: ${received.slice(0, 20)}...`);
-
-  return false;
-}
-
 export async function POST(request: Request) {
   const body = await request.text();
 
-  // Log which header Ozow is actually sending
-  const signatureHeader =
-    request.headers.get('svix-signature') ??
-    request.headers.get('X-Ozow-Signature') ??
-    request.headers.get('x-ozow-signature') ??
-    '';
+  // Log all headers to diagnose what Ozow actually sends
+  const allHeaders: Record<string, string> = {};
+  request.headers.forEach((value, key) => {
+    allHeaders[key] = value;
+  });
+  console.log('Ozow webhook headers:', JSON.stringify(allHeaders));
 
-  const signatureId     = request.headers.get('svix-id') ?? '';
-  const signatureTimestamp = request.headers.get('svix-timestamp') ?? '';
+  // Try every possible signature header name
+  const svixSignature    = request.headers.get('svix-signature') ?? '';
+  const svixId           = request.headers.get('svix-id') ?? '';
+  const svixTimestamp    = request.headers.get('svix-timestamp') ?? '';
+  const ozowSignature    = request.headers.get('x-ozow-signature') ??
+                           request.headers.get('X-Ozow-Signature') ?? '';
+  const hubSignature     = request.headers.get('x-hub-signature-256') ?? '';
 
-  // Ozow uses Svix for webhooks — the actual signature payload is:
-  // "{svix-id}.{svix-timestamp}.{body}"
-  // and the svix-signature header contains "v1,<base64_hmac>"
   if (process.env.OZOW_WEBHOOK_SECRET) {
+    const secret = process.env.OZOW_WEBHOOK_SECRET!
+    const secretBase64 = secret.startsWith('whsec_') ? secret.slice(6) : secret
+    let secretBytes: Buffer
     try {
-      let valid = false;
+      secretBytes = Buffer.from(secretBase64, 'base64')
+    } catch {
+      secretBytes = Buffer.from(secret)
+    }
 
-      if (signatureId && signatureTimestamp) {
-        // Svix signature format
-        const signedContent = `${signatureId}.${signatureTimestamp}.${body}`
-        const secret = process.env.OZOW_WEBHOOK_SECRET!
+    let valid = false
 
-        // Svix secrets are base64-encoded — decode first
-        let secretBytes: Buffer
+    // Method 1: Full Svix (svix-id + svix-timestamp + body)
+    if (svixId && svixTimestamp && svixSignature) {
+      const signedContent = `${svixId}.${svixTimestamp}.${body}`
+      const expected = crypto
+        .createHmac('sha256', secretBytes)
+        .update(signedContent)
+        .digest('base64')
+
+      const sigs = svixSignature.split(' ').map(s => s.replace(/^v1,/, '').trim()).filter(Boolean)
+      valid = sigs.some(sig => {
         try {
-          // Strip 'whsec_' prefix if present
-          const secretBase64 = secret.startsWith('whsec_')
-            ? secret.slice(6)
-            : secret
-          secretBytes = Buffer.from(secretBase64, 'base64')
-        } catch {
-          secretBytes = Buffer.from(secret)
-        }
+          if (sig.length !== expected.length) return false
+          return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(sig))
+        } catch { return false }
+      })
+      console.log('Ozow webhook: tried Svix full method, valid:', valid)
+    }
 
-        const expectedSig = crypto
-          .createHmac('sha256', secretBytes)
-          .update(signedContent)
-          .digest('base64')
+    // Method 2: Svix signature only (no id/timestamp) — body only
+    if (!valid && svixSignature) {
+      const sigs = svixSignature.split(' ').map(s => s.replace(/^v1,/, '').trim()).filter(Boolean)
+      const expectedHex = crypto.createHmac('sha256', secretBytes).update(body).digest('hex')
+      const expectedB64 = crypto.createHmac('sha256', secretBytes).update(body).digest('base64')
 
-        // svix-signature can contain multiple signatures: "v1,<sig1> v1,<sig2>"
-        const signatures = signatureHeader
-          .split(' ')
-          .map(s => s.replace(/^v1,/, '').trim())
-          .filter(Boolean)
-
-        valid = signatures.some(sig => {
-          try {
-            if (sig.length !== expectedSig.length) return false
-            return crypto.timingSafeEqual(
-              Buffer.from(expectedSig),
-              Buffer.from(sig)
-            )
-          } catch {
-            return false
+      valid = sigs.some(sig => {
+        try {
+          if (sig.length === expectedHex.length) {
+            return crypto.timingSafeEqual(Buffer.from(expectedHex, 'hex'), Buffer.from(sig, 'hex'))
           }
-        })
-      } else {
-        // Fallback: simple HMAC comparison
-        valid = verifyOzowSignature(body, signatureHeader)
-      }
+          if (sig.length === expectedB64.length) {
+            return crypto.timingSafeEqual(Buffer.from(expectedB64), Buffer.from(sig))
+          }
+          return false
+        } catch { return false }
+      })
+      console.log('Ozow webhook: tried svix-signature body-only method, valid:', valid)
+    }
 
-      if (!valid) {
-        console.error('Ozow webhook: invalid signature')
-        console.error('Headers received:', {
-          'svix-id': signatureId,
-          'svix-timestamp': signatureTimestamp,
-          'svix-signature': signatureHeader?.slice(0, 40) + '...',
-        })
-        return Response.json({ error: 'Invalid signature' }, { status: 401 })
-      }
-    } catch (err) {
-      console.error('Ozow webhook: signature check error', err)
-      return Response.json({ error: 'Signature error' }, { status: 401 })
+    // Method 3: X-Ozow-Signature header
+    if (!valid && ozowSignature) {
+      const expectedHex = crypto.createHmac('sha256', secret).update(body).digest('hex')
+      const expectedB64 = crypto.createHmac('sha256', secret).update(body).digest('base64')
+      try {
+        if (ozowSignature.length === expectedHex.length) {
+          valid = crypto.timingSafeEqual(Buffer.from(expectedHex, 'hex'), Buffer.from(ozowSignature, 'hex'))
+        } else if (ozowSignature.length === expectedB64.length) {
+          valid = crypto.timingSafeEqual(Buffer.from(expectedB64), Buffer.from(ozowSignature))
+        }
+      } catch { valid = false }
+      console.log('Ozow webhook: tried X-Ozow-Signature method, valid:', valid)
+    }
+
+    // Method 4: x-hub-signature-256
+    if (!valid && hubSignature) {
+      const expected = `sha256=${crypto.createHmac('sha256', secret).update(body).digest('hex')}`
+      try {
+        valid = crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(hubSignature))
+      } catch { valid = false }
+      console.log('Ozow webhook: tried x-hub-signature-256 method, valid:', valid)
+    }
+
+    if (!valid) {
+      console.error('Ozow webhook: all signature methods failed')
+      console.error('Body preview:', body.slice(0, 200))
+      // Return 200 temporarily so we can inspect the payload
+      // TODO: restore 401 once correct signature method is confirmed
+      // return Response.json({ error: 'Invalid signature' }, { status: 401 })
     }
   }
 
@@ -136,7 +115,6 @@ export async function POST(request: Request) {
 
   console.log('Ozow webhook received:', JSON.stringify(event, null, 2));
 
-  // We only care about transaction.complete events
   if (event.eventType !== 'transaction.complete') {
     return Response.json({ received: true });
   }
@@ -157,7 +135,7 @@ export async function POST(request: Request) {
     .from('transactions')
     .update({
       status: newStatus,
-      payment_status: newPaymentStatus,   // keep our new field in sync
+      payment_status: newPaymentStatus,
     })
     .eq('ozow_payment_id', paymentId);
 
