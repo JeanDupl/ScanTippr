@@ -127,7 +127,7 @@ export default function AddCompanyPage() {
         </div>
 
         <div style={{ display: 'flex', gap: '12px' }}>
-          <a href="/admin" style={{
+          <a href="/admin/companies" style={{
             flex: 1, padding: '10px', borderRadius: '8px',
             border: '1px solid #e0e8f0', background: '#fff',
             fontSize: '15px', color: '#6b7f90', textAlign: 'center', textDecoration: 'none',
