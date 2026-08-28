@@ -6,144 +6,136 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function POST(request: Request) {
-  const body = await request.text();
-
-  // Log all headers to diagnose what Ozow actually sends
-  const allHeaders: Record<string, string> = {};
-  request.headers.forEach((value, key) => {
-    allHeaders[key] = value;
-  });
-  console.log('Ozow webhook headers:', JSON.stringify(allHeaders));
-
-  // Try every possible signature header name
-  const svixSignature    = request.headers.get('svix-signature') ?? '';
-  const svixId           = request.headers.get('svix-id') ?? '';
-  const svixTimestamp    = request.headers.get('svix-timestamp') ?? '';
-  const ozowSignature    = request.headers.get('x-ozow-signature') ??
-                           request.headers.get('X-Ozow-Signature') ?? '';
-  const hubSignature     = request.headers.get('x-hub-signature-256') ?? '';
-
-  if (process.env.OZOW_WEBHOOK_SECRET) {
-    const secret = process.env.OZOW_WEBHOOK_SECRET!
+function verifyWebhookSignature(
+  webhookId: string,
+  webhookTimestamp: string,
+  body: string,
+  signatureHeader: string,
+  secret: string
+): boolean {
+  try {
+    // Strip whsec_ prefix and base64-decode the secret
     const secretBase64 = secret.startsWith('whsec_') ? secret.slice(6) : secret
-    let secretBytes: Buffer
-    try {
-      secretBytes = Buffer.from(secretBase64, 'base64')
-    } catch {
-      secretBytes = Buffer.from(secret)
-    }
+    const secretBytes = Buffer.from(secretBase64, 'base64')
 
-    let valid = false
+    // Svix signed content format: "{webhook-id}.{webhook-timestamp}.{body}"
+    const signedContent = `${webhookId}.${webhookTimestamp}.${body}`
 
-    // Method 1: Full Svix (svix-id + svix-timestamp + body)
-    if (svixId && svixTimestamp && svixSignature) {
-      const signedContent = `${svixId}.${svixTimestamp}.${body}`
-      const expected = crypto
-        .createHmac('sha256', secretBytes)
-        .update(signedContent)
-        .digest('base64')
+    const expected = crypto
+      .createHmac('sha256', secretBytes)
+      .update(signedContent)
+      .digest('base64')
 
-      const sigs = svixSignature.split(' ').map(s => s.replace(/^v1,/, '').trim()).filter(Boolean)
-      valid = sigs.some(sig => {
-        try {
-          if (sig.length !== expected.length) return false
-          return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(sig))
-        } catch { return false }
-      })
-      console.log('Ozow webhook: tried Svix full method, valid:', valid)
-    }
+    // Header can contain multiple sigs: "v1,<sig1> v1,<sig2>"
+    const signatures = signatureHeader
+      .split(' ')
+      .map(s => s.replace(/^v1,/, '').trim())
+      .filter(Boolean)
 
-    // Method 2: Svix signature only (no id/timestamp) — body only
-    if (!valid && svixSignature) {
-      const sigs = svixSignature.split(' ').map(s => s.replace(/^v1,/, '').trim()).filter(Boolean)
-      const expectedHex = crypto.createHmac('sha256', secretBytes).update(body).digest('hex')
-      const expectedB64 = crypto.createHmac('sha256', secretBytes).update(body).digest('base64')
-
-      valid = sigs.some(sig => {
-        try {
-          if (sig.length === expectedHex.length) {
-            return crypto.timingSafeEqual(Buffer.from(expectedHex, 'hex'), Buffer.from(sig, 'hex'))
-          }
-          if (sig.length === expectedB64.length) {
-            return crypto.timingSafeEqual(Buffer.from(expectedB64), Buffer.from(sig))
-          }
-          return false
-        } catch { return false }
-      })
-      console.log('Ozow webhook: tried svix-signature body-only method, valid:', valid)
-    }
-
-    // Method 3: X-Ozow-Signature header
-    if (!valid && ozowSignature) {
-      const expectedHex = crypto.createHmac('sha256', secret).update(body).digest('hex')
-      const expectedB64 = crypto.createHmac('sha256', secret).update(body).digest('base64')
+    return signatures.some(sig => {
       try {
-        if (ozowSignature.length === expectedHex.length) {
-          valid = crypto.timingSafeEqual(Buffer.from(expectedHex, 'hex'), Buffer.from(ozowSignature, 'hex'))
-        } else if (ozowSignature.length === expectedB64.length) {
-          valid = crypto.timingSafeEqual(Buffer.from(expectedB64), Buffer.from(ozowSignature))
-        }
-      } catch { valid = false }
-      console.log('Ozow webhook: tried X-Ozow-Signature method, valid:', valid)
+        if (sig.length !== expected.length) return false
+        return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(sig))
+      } catch {
+        return false
+      }
+    })
+  } catch (err) {
+    console.error('Ozow webhook: signature verification error', err)
+    return false
+  }
+}
+
+export async function POST(request: Request) {
+  const body = await request.text()
+
+  // Ozow uses webhook-id/webhook-timestamp/webhook-signature headers (not svix-*)
+  const webhookId        = request.headers.get('webhook-id') ?? ''
+  const webhookTimestamp = request.headers.get('webhook-timestamp') ?? ''
+  const webhookSignature = request.headers.get('webhook-signature') ?? ''
+
+  // Also check content-type — Ozow fires two webhooks:
+  // 1. JSON (Svix): transaction.complete event
+  // 2. Form-encoded (IpayRuntime): notify URL callback — handled separately
+  const contentType = request.headers.get('content-type') ?? ''
+
+  // Handle form-encoded notify callback (IpayRuntime/1.0)
+  // This is Ozow's legacy notify webhook — return 200 to acknowledge
+  if (contentType.includes('application/x-www-form-urlencoded')) {
+    console.log('Ozow notify webhook (form-encoded) received — acknowledged')
+    const params = new URLSearchParams(body)
+    const transactionId = params.get('TransactionId')
+    const status = params.get('Status')
+    console.log(`Ozow notify: TransactionId=${transactionId} Status=${status}`)
+    return Response.json({ received: true })
+  }
+
+  // Verify Svix signature for JSON webhook
+  if (process.env.OZOW_WEBHOOK_SECRET) {
+    if (!webhookId || !webhookTimestamp || !webhookSignature) {
+      console.error('Ozow webhook: missing signature headers', {
+        webhookId, webhookTimestamp, webhookSignature: webhookSignature?.slice(0, 20)
+      })
+      return Response.json({ error: 'Missing signature headers' }, { status: 401 })
     }
 
-    // Method 4: x-hub-signature-256
-    if (!valid && hubSignature) {
-      const expected = `sha256=${crypto.createHmac('sha256', secret).update(body).digest('hex')}`
-      try {
-        valid = crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(hubSignature))
-      } catch { valid = false }
-      console.log('Ozow webhook: tried x-hub-signature-256 method, valid:', valid)
-    }
+    const valid = verifyWebhookSignature(
+      webhookId,
+      webhookTimestamp,
+      body,
+      webhookSignature,
+      process.env.OZOW_WEBHOOK_SECRET
+    )
 
     if (!valid) {
-      console.error('Ozow webhook: all signature methods failed')
-      console.error('Body preview:', body.slice(0, 200))
-      // Return 200 temporarily so we can inspect the payload
-      // TODO: restore 401 once correct signature method is confirmed
-      // return Response.json({ error: 'Invalid signature' }, { status: 401 })
+      console.error('Ozow webhook: invalid signature')
+      return Response.json({ error: 'Invalid signature' }, { status: 401 })
     }
   }
 
-  let event: any;
+  // Parse JSON body
+  let event: any
   try {
-    event = JSON.parse(body);
+    event = JSON.parse(body)
   } catch {
-    return Response.json({ error: 'Invalid JSON' }, { status: 400 });
+    return Response.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  console.log('Ozow webhook received:', JSON.stringify(event, null, 2));
+  console.log('Ozow webhook received:', JSON.stringify(event, null, 2))
 
-  if (event.eventType !== 'transaction.complete') {
-    return Response.json({ received: true });
+  // Only process transaction.complete events
+  if (event.type !== 'transaction.complete') {
+    return Response.json({ received: true })
   }
 
-  const paymentId = event.data?.paymentId;
-  const transactionStatus = event.data?.status;
+  const data = event.data
+  const transactionId = data?.TransactionId   // Ozow's own transaction ID
+  const status = data?.Status                 // "Successful", "Error", "Cancelled", etc.
 
-  if (!paymentId) {
-    console.error('Ozow webhook: missing paymentId');
-    return Response.json({ received: true });
+  if (!transactionId) {
+    console.error('Ozow webhook: missing TransactionId')
+    return Response.json({ received: true })
   }
 
-  const isSuccess = transactionStatus === 'successful';
-  const newStatus = isSuccess ? 'success' : 'failed';
-  const newPaymentStatus = isSuccess ? 'completed' : 'failed';
+  // Ozow uses capital "Successful" — normalise to lowercase for comparison
+  const isSuccess = status?.toLowerCase() === 'successful'
+  const newStatus = isSuccess ? 'success' : 'failed'
+  const newPaymentStatus = isSuccess ? 'completed' : 'failed'
 
+  // Update transaction by ozow_payment_id (which is the Ozow TransactionId)
   const { error } = await supabase
     .from('transactions')
     .update({
       status: newStatus,
       payment_status: newPaymentStatus,
     })
-    .eq('ozow_payment_id', paymentId);
+    .eq('ozow_payment_id', transactionId)
 
   if (error) {
-    console.error('Ozow webhook: supabase update error', error);
-    return Response.json({ received: true });
+    console.error('Ozow webhook: supabase update error', error)
+    return Response.json({ received: true })
   }
 
-  console.log(`Ozow webhook: payment ${paymentId} marked as ${newStatus} / ${newPaymentStatus}`);
-  return Response.json({ received: true });
+  console.log(`Ozow webhook: transaction ${transactionId} marked as ${newStatus} / ${newPaymentStatus}`)
+  return Response.json({ received: true })
 }
