@@ -19,7 +19,7 @@ const NAV_GROUPS = [
     heading: 'Payments',
     items: [
       { label: 'Transactions', href: '/admin/transactions', exact: false, icon: TransactionsIcon },
-      { label: 'Payouts', href: '/dashboard/payments', exact: false, icon: PayoutsIcon },
+      { label: 'Payouts', href: '/admin/payouts', exact: false, icon: PayoutsIcon },
     ],
   },
   {
