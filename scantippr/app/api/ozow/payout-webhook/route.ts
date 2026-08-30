@@ -104,6 +104,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
+  const accessTokenReceived = request.headers.get('AccessToken') ?? 'none';
+  console.log('[payout-webhook] AccessToken received:', accessTokenReceived);
+  console.log('[payout-webhook] AccessToken header:', request.headers.get('AccessToken'))
+  console.log('[payout-webhook] All headers:', JSON.stringify(Object.fromEntries(request.headers.entries())))
   console.log('[payout-webhook] Received:', JSON.stringify(body, null, 2))
 
   const payoutId          = body.PayoutId
