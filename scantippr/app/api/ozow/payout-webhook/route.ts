@@ -26,7 +26,7 @@ const supabase = createClient(
 )
 
 const API_KEY   = process.env.OZOW_PAYOUT_API_KEY ?? ''
-const SITE_CODE = process.env.OZOW_SITE_CODE!
+const SITE_CODE = process.env.OZOW_PAYOUT_SITE_CODE ?? process.env.OZOW_SITE_CODE!
 const ACCESS_TOKEN = process.env.OZOW_PAYOUT_WEBHOOK_TOKEN ?? ''
 
 // ── SHA512 hash ───────────────────────────────────────────────
