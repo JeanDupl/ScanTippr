@@ -16,7 +16,7 @@ const PAYOUT_BASE_URL = process.env.OZOW_PAYOUT_ENV === 'staging'
   ? 'https://stagingpayoutsapi.ozow.com/v1'
   : 'https://payoutsapi.ozow.com/v1'
 
-const SITE_CODE  = process.env.OZOW_SITE_CODE!
+const SITE_CODE  = process.env.OZOW_PAYOUT_SITE_CODE ?? process.env.OZOW_SITE_CODE!
 const API_KEY    = process.env.OZOW_PAYOUT_API_KEY ?? ''
 const NOTIFY_URL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/ozow/payout-webhook`
 
