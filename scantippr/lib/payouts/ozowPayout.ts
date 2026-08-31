@@ -71,10 +71,12 @@ function generateHashCheck(
   branchCode: string,
   privateKey: string
 ): string {
-  // Using exact casing — no global toLowerCase
+  const amountFormatted = (amountCents / 100).toFixed(2)
   const input = [
     siteCode,
-    amountCents,
+    'ZA',
+    'ZAR',
+    amountFormatted,
     merchantReference,
     customerBankReference,
     isRtc,
@@ -83,10 +85,10 @@ function generateHashCheck(
     encryptedAccountNumber,
     branchCode,
     privateKey,
-  ].join('')
+  ].join('').toLowerCase()
 
   console.log('[ozowPayout] Hash input (first 120):', input.substring(0, 120))
-  return sha512(input).toLowerCase()
+  return sha512(input)
 }
 
 export async function getOzowPayoutBanks(): Promise<Array<{
