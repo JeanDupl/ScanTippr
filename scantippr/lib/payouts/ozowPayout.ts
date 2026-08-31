@@ -50,7 +50,7 @@ function encryptAccountNumber(
 
 function generateHashCheck(
   siteCode: string,
-  amount: string | number,
+  amountInCents: number,
   merchantReference: string,
   customerBankReference: string,
   isRtc: boolean,
@@ -58,11 +58,11 @@ function generateHashCheck(
   bankGroupId: string,
   encryptedAccountNumber: string,
   branchCode: string,
-  privateKey: string
+  apiKey: string
 ): string {
   const input = [
     siteCode,
-    amount,
+    amountInCents.toString(),
     merchantReference,
     customerBankReference,
     isRtc ? 'true' : 'false',
@@ -70,9 +70,10 @@ function generateHashCheck(
     bankGroupId,
     encryptedAccountNumber,
     branchCode,
-    privateKey,
+    apiKey,
   ].join('').toLowerCase()
-  console.log('[ozowPayout] Hash input (first 120):', input.substring(0, 120))
+  
+  console.log('[ozowPayout] Full Hash Input String:', input)
   return sha512(input)
 }
 
@@ -110,11 +111,11 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
     const bankGroupId   = matchedBank.bankGroupId
     const branchCode    = matchedBank.universalBranchCode
     const amountInCents = Math.round(instruction.amount * 100)
-    const amountRands = amountInCents / 100
+    const amountRands   = amountInCents / 100
 
     const merchantReference     = instruction.reference.substring(0, 20)
     const customerBankReference = instruction.customerReference.substring(0, 20)
-    const encryptionKey = crypto.randomBytes(16).toString('hex').substring(0, 16)
+    const encryptionKey         = crypto.randomBytes(16).toString('hex').substring(0, 16)
 
     const encryptedAccountNumber = encryptAccountNumber(
       instruction.bank.bankAccountNumber,
@@ -134,7 +135,7 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
 
     const hashCheck = generateHashCheck(
       SITE_CODE,
-      amountRands,
+      amountInCents,
       merchantReference,
       customerBankReference,
       false,
@@ -142,7 +143,7 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
       bankGroupId,
       encryptedAccountNumber,
       branchCode,
-      PRIVATE_KEY
+      API_KEY
     )
 
     const body = {
