@@ -1,14 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
-import crypto from 'crypto'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
-
-function sha512(input: string): string {
-  return crypto.createHash('sha512').update(input, 'utf8').digest('hex')
-}
 
 export async function POST(request: Request) {
   let body: any
@@ -20,37 +15,50 @@ export async function POST(request: Request) {
 
   console.log('[payout-verify] Received:', JSON.stringify(body, null, 2))
 
-  const payoutId = body.PayoutId
+  const payoutId          = body.PayoutId
+  const merchantReference = body.MerchantReference
 
-  // Look up the payout period by payoutId
-  const { data: period } = await supabase
+  // Look up by net_ozow_payout_id first, then fallback to net_merchant_reference
+  let { data: period } = await supabase
     .from('payout_periods')
     .select('id, encryption_key')
     .eq('net_ozow_payout_id', payoutId)
     .maybeSingle()
 
+  if (!period) {
+    const { data: periodByRef } = await supabase
+      .from('payout_periods')
+      .select('id, encryption_key')
+      .eq('net_merchant_reference', merchantReference)
+      .maybeSingle()
+    period = periodByRef
+  }
+
   if (!period || !period.encryption_key) {
-    console.error('[payout-verify] Period or encryption key not found for payoutId:', payoutId)
+    console.error('[payout-verify] Period not found for payoutId:', payoutId, 'ref:', merchantReference)
     return Response.json({
       PayoutId: payoutId,
       IsVerified: false,
       AccountNumberDecryptionKey: '',
-      Reason: 'Payout not found',
+      Reason: 'Payout record or encryption key not found',
     })
   }
 
-  // Update status
+  // Update record with Ozow payout ID and update status
   await supabase
     .from('payout_periods')
-    .update({ net_payout_status: 'submitted' })
+    .update({
+      net_ozow_payout_id: payoutId,
+      net_payout_status: 'submitted',
+    })
     .eq('id', period.id)
 
   console.log('[payout-verify] Verified successfully for period:', period.id)
 
   return Response.json({
-    PayoutId: payoutId,
-    IsVerified: true,
+    PayoutId:                   payoutId,
+    IsVerified:                 true,
     AccountNumberDecryptionKey: period.encryption_key,
-    Reason: '',
+    Reason:                     '',
   })
 }
