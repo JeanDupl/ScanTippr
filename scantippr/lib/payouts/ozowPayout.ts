@@ -58,7 +58,7 @@ function generateHashCheck(
   bankGroupId: string,
   encryptedAccountNumber: string,
   branchCode: string,
-  privateKey: string
+  apiKey: string
 ): string {
   const input = [
     siteCode.trim().toLowerCase(),
@@ -70,7 +70,7 @@ function generateHashCheck(
     bankGroupId.trim().toLowerCase(),
     encryptedAccountNumber.trim(),
     branchCode.trim().toLowerCase(),
-    privateKey.trim().toLowerCase(),
+    apiKey.trim().toLowerCase(),
   ].join('')
   
   console.log('[ozowPayout] Full Hash Input String:', input)
@@ -128,7 +128,6 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
     console.log('[ozowPayout] Config:', {
       siteCode: SITE_CODE,
       notifyUrl: NOTIFY_URL,
-      privateKeyLast4: PRIVATE_KEY.slice(-4),
       apiKeyLast4: API_KEY.slice(-4),
       amountRands,
       amountFormatted,
@@ -144,7 +143,7 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
       bankGroupId,
       encryptedAccountNumber,
       branchCode,
-      PRIVATE_KEY
+      API_KEY
     )
 
     const body = {
