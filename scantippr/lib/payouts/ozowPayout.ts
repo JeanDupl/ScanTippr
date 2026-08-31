@@ -209,11 +209,13 @@ export async function createOzowPayout(
     }
 
     console.log('[ozowPayout] Submitting:', {
-      amount: instruction.amount,
-      merchantReference,
-      bankGroupId,
-      payoutPeriodId: instruction.payoutPeriodId,
-    })
+  amount: instruction.amount,
+  merchantReference,
+  bankGroupId,
+  payoutPeriodId: instruction.payoutPeriodId,
+  notifyUrl: NOTIFY_URL,
+  siteCode: SITE_CODE,
+})
 
     const res = await fetch(`${PAYOUT_BASE_URL}/requestpayout`, {
       method: 'POST',
@@ -238,6 +240,12 @@ export async function createOzowPayout(
 
     const payoutStatus = data.payoutStatus
     const isSuccess = [1, 2, 3].includes(payoutStatus?.status)
+
+    console.log('[ozowPayout] Config:', {
+      siteCode: SITE_CODE,
+      notifyUrl: NOTIFY_URL,
+      baseUrl: PAYOUT_BASE_URL,
+     })
 
     console.log('[ozowPayout] Response:', {
       payoutId:  data.payoutId,
