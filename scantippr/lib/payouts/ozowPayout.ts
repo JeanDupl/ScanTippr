@@ -147,7 +147,7 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
 
     const body = {
       siteCode:             SITE_CODE,
-      amount:               parseFloat(amountRandsStr),
+      amount:               amountRandsStr,
       merchantReference,
       customerBankReference,
       isRtc:                false,
