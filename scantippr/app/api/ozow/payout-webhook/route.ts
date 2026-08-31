@@ -14,7 +14,7 @@ function sha512(input: string): string {
 }
 
 function verifyNotificationHash(body: any): boolean {
-  if (!API_KEY) return true
+  if (!API_KEY || process.env.OZOW_PAYOUT_ENV === 'staging') return true
   const input = [
     body.PayoutId ?? '',
     body.SiteCode ?? '',
