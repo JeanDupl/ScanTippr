@@ -18,14 +18,13 @@ export async function POST(request: Request) {
   const payoutId          = body.PayoutId
   const merchantReference = body.MerchantReference
 
-  // Look up by net_ozow_payout_id first, then fallback to net_merchant_reference
   let { data: period } = await supabase
     .from('payout_periods')
     .select('id, encryption_key')
     .eq('net_ozow_payout_id', payoutId)
     .maybeSingle()
 
-  if (!period) {
+  if (!period && merchantReference) {
     const { data: periodByRef } = await supabase
       .from('payout_periods')
       .select('id, encryption_key')
@@ -44,7 +43,6 @@ export async function POST(request: Request) {
     })
   }
 
-  // Update record with Ozow payout ID and update status
   await supabase
     .from('payout_periods')
     .update({
