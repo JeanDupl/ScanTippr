@@ -16,6 +16,7 @@ export interface OzowPayoutInstruction {
   customerReference: string
   payoutPeriodId: string
   description?: string
+  encryptionKey?: string
 }
 
 export interface OzowPayoutResult {
@@ -33,14 +34,14 @@ function sha512(input: string): string {
 
 function encryptAccountNumber(
   accountNumber: string,
-  apiKey: string,
+  encryptionKey: string,
   merchantReference: string,
   amountInCents: number
 ): string {
-  let key = apiKey
+  let key = encryptionKey
   while (key.length < 32) key += key
   key = key.substring(0, 32)
-  const ivString = `${merchantReference}${amountInCents}${apiKey}`.toLowerCase()
+  const ivString = `${merchantReference}${amountInCents}${encryptionKey}`.toLowerCase()
   const iv = sha512(ivString).substring(0, 16)
   const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key, 'utf8'), Buffer.from(iv, 'utf8'))
   const encrypted = Buffer.concat([cipher.update(Buffer.from(accountNumber, 'utf8')), cipher.final()])
@@ -111,14 +112,17 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
     const branchCode    = matchedBank.universalBranchCode
     const amountInCents = Math.round(instruction.amount * 100)
     const amountRands   = instruction.amount
-
+    
+    // Generate or accept pre-defined per-transaction encryption key
+    const encryptionKey = instruction.encryptionKey ?? crypto.randomBytes(16).toString('hex').substring(0, 16)
+    
     const merchantReference     = instruction.reference.substring(0, 20)
     const customerBankReference = instruction.customerReference.substring(0, 20)
 
-    // Encrypt account number using API_KEY so Ozow can replicate encryption server-side
+    // Encrypt account number using the unique transaction encryptionKey
     const encryptedAccountNumber = encryptAccountNumber(
       instruction.bank.bankAccountNumber,
-      API_KEY,
+      encryptionKey,
       merchantReference,
       amountInCents
     )
@@ -192,7 +196,7 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
     return {
       success:       isSuccess,
       ozowPayoutId:  data.payoutId,
-      encryptionKey: API_KEY,
+      encryptionKey, // Return the actual key used for encryption
       status:        payoutStatus?.status,
       subStatus:     payoutStatus?.subStatus,
       error:         isSuccess ? undefined : payoutStatus?.errorMessage,
