@@ -110,7 +110,7 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
     const bankGroupId   = matchedBank.bankGroupId
     const branchCode    = matchedBank.universalBranchCode
     const amountInCents = Math.round(instruction.amount * 100)
-    const amountRandsStr = (amountInCents / 100).toFixed(2)
+    const amountRands = amountInCents / 100
 
     const merchantReference     = instruction.reference.substring(0, 20)
     const customerBankReference = instruction.customerReference.substring(0, 20)
@@ -128,13 +128,13 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
       notifyUrl: NOTIFY_URL,
       privateKeyLast4: PRIVATE_KEY.slice(-4),
       apiKeyLast4: API_KEY.slice(-4),
-      amountRandsStr,
+      amountRands,
       amountInCents,
     })
 
     const hashCheck = generateHashCheck(
       SITE_CODE,
-      amountRandsStr,
+      amountRands,
       merchantReference,
       customerBankReference,
       false,
@@ -147,7 +147,7 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
 
     const body = {
       siteCode:             SITE_CODE,
-      amount:               amountRandsStr,
+      amount:               amountRands,
       merchantReference,
       customerBankReference,
       isRtc:                false,
@@ -160,7 +160,7 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
       hashCheck,
     }
 
-    console.log('[ozowPayout] Submitting:', { merchantReference, amountRandsStr, bodyAmount: body.amount })
+    console.log('[ozowPayout] Submitting:', { merchantReference, amountRands, bodyAmount: body.amount })
 
     const res = await fetch(`${PAYOUT_BASE_URL}/requestpayout`, {
       method: 'POST',
