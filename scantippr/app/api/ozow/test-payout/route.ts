@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   }
 
   const subStatusMap: Record<number, string> = {
-    101: 'Rejected - Amount below minimum',
+    101: 'Payout validation failed - see errorMessage',
     102: 'Rejected - Amount above maximum',
     201: 'Verification pending',
     202: 'Verification successful',
