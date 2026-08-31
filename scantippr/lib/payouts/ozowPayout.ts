@@ -5,9 +5,9 @@ const PAYOUT_BASE_URL = process.env.OZOW_PAYOUT_ENV === 'staging'
   ? 'https://stagingpayoutsapi.ozow.com/v1'
   : 'https://payoutsapi.ozow.com/v1'
 
-const SITE_CODE   = process.env.OZOW_PAYOUT_SITE_CODE ?? process.env.OZOW_SITE_CODE!
-const API_KEY     = process.env.OZOW_PAYOUT_API_KEY ?? ''
-const PRIVATE_KEY = process.env.OZOW_PAYOUT_PRIVATE_KEY ?? process.env.OZOW_CLIENT_SECRET ?? ''
+const SITE_CODE   = (process.env.OZOW_PAYOUT_SITE_CODE ?? process.env.OZOW_SITE_CODE!).trim()
+const API_KEY     = (process.env.OZOW_PAYOUT_API_KEY ?? '').trim()
+const PRIVATE_KEY = (process.env.OZOW_PAYOUT_PRIVATE_KEY ?? process.env.OZOW_CLIENT_SECRET ?? '').trim()
 const NOTIFY_URL  = `${process.env.NEXT_PUBLIC_SITE_URL}/api/ozow/payout-webhook`
 
 export interface OzowPayoutInstruction {
@@ -58,20 +58,20 @@ function generateHashCheck(
   bankGroupId: string,
   encryptedAccountNumber: string,
   branchCode: string,
-  apiKey: string
+  privateKey: string
 ): string {
   const input = [
-    siteCode,
-    amountInCents.toString(),
-    merchantReference,
-    customerBankReference,
+    siteCode.trim().toLowerCase(),
+    amountInCents.toString().trim().toLowerCase(),
+    merchantReference.trim().toLowerCase(),
+    customerBankReference.trim().toLowerCase(),
     isRtc ? 'true' : 'false',
-    notifyUrl,
-    bankGroupId,
-    encryptedAccountNumber,
-    branchCode,
-    apiKey,
-  ].join('').toLowerCase()
+    notifyUrl.trim().toLowerCase(),
+    bankGroupId.trim().toLowerCase(),
+    encryptedAccountNumber.trim(),
+    branchCode.trim().toLowerCase(),
+    privateKey.trim().toLowerCase(),
+  ].join('')
   
   console.log('[ozowPayout] Full Hash Input String:', input)
   return sha512(input)
@@ -143,7 +143,7 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
       bankGroupId,
       encryptedAccountNumber,
       branchCode,
-      API_KEY
+      PRIVATE_KEY
     )
 
     const body = {
