@@ -142,7 +142,7 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
       bankGroupId,
       encryptedAccountNumber,
       branchCode,
-      PRIVATE_KEY
+      API_KEY
     )
 
     const body = {
