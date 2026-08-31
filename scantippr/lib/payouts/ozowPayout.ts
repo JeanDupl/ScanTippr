@@ -41,27 +41,16 @@ function encryptAccountNumber(
   let key = encryptionKey
   while (key.length < 32) key += key
   key = key.substring(0, 32)
-
   const ivString = `${merchantReference}${amountInCents}${encryptionKey}`.toLowerCase()
   const iv = sha512(ivString).substring(0, 16)
-
-  const cipher = crypto.createCipheriv(
-    'aes-256-cbc',
-    Buffer.from(key, 'utf8'),
-    Buffer.from(iv, 'utf8')
-  )
-
-  const encrypted = Buffer.concat([
-    cipher.update(Buffer.from(accountNumber, 'utf8')),
-    cipher.final()
-  ])
-
+  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key, 'utf8'), Buffer.from(iv, 'utf8'))
+  const encrypted = Buffer.concat([cipher.update(Buffer.from(accountNumber, 'utf8')), cipher.final()])
   return encrypted.toString('base64')
 }
 
 function generateHashCheck(
   siteCode: string,
-  amountCents: number,
+  amount: string | number,
   merchantReference: string,
   customerBankReference: string,
   isRtc: boolean,
@@ -73,7 +62,7 @@ function generateHashCheck(
 ): string {
   const input = [
     siteCode,
-    amountCents,
+    amount,
     merchantReference,
     customerBankReference,
     isRtc ? 'true' : 'false',
@@ -83,7 +72,6 @@ function generateHashCheck(
     branchCode,
     privateKey,
   ].join('').toLowerCase()
-
   console.log('[ozowPayout] Hash input (first 120):', input.substring(0, 120))
   return sha512(input)
 }
@@ -95,27 +83,16 @@ export async function getOzowPayoutBanks(): Promise<Array<{
 }>> {
   const res = await fetch(`${PAYOUT_BASE_URL}/getavailablebanks`, {
     method: 'GET',
-    headers: {
-      'ApiKey':   API_KEY,
-      'SiteCode': SITE_CODE,
-      'Accept':   'application/json',
-    },
+    headers: { 'ApiKey': API_KEY, 'SiteCode': SITE_CODE, 'Accept': 'application/json' },
   })
   if (!res.ok) throw new Error(`Ozow getavailablebanks failed: ${res.status}`)
   return res.json()
 }
 
-export async function createOzowPayout(
-  instruction: OzowPayoutInstruction
-): Promise<OzowPayoutResult> {
-
+export async function createOzowPayout(instruction: OzowPayoutInstruction): Promise<OzowPayoutResult> {
   if (!API_KEY) {
     const stubKey = crypto.randomBytes(8).toString('hex')
-    return {
-      success:       true,
-      ozowPayoutId:  `STUB-${instruction.payoutPeriodId}-${Date.now()}`,
-      encryptionKey: stubKey,
-    }
+    return { success: true, ozowPayoutId: `STUB-${instruction.payoutPeriodId}-${Date.now()}`, encryptionKey: stubKey }
   }
 
   try {
@@ -126,21 +103,17 @@ export async function createOzowPayout(
       b.bankGroupName.toLowerCase().includes(bankName.toLowerCase()) ||
       bankName.toLowerCase().includes(b.bankGroupName.toLowerCase())
     )
-
     if (!matchedBank) {
-      return {
-        success: false,
-        error: `Bank "${bankName}" not found. Available: ${banks.map(b => b.bankGroupName).join(', ')}`,
-      }
+      return { success: false, error: `Bank "${bankName}" not found. Available: ${banks.map(b => b.bankGroupName).join(', ')}` }
     }
 
     const bankGroupId   = matchedBank.bankGroupId
     const branchCode    = matchedBank.universalBranchCode
     const amountInCents = Math.round(instruction.amount * 100)
+    const amountRandsStr = (amountInCents / 100).toFixed(2)
 
     const merchantReference     = instruction.reference.substring(0, 20)
     const customerBankReference = instruction.customerReference.substring(0, 20)
-
     const encryptionKey = crypto.randomBytes(16).toString('hex').substring(0, 16)
 
     const encryptedAccountNumber = encryptAccountNumber(
@@ -155,12 +128,13 @@ export async function createOzowPayout(
       notifyUrl: NOTIFY_URL,
       privateKeyLast4: PRIVATE_KEY.slice(-4),
       apiKeyLast4: API_KEY.slice(-4),
-      amountCents: amountInCents,
+      amountRandsStr,
+      amountInCents,
     })
 
     const hashCheck = generateHashCheck(
       SITE_CODE,
-      amountInCents,
+      amountRandsStr,
       merchantReference,
       customerBankReference,
       false,
@@ -173,7 +147,7 @@ export async function createOzowPayout(
 
     const body = {
       siteCode:             SITE_CODE,
-      amount:               amountCents,
+      amount:               parseFloat(amountRandsStr),
       merchantReference,
       customerBankReference,
       isRtc:                false,
@@ -186,7 +160,7 @@ export async function createOzowPayout(
       hashCheck,
     }
 
-    console.log('[ozowPayout] Submitting:', { merchantReference, amountCents: amountInCents })
+    console.log('[ozowPayout] Submitting:', { merchantReference, amountRandsStr, bodyAmount: body.amount })
 
     const res = await fetch(`${PAYOUT_BASE_URL}/requestpayout`, {
       method: 'POST',
@@ -203,10 +177,7 @@ export async function createOzowPayout(
 
     if (!res.ok) {
       console.error('[ozowPayout] API error:', data)
-      return {
-        success: false,
-        error: data?.payoutStatus?.errorMessage || `HTTP ${res.status}`,
-      }
+      return { success: false, error: data?.payoutStatus?.errorMessage || `HTTP ${res.status}` }
     }
 
     const payoutStatus = data.payoutStatus
