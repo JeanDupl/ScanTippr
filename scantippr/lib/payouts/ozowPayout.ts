@@ -72,7 +72,7 @@ function generateHashCheck(
 ): string {
   const input = [
     siteCode,
-    amountCents,
+    amountValue,
     merchantReference,
     customerBankReference,
     isRtc,
