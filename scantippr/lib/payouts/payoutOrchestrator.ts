@@ -10,6 +10,7 @@
 //   7. Update statuses based on Ozow responses
 // ============================================================
 
+import crypto from 'crypto'
 import { createClient } from '@supabase/supabase-js'
 import {
   Company,
@@ -293,16 +294,25 @@ export async function runCompanyPayout(
   }
 
   // 7. Write ScanTippr fee record
-  await createFeeRecord(supabase, summary, payoutPeriodId, feeDisposalMode, ozowFeePayoutId)
-
-  // 8. Net payout instruction
+  await createFeeRecord(supabase, summary, payoutPeriodId, feeDisposalMode, ozowFeePayoutId)  // 8. Net payout instruction
   if (!summary.hasZeroNet) {
+    const netMerchantRef = shortRef('NET', periodYear, periodMonth)
+    const encryptionKey  = crypto.randomBytes(16).toString('hex').substring(0, 16)
+
+    // Store reference & key BEFORE calling Ozow so payout-verify can locate it synchronously
+    await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
+      net_merchant_reference: netMerchantRef,
+      encryption_key:         encryptionKey,
+      net_payout_status:      'initiating',
+    })
+
     const netResult = await createOzowPayout({
       amount:            summary.totalNet,
       bank:              summary.bankSnapshot,
-      reference:         shortRef('NET', periodYear, periodMonth),
-      customerReference: shortRef('NET', periodYear, periodMonth),
+      reference:         netMerchantRef,
+      customerReference: netMerchantRef,
       payoutPeriodId,
+      encryptionKey,
       description:       `Net payout — ${company.name} — ${periodMonth}/${periodYear}`,
     })
 
@@ -311,7 +321,6 @@ export async function runCompanyPayout(
         net_payout_status:  'submitted',
         net_ozow_payout_id: netResult.ozowPayoutId ?? null,
         net_submitted_at:   new Date().toISOString(),
-        encryption_key:     netResult.encryptionKey ?? null,
       })
     } else {
       await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
