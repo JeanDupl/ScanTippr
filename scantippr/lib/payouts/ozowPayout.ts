@@ -71,15 +71,12 @@ function generateHashCheck(
   branchCode: string,
   privateKey: string
 ): string {
-  const amountFormatted = (amountCents / 100).toFixed(2)
   const input = [
     siteCode,
-    'ZA',
-    'ZAR',
-    amountFormatted,
+    amountCents,
     merchantReference,
     customerBankReference,
-    isRtc,
+    isRtc ? 'true' : 'false',
     notifyUrl,
     bankGroupId,
     encryptedAccountNumber,
