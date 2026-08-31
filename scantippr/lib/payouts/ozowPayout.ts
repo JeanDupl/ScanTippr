@@ -33,14 +33,14 @@ function sha512(input: string): string {
 
 function encryptAccountNumber(
   accountNumber: string,
-  encryptionKey: string,
+  apiKey: string,
   merchantReference: string,
   amountInCents: number
 ): string {
-  let key = encryptionKey
+  let key = apiKey
   while (key.length < 32) key += key
   key = key.substring(0, 32)
-  const ivString = `${merchantReference}${amountInCents}${encryptionKey}`.toLowerCase()
+  const ivString = `${merchantReference}${amountInCents}${apiKey}`.toLowerCase()
   const iv = sha512(ivString).substring(0, 16)
   const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key, 'utf8'), Buffer.from(iv, 'utf8'))
   const encrypted = Buffer.concat([cipher.update(Buffer.from(accountNumber, 'utf8')), cipher.final()])
@@ -59,7 +59,6 @@ function generateHashCheck(
   branchCode: string,
   apiKey: string
 ): string {
-  // Preserve exact case for Base64 encryptedAccountNumber, API Key, and references
   const input = [
     siteCode.trim(),
     amountInCents.toString().trim(),
@@ -71,9 +70,9 @@ function generateHashCheck(
     encryptedAccountNumber.trim(),
     branchCode.trim(),
     apiKey.trim(),
-  ].join('')
+  ].join('').toLowerCase()
   
-  console.log('[ozowPayout] Full Raw Hash Input String:', input)
+  console.log('[ozowPayout] Full Hash Input String:', input)
   return sha512(input)
 }
 
@@ -115,11 +114,11 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
 
     const merchantReference     = instruction.reference.substring(0, 20)
     const customerBankReference = instruction.customerReference.substring(0, 20)
-    const encryptionKey         = crypto.randomBytes(16).toString('hex').substring(0, 16)
 
+    // Encrypt account number using API_KEY so Ozow can replicate encryption server-side
     const encryptedAccountNumber = encryptAccountNumber(
       instruction.bank.bankAccountNumber,
-      encryptionKey,
+      API_KEY,
       merchantReference,
       amountInCents
     )
@@ -160,7 +159,7 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
       hashCheck,
     }
 
-    console.log('[ozowPayout] Submitting:', { merchantReference, amountRands, bodyAmount: body.amount })
+    console.log('[ozowPayout] Submitting:', { merchantReference, amountInCents, bodyAmount: body.amount })
 
     const res = await fetch(`${PAYOUT_BASE_URL}/requestpayout`, {
       method: 'POST',
@@ -193,7 +192,7 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
     return {
       success:       isSuccess,
       ozowPayoutId:  data.payoutId,
-      encryptionKey,
+      encryptionKey: API_KEY,
       status:        payoutStatus?.status,
       subStatus:     payoutStatus?.subStatus,
       error:         isSuccess ? undefined : payoutStatus?.errorMessage,
