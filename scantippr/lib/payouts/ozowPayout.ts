@@ -60,7 +60,7 @@ function encryptAccountNumber(
 
 function generateHashCheck(
   siteCode: string,
-  amountCents: number,
+  amountValue: number,
   merchantReference: string,
   customerBankReference: string,
   isRtc: boolean,
@@ -151,7 +151,7 @@ export async function createOzowPayout(
 
     console.log('[ozowPayout] Hash inputs:', {
       siteCode: SITE_CODE,
-      amountCents: amountInCents,
+      amountValue: instruction.amount,
       merchantReference,
       customerBankReference,
       isRtc: false,
