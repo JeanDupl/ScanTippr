@@ -71,9 +71,10 @@ function generateHashCheck(
   branchCode: string,
   privateKey: string
 ): string {
+  const amountDecimal = (amountCents / 100).toFixed(2)
   const input = [
     siteCode,
-    amountCents,
+    amountDecimal,
     merchantReference,
     customerBankReference,
     isRtc ? 'true' : 'false',
