@@ -30,7 +30,7 @@ import {
  */
 export function calculateEmployeeFee(grossAmount: number): number {
   if (grossAmount <= 0) return 0
-  return Math.min(SCANTIPPR_FEE_CAP, grossAmount)
+  return 0 // TEMP: zero fee for testing
 }
 
 /**
