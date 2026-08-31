@@ -71,10 +71,9 @@ function generateHashCheck(
   branchCode: string,
   privateKey: string
 ): string {
-  const amountDecimal = (amountCents / 100).toFixed(2)
   const input = [
     siteCode,
-    amountDecimal,
+    amountCents,
     merchantReference,
     customerBankReference,
     isRtc ? 'true' : 'false',
@@ -174,7 +173,7 @@ export async function createOzowPayout(
 
     const body = {
       siteCode:             SITE_CODE,
-      amount:               instruction.amount,
+      amount:               amountCents,
       merchantReference,
       customerBankReference,
       isRtc:                false,
