@@ -91,7 +91,6 @@ function generateHashCheck(params: {
     params.merchantReference,
     params.customerBankReference,
     params.isRtc,
-    params.notifyUrl,
     params.bankGroupId,
     params.encryptedAccountNumber,
     params.branchCode,
