@@ -243,6 +243,7 @@ export async function createOzowPayout(
       payoutId:  data.payoutId,
       status:    payoutStatus?.status,
       subStatus: payoutStatus?.subStatus,
+      errorMessage: payoutStatus?.errorMessage,
     })
 
     return {
