@@ -164,7 +164,7 @@ export async function createOzowPayout(
 
     const hashCheck = generateHashCheck(
       SITE_CODE,
-      instruction.amount,
+      amountInCents,
       merchantReference,
       customerBankReference,
       false,
