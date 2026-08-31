@@ -50,7 +50,7 @@ function encryptAccountNumber(
 
 function generateHashCheck(
   siteCode: string,
-  amountInCents: number,
+  amountFormatted: string,
   merchantReference: string,
   customerBankReference: string,
   isRtc: boolean,
@@ -62,7 +62,7 @@ function generateHashCheck(
 ): string {
   const input = [
     siteCode.trim().toLowerCase(),
-    amountInCents.toString().trim().toLowerCase(),
+    amountFormatted.trim().toLowerCase(),
     merchantReference.trim().toLowerCase(),
     customerBankReference.trim().toLowerCase(),
     isRtc ? 'true' : 'false',
@@ -111,7 +111,8 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
     const bankGroupId   = matchedBank.bankGroupId
     const branchCode    = matchedBank.universalBranchCode
     const amountInCents = Math.round(instruction.amount * 100)
-    const amountRands   = amountInCents / 100
+    const amountRands   = instruction.amount
+    const amountFormatted = amountRands.toFixed(2)
 
     const merchantReference     = instruction.reference.substring(0, 20)
     const customerBankReference = instruction.customerReference.substring(0, 20)
@@ -130,12 +131,12 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
       privateKeyLast4: PRIVATE_KEY.slice(-4),
       apiKeyLast4: API_KEY.slice(-4),
       amountRands,
-      amountInCents,
+      amountFormatted,
     })
 
     const hashCheck = generateHashCheck(
       SITE_CODE,
-      amountInCents,
+      amountFormatted,
       merchantReference,
       customerBankReference,
       false,
