@@ -410,12 +410,23 @@ export async function runIndividualPayout(
 
   // 8. Net payout
   if (!summary.hasZeroNet) {
+    const netMerchantRef = shortRef('NET', periodYear, periodMonth)
+    const encryptionKey  = crypto.randomBytes(16).toString('hex').substring(0, 16)
+
+    // Pre-save BEFORE calling Ozow so payout-verify can locate the record synchronously
+    await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
+      net_merchant_reference: netMerchantRef,
+      encryption_key:         encryptionKey,
+      net_payout_status:      'initiating',
+    })
+
     const netResult = await createOzowPayout({
       amount:            summary.totalNet,
       bank:              summary.bankSnapshot,
-      reference:         shortRef('NET', periodYear, periodMonth),
-      customerReference: shortRef('NET', periodYear, periodMonth),
+      reference:         netMerchantRef,
+      customerReference: netMerchantRef,
       payoutPeriodId,
+      encryptionKey,
       description:       `Net payout — ${guard.first_name} ${guard.last_name} — ${periodMonth}/${periodYear}`,
     })
 
@@ -424,7 +435,6 @@ export async function runIndividualPayout(
         net_payout_status:  'submitted',
         net_ozow_payout_id: netResult.ozowPayoutId ?? null,
         net_submitted_at:   new Date().toISOString(),
-        encryption_key:     netResult.encryptionKey ?? null,
       })
     } else {
       await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
