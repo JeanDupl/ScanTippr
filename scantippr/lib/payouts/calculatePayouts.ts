@@ -30,7 +30,7 @@ import {
  */
 export function calculateEmployeeFee(grossAmount: number): number {
   if (grossAmount <= 0) return 0
-  return 0 // TEMP: zero fee for testing
+  return Math.min(150, grossAmount) // fee = MIN(R150, employee gross)
 }
 
 /**
