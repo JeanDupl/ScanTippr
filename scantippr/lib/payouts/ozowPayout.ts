@@ -207,3 +207,15 @@ export async function createOzowPayout(instruction: OzowPayoutInstruction): Prom
     return { success: false, error: err.message }
   }
 }
+
+export async function getOzowPayoutStatus(payoutId: string): Promise<Record<string, unknown>> {
+  const res = await fetch(`${PAYOUT_BASE_URL}/getpayout?payoutId=${payoutId}`, {
+    method: 'GET',
+    headers: {
+      'ApiKey':   API_KEY,
+      'SiteCode': SITE_CODE,
+      'Accept':   'application/json',
+    },
+  })
+  return res.json()
+}
