@@ -14,6 +14,8 @@ export async function POST(request: Request) {
   }
 
   console.log('[payout-verify] Received:', JSON.stringify(body, null, 2))
+  // TEMP: force cancellation for Test 6
+  return Response.json({ PayoutId: body.PayoutId, IsVerified: false, AccountNumberDecryptionKey: '', Reason: 'Test 6 cancellation' })
 
   const payoutId          = body.PayoutId
   const merchantReference = body.MerchantReference
