@@ -54,7 +54,7 @@ export default function AddGuardPage() {
       }
     }
 
-    await supabase.from('guards').insert({
+    const { data: newGuard } = await supabase.from('guards').insert({
       first_name: firstName.trim(),
       last_name: lastName.trim(),
       job_title: jobTitle.trim() || null,
@@ -62,9 +62,9 @@ export default function AddGuardPage() {
       company_id: companyId,
       photo_url,
       is_active: true,
-    })
+    }).select('id').single()
 
-    router.push('/admin')
+    router.push(newGuard ? `/admin/employees/${newGuard.id}` : '/admin/employees')
   }
 
   return (
