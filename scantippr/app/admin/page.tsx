@@ -55,7 +55,7 @@ export default async function AdminDashboard() {
     'R' + n.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
   return (
-    <div style={{ padding: '36px 40px', maxWidth: '1200px' }}>
+    <div style={{ padding: '36px 40px' }}>
 
       {/* Page header */}
       <div style={{ marginBottom: '32px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
