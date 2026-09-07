@@ -3,12 +3,15 @@
 import { createClient } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 export async function addCompany(formData: FormData) {
+  const supabase = getSupabase()
   const name = formData.get('name') as string
   const subaccount = formData.get('subaccount') as string
 
@@ -23,6 +26,7 @@ export async function addCompany(formData: FormData) {
 }
 
 export async function addGuard(formData: FormData) {
+  const supabase = getSupabase()
   const firstName = formData.get('firstName') as string
   const lastName = formData.get('lastName') as string
   const companyId = formData.get('companyId') as string
