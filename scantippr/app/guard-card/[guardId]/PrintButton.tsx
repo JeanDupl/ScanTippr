@@ -25,6 +25,7 @@ export default function PrintButton() {
         @media print {
           .no-print { display: none !important; }
           body { background: white !important; }
+          * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
           #guard-card {
             box-shadow: none !important;
             border-radius: 0 !important;
