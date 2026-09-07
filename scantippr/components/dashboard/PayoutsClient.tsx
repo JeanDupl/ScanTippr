@@ -6,12 +6,8 @@ import {
   ChevronDown,
   ChevronRight,
   AlertTriangle,
-  CheckCircle2,
-  Clock,
-  XCircle,
-  Loader2,
-  Play,
   Info,
+  CalendarClock,
 } from 'lucide-react'
 
 // ── Types ─────────────────────────────────────────────────────
@@ -207,68 +203,15 @@ export default function PayoutsClient({
   currentMonth,
   currentYear,
 }: Props) {
-  const [initiating, setInitiating] = useState(false)
-  const [result, setResult] = useState<{
-    success: boolean
-    message: string
-    summary?: any
-  } | null>(null)
-
-  const [selectedMonth, setSelectedMonth] = useState(currentMonth)
-  const [selectedYear, setSelectedYear]   = useState(currentYear)
-
   const lineItemsByPeriod = (periodId: string) =>
     lineItems.filter((li) => li.payout_period_id === periodId)
-
-  const periodAlreadyExists = payoutPeriods.some(
-    (p) => p.period_month === selectedMonth && p.period_year === selectedYear
-  )
-
-  const initiatePayout = async () => {
-    if (!confirm(
-      `Initiate payout for ${monthName(selectedMonth)} ${selectedYear}?\n\n` +
-      `This will calculate fees and net amounts for all employees and submit payout instructions to Ozow.`
-    )) return
-
-    setInitiating(true)
-    setResult(null)
-
-    try {
-      const res = await fetch('/api/payouts/initiate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          periodMonth:     selectedMonth,
-          periodYear:      selectedYear,
-          feeDisposalMode: 'pending_decision',
-        }),
-      })
-      const data = await res.json()
-
-      if (!res.ok) {
-        setResult({ success: false, message: data.error || 'Payout failed' })
-      } else {
-        setResult({
-          success: true,
-          message: `Payout initiated for ${monthName(selectedMonth)} ${selectedYear}`,
-          summary: data.summary,
-        })
-        // Reload to show updated payout history
-        setTimeout(() => window.location.reload(), 2000)
-      }
-    } catch {
-      setResult({ success: false, message: 'Network error — please try again' })
-    } finally {
-      setInitiating(false)
-    }
-  }
 
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Payouts</h1>
         <p className="text-slate-500 text-sm mt-1">
-          Monthly net payout history and manual payout trigger for {companyName}
+          Monthly net payout history for {companyName}
         </p>
       </div>
 
@@ -281,114 +224,23 @@ export default function PayoutsClient({
             <p className="mt-0.5">
               Please add your company bank details in{' '}
               <a href="/dashboard/settings" className="underline font-medium">Settings</a>{' '}
-              before initiating a payout.
+              so ScanTippr can process your monthly payout.
             </p>
           </div>
         </div>
       )}
 
-      {/* Initiate payout card */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
-            <DollarSign className="w-5 h-5 text-orange-500" />
-          </div>
-          <div>
-            <h2 className="font-semibold text-slate-900">Initiate payout</h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Calculate and submit a net payout for a billing period
-            </p>
-          </div>
+      {/* Automatic payout notice */}
+      <div className="flex items-start gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
+        <div className="w-9 h-9 rounded-lg bg-orange-50 flex items-center justify-center flex-shrink-0">
+          <CalendarClock className="w-4.5 h-4.5 text-orange-500" />
         </div>
-
-        <div className="px-6 py-6 space-y-5">
-          {/* Period selector */}
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Month</label>
-              <select
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-sm bg-white
-                           focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
-              >
-                {MONTHS.map((m, i) => (
-                  <option key={i + 1} value={i + 1}>{m}</option>
-                ))}
-              </select>
-            </div>
-            <div className="w-32">
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Year</label>
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(Number(e.target.value))}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-sm bg-white
-                           focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
-              >
-                {[2024, 2025, 2026, 2027].map((y) => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Status indicators */}
-          <div className="flex items-center gap-6 text-sm text-slate-600">
-            <span className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-slate-400" />
-              {unpaidTransactionCount} unpaid transaction{unpaidTransactionCount !== 1 ? 's' : ''} total
-            </span>
-            {periodAlreadyExists && (
-              <span className="flex items-center gap-1.5 text-amber-600 font-medium">
-                <AlertTriangle className="w-4 h-4" />
-                Payout already exists for this period
-              </span>
-            )}
-          </div>
-
-          {/* Result message */}
-          {result && (
-            <div className={`flex items-start gap-3 rounded-lg px-4 py-3 text-sm ${
-              result.success
-                ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-                : 'bg-red-50 border border-red-200 text-red-700'
-            }`}>
-              {result.success
-                ? <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                : <XCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-              }
-              <div>
-                <p className="font-medium">{result.message}</p>
-                {result.summary && (
-                  <p className="mt-1 text-xs">
-                    Gross R{result.summary.totalGross?.toFixed(2)} ·{' '}
-                    Fee R{result.summary.totalFee?.toFixed(2)} ·{' '}
-                    Net R{result.summary.totalNet?.toFixed(2)} ·{' '}
-                    {result.summary.employeeCount} employees
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-          <p className="text-xs text-slate-400">
-            Payout instructions are sent to Ozow — ScanTippr never holds your funds.
+        <div className="text-sm">
+          <p className="font-semibold text-slate-900">Payouts are processed automatically</p>
+          <p className="text-slate-500 mt-0.5">
+            ScanTippr processes net payouts on your behalf at the end of each month.
+            You don't need to do anything — your employees will be paid automatically.
           </p>
-          <button
-            onClick={initiatePayout}
-            disabled={initiating || !hasBankDetails || periodAlreadyExists}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-orange-500 text-white text-sm
-                       font-semibold hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed
-                       transition-colors"
-          >
-            {initiating ? (
-              <><Loader2 className="w-4 h-4 animate-spin" />Processing…</>
-            ) : (
-              <><Play className="w-4 h-4" />Initiate payout</>
-            )}
-          </button>
         </div>
       </div>
 
@@ -399,7 +251,7 @@ export default function PayoutsClient({
           <div className="rounded-xl border border-slate-200 bg-white px-6 py-12 text-center text-slate-400">
             <DollarSign className="w-8 h-8 mx-auto mb-3 opacity-30" />
             <p className="font-medium">No payouts yet</p>
-            <p className="text-sm mt-1">Initiated payouts will appear here</p>
+            <p className="text-sm mt-1">Your payout history will appear here once the first month-end run is processed</p>
           </div>
         ) : (
           <div className="space-y-3">
