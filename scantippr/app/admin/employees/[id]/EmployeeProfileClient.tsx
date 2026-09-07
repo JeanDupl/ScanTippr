@@ -74,8 +74,8 @@ export default function EmployeeProfileClient({ guard, company, transactions, to
         </div>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600, background: isActive ? '#F0FDF4' : '#F9FAFB', color: isActive ? '#15803D' : '#9CA3AF' }}>{isActive ? 'Active' : 'Inactive'}</span>
-          <button onClick={() => setEditing(!editing)} style={{ padding: '8px 16px', background: editing ? '#F9FAFB' : '#0A0A0A', color: editing ? '#374151' : '#fff', border: editing ? '1px solid #E5E7EB' : 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>{editing ? 'Cancel' : 'Edit Employee'}</button>
-          <button onClick={toggleActive} style={{ padding: '8px 16px', background: isActive ? '#FEF2F2' : '#F0FDF4', color: isActive ? '#B91C1C' : '#15803D', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>{isActive ? 'Deactivate' : 'Activate'}</button>
+          <button onClick={() => setEditing(!editing)} style={{ padding: '8px 16px', background: editing ? '#F3F4F6' : '#4B5563', color: editing ? '#374151' : '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>{editing ? 'Cancel' : 'Edit Employee'}</button>
+          <button onClick={toggleActive} style={{ padding: '8px 16px', background: '#4B5563', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>{isActive ? 'Deactivate' : 'Activate'}</button>
         </div>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '24px' }}>
