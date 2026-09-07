@@ -22,7 +22,7 @@ export default async function CompanyProfilePage({ params, searchParams }: { par
   const [{ data: guards }, { data: transactions }, { data: payoutPeriods }] = await Promise.all([
     supabase.from('guards').select('*').eq('company_id', params.id).order('first_name'),
     supabase.from('transactions').select('*').eq('company_id', params.id).order('created_at', { ascending: false }),
-    supabase.from('payout_periods').select('*, payout_line_items(*)').eq('company_id', params.id).order('period_month', { ascending: false }).limit(12),
+    supabase.from('payout_periods').select('*, payout_line_items(*)').eq('recipient_id', params.id).eq('recipient_type', 'company').order('period_month', { ascending: false }).limit(12),
   ])
 
   const completedTx = (transactions ?? []).filter(tx => tx.payment_status === 'complete')
