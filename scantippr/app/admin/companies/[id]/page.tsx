@@ -2,13 +2,14 @@ import { createClient } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
 import CompanyProfileClient from './CompanyProfileClient'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 export const revalidate = 0
 
 export default async function CompanyProfilePage({ params, searchParams }: { params: { id: string }, searchParams: { tab?: string } }) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   const { data: company } = await supabase
     .from('companies')
     .select('*')
