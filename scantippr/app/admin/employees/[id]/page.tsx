@@ -4,20 +4,21 @@ import EmployeeProfileClient from './EmployeeProfileClient'
 
 export const revalidate = 0
 
-export default async function EmployeeProfilePage({ params }: { params: { id: string } }) {
+export default async function EmployeeProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
   const { data: guard } = await supabase
-    .from('guards').select('*').eq('id', params.id).single()
+    .from('guards').select('*').eq('id', id).single()
 
   if (!guard) notFound()
 
   const [{ data: company }, { data: transactions }] = await Promise.all([
     supabase.from('companies').select('id, name').eq('id', guard.company_id).single(),
-    supabase.from('transactions').select('*').eq('guard_id', params.id).order('created_at', { ascending: false }),
+    supabase.from('transactions').select('*').eq('guard_id', id).order('created_at', { ascending: false }),
   ])
 
   const firstOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()

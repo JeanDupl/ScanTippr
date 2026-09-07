@@ -4,7 +4,9 @@ import CompanyProfileClient from './CompanyProfileClient'
 
 export const revalidate = 0
 
-export default async function CompanyProfilePage({ params, searchParams }: { params: { id: string }, searchParams: { tab?: string } }) {
+export default async function CompanyProfilePage({ params, searchParams }: { params: Promise<{ id: string }>, searchParams: Promise<{ tab?: string }> }) {
+  const { id } = await params
+  const resolvedSearch = await searchParams
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -13,7 +15,7 @@ export default async function CompanyProfilePage({ params, searchParams }: { par
   const { data: company } = await supabase
     .from('companies')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (!company) notFound()
@@ -21,9 +23,9 @@ export default async function CompanyProfilePage({ params, searchParams }: { par
   const firstOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
 
   const [{ data: guards }, { data: transactions }, { data: payoutPeriods }] = await Promise.all([
-    supabase.from('guards').select('*').eq('company_id', params.id).order('first_name'),
-    supabase.from('transactions').select('*').eq('company_id', params.id).order('created_at', { ascending: false }),
-    supabase.from('payout_periods').select('*, payout_line_items(*)').eq('recipient_id', params.id).eq('recipient_type', 'company').order('period_month', { ascending: false }).limit(12),
+    supabase.from('guards').select('*').eq('company_id', id).order('first_name'),
+    supabase.from('transactions').select('*').eq('company_id', id).order('created_at', { ascending: false }),
+    supabase.from('payout_periods').select('*, payout_line_items(*)').eq('recipient_id', id).eq('recipient_type', 'company').order('period_month', { ascending: false }).limit(12),
   ])
 
   const completedTx = (transactions ?? []).filter(tx => tx.payment_status === 'complete')
@@ -38,7 +40,7 @@ export default async function CompanyProfilePage({ params, searchParams }: { par
       payoutPeriods={payoutPeriods ?? []}
       totalDonations={totalDonations}
       thisMonthDonations={thisMonthDonations}
-      initialTab={searchParams.tab ?? 'overview'}
+      initialTab={resolvedSearch.tab ?? 'overview'}
     />
   )
 }
