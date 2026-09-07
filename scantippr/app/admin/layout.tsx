@@ -127,7 +127,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div key={gi} style={{ marginBottom: '2px' }}>
               {group.heading && (
                 <p style={{
-                  color: '#2e2e2e',
+                  color: '#555555',
                   fontSize: '10px', fontWeight: 600,
                   textTransform: 'uppercase', letterSpacing: '0.1em',
                   padding: '16px 24px 6px',
@@ -146,7 +146,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       alignItems: 'center',
                       gap: '10px',
                       padding: '9px 24px',
-                      color: active ? '#fff' : '#606060',
+                      color: active ? '#fff' : '#A0A0A0',
                       background: active ? 'rgba(249,115,22,0.1)' : 'transparent',
                       borderLeft: active ? '2px solid #F97316' : '2px solid transparent',
                       fontSize: '13.5px',
@@ -154,7 +154,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       transition: 'all 0.12s ease',
                       cursor: 'pointer',
                     }}>
-                      <span style={{ color: active ? '#F97316' : '#404040', flexShrink: 0 }}>
+                      <span style={{ color: active ? '#F97316' : '#707070', flexShrink: 0 }}>
                         <Icon />
                       </span>
                       {item.label}
