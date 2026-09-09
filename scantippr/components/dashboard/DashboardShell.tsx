@@ -55,7 +55,6 @@ export default function DashboardShell({
       <Sidebar mode={sidebarMode} />
       <div className="flex-1 flex flex-col min-w-0">
         <div className="bg-white border-b border-zinc-200 px-8 py-4 flex items-center justify-between sticky top-0 z-10 print:hidden">
-          <h1 className="text-xl font-bold text-zinc-900">ScanTippr</h1>
           <div className="flex items-center gap-3">
             <button
               onClick={() => setDrawerOpen(true)}
