@@ -106,14 +106,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Wordmark */}
         <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid #1c1c1c' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{
-              width: '28px', height: '28px', background: '#F97316',
-              borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
-              </svg>
-            </div>
+            <img src="/Icon.png" alt="ScanTippr" style={{ width: '28px', height: '28px', borderRadius: '6px', objectFit: 'cover' }} />
             <div>
               <div style={{ color: '#fff', fontWeight: 700, fontSize: '14px', letterSpacing: '-0.2px' }}>ScanTippr</div>
               <div style={{ color: '#3d3d3d', fontSize: '10px', fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Admin</div>
