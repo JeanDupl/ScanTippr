@@ -69,6 +69,7 @@ export default function EmployeeProfileClient({
   const [editLast, setEditLast] = useState(guard.last_name)
   const [editJob, setEditJob] = useState(guard.job_title ?? '')
   const [editLocation, setEditLocation] = useState(guard.location ?? '')
+  const [editEmail, setEditEmail] = useState(guard.email ?? '')
   const [photoFile, setPhotoFile] = useState<File | null>(null)
   const [photoPreview, setPhotoPreview] = useState<string | null>(guard.photo_url ?? null)
   const [saving, setSaving] = useState(false)
@@ -193,6 +194,7 @@ export default function EmployeeProfileClient({
                 <div><label style={labelStyle}>Last Name</label><input value={editLast} onChange={e => setEditLast(e.target.value)} style={inputStyle} /></div>
                 <div><label style={labelStyle}>Job Title</label><input value={editJob} onChange={e => setEditJob(e.target.value)} placeholder="e.g. Car Guard" style={inputStyle} /></div>
                 <div><label style={labelStyle}>Location</label><input value={editLocation} onChange={e => setEditLocation(e.target.value)} placeholder="e.g. Gate 1" style={inputStyle} /></div>
+                <div style={{ gridColumn: 'span 2' }}><label style={labelStyle}>Email</label><input value={editEmail} onChange={e => setEditEmail(e.target.value)} placeholder="e.g. john@email.com" style={inputStyle} type="email" /></div>
               </div>
               <div style={{ marginBottom: '16px' }}>
                 <label style={labelStyle}>Photo <span style={{ fontWeight: 400, color: '#9CA3AF' }}>(optional)</span></label>
