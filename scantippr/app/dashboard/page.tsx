@@ -56,7 +56,7 @@ export default async function DashboardPage() {
   return (
     <DashboardShell
       companyId={companyId}
-      companyName={company?.name ?? \'\'}
+      companyName={company?.name ?? ""}
       initialTheme={{
         primary: company?.brand_primary || '#FF5A00',
         light: company?.brand_light || '#FFF0E6',
