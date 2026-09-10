@@ -18,7 +18,7 @@ export default async function QRCardsPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('company_id')
+    .select('company_id, name')
     .eq('id', userId)
     .single()
 

@@ -26,7 +26,7 @@ export default async function EmployeesPage() {
 
   const { data: company } = await supabase
     .from('companies')
-    .select('brand_primary, brand_light, sidebar_mode')
+    .select('name, brand_primary, brand_light, sidebar_mode')
     .eq('id', companyId)
     .single()
 
