@@ -10,6 +10,7 @@ const DEFAULT_SIDEBAR_MODE: 'light' | 'dark' = 'dark'
 interface DashboardShellProps {
   children: React.ReactNode
   companyId: string
+  companyName?: string
   initialTheme?: { primary: string; light: string }
   initialSidebarMode?: 'light' | 'dark'
 }
@@ -17,6 +18,7 @@ interface DashboardShellProps {
 export default function DashboardShell({
   children,
   companyId,
+  companyName,
   initialTheme,
   initialSidebarMode,
 }: DashboardShellProps) {
