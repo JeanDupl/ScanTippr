@@ -19,7 +19,7 @@ export default async function DashboardPage() {
   // Get company_id from profiles
   const { data: profile } = await supabase
     .from('profiles')
-    .select('company_id')
+    .select('company_id, role, guard_id')
     .eq('id', userId)
     .single()
 
