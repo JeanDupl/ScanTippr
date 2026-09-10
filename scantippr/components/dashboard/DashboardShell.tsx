@@ -59,7 +59,7 @@ export default function DashboardShell({
         <div className="bg-white border-b border-zinc-200 px-8 py-4 flex items-center justify-between sticky top-0 z-10 print:hidden">
           <div className="flex flex-col">
             <span className="text-3xl font-extrabold text-zinc-900 leading-tight">{companyName}</span>
-            <span className="text-xs text-slate-400 mt-0.5">Real-time tipping performance</span>
+            <span className="text-sm text-slate-400 mt-0.5">Real-time tipping performance</span>
           </div>
           <div className="flex items-center gap-3">
             <button
