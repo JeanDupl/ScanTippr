@@ -20,7 +20,7 @@ export async function GET(
   return new Response(qrBuffer as unknown as BodyInit, {
     headers: {
       'Content-Type': 'image/png',
-      'Cache-Control': 'public, max-age=31536000',
+      'Cache-Control': 'no-store',
     },
   });
 }
