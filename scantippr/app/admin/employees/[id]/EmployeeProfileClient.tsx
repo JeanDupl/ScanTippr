@@ -73,6 +73,24 @@ export default function EmployeeProfileClient({
   const [photoPreview, setPhotoPreview] = useState<string | null>(guard.photo_url ?? null)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [loginStatus, setLoginStatus] = useState<'idle' | 'creating' | 'success' | 'error'>('idle')
+  const [loginError, setLoginError] = useState<string | null>(null)
+
+  const createLogin = async () => {
+    if (!guard.email) { setLoginError('No email address on file for this employee.'); return }
+    setLoginStatus('creating')
+    setLoginError(null)
+    try {
+      const res = await fetch('/api/create-guard-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guardId: guard.id, email: guard.email, companyId: guard.company_id }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setLoginError(data.error || 'Failed to create login'); setLoginStatus('error') }
+      else setLoginStatus('success')
+    } catch { setLoginError('Could not connect. Please try again.'); setLoginStatus('error') }
+  }
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -235,6 +253,7 @@ export default function EmployeeProfileClient({
             <p style={{ margin: '0 0 14px', fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>Employee Information</p>
             {[
               { label: 'Employee ID', value: truncatedId, full: guard.id, mono: true, copy: true },
+              { label: 'Email', value: guard.email || '\u2014' },
               { label: 'Location', value: guard.location || '\u2014' },
               { label: 'Company', value: company?.name || '\u2014' },
               { label: 'Status', value: isActive ? 'Active' : 'Inactive', statusColor: isActive ? '#15803D' : '#9CA3AF' },
@@ -248,6 +267,25 @@ export default function EmployeeProfileClient({
                 </div>
               </div>
             ))}
+          </div>
+
+          <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '20px' }}>
+            <p style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>Dashboard Access</p>
+            <p style={{ margin: '0 0 14px', fontSize: '11.5px', color: '#9CA3AF' }}>
+              {loginStatus === 'success' ? 'Login created — employee will receive a password setup email.' : 'Give this employee access to their personal dashboard.'}
+            </p>
+            {loginError && <p style={{ margin: '0 0 10px', fontSize: '12px', color: '#B91C1C' }}>{loginError}</p>}
+            <button
+              onClick={createLogin}
+              disabled={loginStatus === 'creating' || loginStatus === 'success'}
+              style={{
+                width: '100%', padding: '9px 14px', background: loginStatus === 'success' ? '#15803D' : '#F97316',
+                color: '#fff', border: 'none', borderRadius: '7px', fontSize: '13px', fontWeight: 600,
+                cursor: loginStatus === 'creating' || loginStatus === 'success' ? 'not-allowed' : 'pointer', opacity: loginStatus === 'creating' ? 0.7 : 1,
+              }}
+            >
+              {loginStatus === 'creating' ? 'Creating Login…' : loginStatus === 'success' ? '✓ Login Created' : 'Create Login'}
+            </button>
           </div>
 
           <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '20px', textAlign: 'center' }}>
