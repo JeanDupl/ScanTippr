@@ -7,8 +7,12 @@ interface ThemeDrawerProps {
   companyId: string;
   currentTheme: { primary: string; light: string };
   sidebarMode: 'light' | 'dark';
+  sidebarBg: string;
+  sidebarText: string;
   updateTheme: (primary: string, light?: string) => void;
   updateSidebarMode: (mode: 'light' | 'dark') => void;
+  updateSidebarBg: (color: string) => void;
+  updateSidebarText: (color: string) => void;
   resetTheme: () => void;
 }
 
@@ -18,8 +22,12 @@ export default function ThemeDrawer({
   companyId,
   currentTheme,
   sidebarMode,
+  sidebarBg,
+  sidebarText,
   updateTheme,
   updateSidebarMode,
+  updateSidebarBg,
+  updateSidebarText,
   resetTheme,
 }: ThemeDrawerProps) {
   const [saving, setSaving] = useState(false);
@@ -47,6 +55,8 @@ export default function ThemeDrawer({
           brand_primary: currentTheme.primary,
           brand_light: currentTheme.light,
           sidebar_mode: sidebarMode,
+          sidebar_bg: sidebarBg,
+          sidebar_text: sidebarText,
         }),
       });
 
@@ -108,6 +118,48 @@ export default function ThemeDrawer({
               type="text"
               value={currentTheme.primary}
               onChange={(e) => updateTheme(e.target.value)}
+              className="flex-1 px-3 py-2 border border-zinc-200 rounded-lg font-mono text-sm text-zinc-800"
+            />
+          </div>
+        </div>
+
+        {/* Sidebar Background Color */}
+        <div className="mb-6 space-y-4">
+          <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">
+            Sidebar Background
+          </label>
+          <div className="flex items-center gap-3">
+            <input
+              type="color"
+              value={sidebarBg}
+              onChange={(e) => updateSidebarBg(e.target.value)}
+              className="w-10 h-10 rounded-lg cursor-pointer border border-zinc-200"
+            />
+            <input
+              type="text"
+              value={sidebarBg}
+              onChange={(e) => updateSidebarBg(e.target.value)}
+              className="flex-1 px-3 py-2 border border-zinc-200 rounded-lg font-mono text-sm text-zinc-800"
+            />
+          </div>
+        </div>
+
+        {/* Sidebar Text Color */}
+        <div className="mb-6 space-y-4">
+          <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">
+            Sidebar Text Color
+          </label>
+          <div className="flex items-center gap-3">
+            <input
+              type="color"
+              value={sidebarText}
+              onChange={(e) => updateSidebarText(e.target.value)}
+              className="w-10 h-10 rounded-lg cursor-pointer border border-zinc-200"
+            />
+            <input
+              type="text"
+              value={sidebarText}
+              onChange={(e) => updateSidebarText(e.target.value)}
               className="flex-1 px-3 py-2 border border-zinc-200 rounded-lg font-mono text-sm text-zinc-800"
             />
           </div>

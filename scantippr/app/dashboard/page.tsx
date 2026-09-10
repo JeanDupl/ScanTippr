@@ -62,6 +62,8 @@ export default async function DashboardPage() {
         light: company?.brand_light || '#FFF0E6',
       }}
       initialSidebarMode={company?.sidebar_mode || 'dark'}
+      initialSidebarBg={company?.sidebar_bg || '#18181B'}
+      initialSidebarText={company?.sidebar_text || '#FFFFFF'}
     >
       <div className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

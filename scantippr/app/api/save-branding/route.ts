@@ -9,7 +9,7 @@ const supabase = createClient(
 
 export async function POST(request: NextRequest) {
   try {
-    const { companyId, brand_primary, brand_light, sidebar_mode } = await request.json();
+    const { companyId, brand_primary, brand_light, sidebar_mode, sidebar_bg, sidebar_text } = await request.json();
 
     if (!companyId) {
       return NextResponse.json({ error: 'companyId is required' }, { status: 400 });
@@ -21,6 +21,8 @@ export async function POST(request: NextRequest) {
         brand_primary,
         brand_light,
         sidebar_mode,
+        sidebar_bg,
+        sidebar_text,
       })
       .eq('id', companyId)
       .select()

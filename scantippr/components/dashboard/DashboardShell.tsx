@@ -13,6 +13,8 @@ interface DashboardShellProps {
   companyName?: string
   initialTheme?: { primary: string; light: string }
   initialSidebarMode?: 'light' | 'dark'
+  initialSidebarBg?: string
+  initialSidebarText?: string
 }
 
 export default function DashboardShell({
@@ -21,6 +23,8 @@ export default function DashboardShell({
   companyName,
   initialTheme,
   initialSidebarMode,
+  initialSidebarBg,
+  initialSidebarText,
 }: DashboardShellProps) {
 
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -28,6 +32,8 @@ export default function DashboardShell({
   const [sidebarMode, setSidebarMode] = useState<'light' | 'dark'>(
     initialSidebarMode ?? DEFAULT_SIDEBAR_MODE
   )
+  const [sidebarBg, setSidebarBg] = useState(initialSidebarBg ?? '#18181B')
+  const [sidebarText, setSidebarText] = useState(initialSidebarText ?? '#FFFFFF')
 
   const updateTheme = useCallback((primary: string, light?: string) => {
     const newLight = light ?? `${primary}26`
@@ -50,11 +56,13 @@ export default function DashboardShell({
     updateTheme(DEFAULT_THEME.primary, DEFAULT_THEME.light)
     setTheme(DEFAULT_THEME)
     setSidebarMode(DEFAULT_SIDEBAR_MODE)
+    setSidebarBg('#18181B')
+    setSidebarText('#FFFFFF')
   }, [updateTheme])
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar mode={sidebarMode} />
+      <Sidebar mode={sidebarMode} sidebarBg={sidebarBg} sidebarText={sidebarText} />
       <div className="flex-1 flex flex-col min-w-0">
         <div className="bg-white border-b border-zinc-200 px-8 py-4 flex items-center justify-between sticky top-0 z-10 print:hidden">
           <div className="flex flex-col">
@@ -79,8 +87,12 @@ export default function DashboardShell({
         companyId={companyId}
         currentTheme={theme}
         sidebarMode={sidebarMode}
+        sidebarBg={sidebarBg}
+        sidebarText={sidebarText}
         updateTheme={updateTheme}
         updateSidebarMode={updateSidebarMode}
+        updateSidebarBg={setSidebarBg}
+        updateSidebarText={setSidebarText}
         resetTheme={resetTheme}
       />
     </div>

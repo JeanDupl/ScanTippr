@@ -23,28 +23,32 @@ const navItems = [
 
 interface SidebarProps {
   mode?: 'light' | 'dark'
+  sidebarBg?: string
+  sidebarText?: string
 }
 
-export default function Sidebar({ mode = 'light' }: SidebarProps) {
+export default function Sidebar({ mode = 'light', sidebarBg, sidebarText }: SidebarProps) {
   const pathname = usePathname()
   const isDark = mode === 'dark'
+  const customBg = sidebarBg
+  const customText = sidebarText
 
   return (
     <aside
-      className={`w-64 flex flex-col justify-between h-screen sticky top-0 border-r transition-colors ${
-        isDark
-          ? 'bg-zinc-900 border-zinc-800'
-          : 'bg-white border-zinc-200'
-      }`}
+      className="w-64 flex flex-col justify-between h-screen sticky top-0 border-r transition-colors"
+      style={{
+        backgroundColor: customBg ?? (isDark ? '#18181B' : '#FFFFFF'),
+        borderColor: isDark ? '#27272A' : '#E4E4E7',
+      }}
     >
       <div>
-        <div className={`p-6 border-b flex items-center gap-3 ${isDark ? 'border-zinc-800' : 'border-zinc-100'}`}>
+        <div className="p-6 border-b flex items-center gap-3" style={{ borderColor: isDark ? '#27272A' : '#E4E4E7' }}>
             <img src="/Icon.png" alt="ScanTippr" className="w-8 h-8 rounded-lg object-contain" />
           <div>
-            <h2 className={`font-bold leading-tight ${isDark ? 'text-white' : 'text-zinc-900'}`}>
+            <h2 className="font-bold leading-tight" style={{ color: customText ?? (isDark ? '#FFFFFF' : '#18181B') }}>
               ScanTippr
             </h2>
-            <p className={`text-xs ${isDark ? 'text-zinc-400' : 'text-zinc-400'}`}>
+            <p className="text-xs" style={{ color: customText ? `${customText}99` : (isDark ? '#71717A' : '#71717A') }}>
               Business Portal
             </p>
           </div>
@@ -58,22 +62,15 @@ export default function Sidebar({ mode = 'light' }: SidebarProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-150 ${
-                  isActive
-                    ? isDark
-                      ? 'bg-brand text-white font-semibold'
-                      : 'bg-brand-light text-brand font-semibold'
-                    : isDark
-                      ? 'text-zinc-400 hover:text-white hover:bg-zinc-800'
-                      : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50'
-                }`}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-150"
+                style={{
+                  backgroundColor: isActive ? 'var(--brand-primary, #FF5A00)' : 'transparent',
+                  color: isActive ? '#FFFFFF' : (customText ?? (isDark ? '#A1A1AA' : '#71717A')),
+                }}
               >
                 <Icon
-                  className={`w-5 h-5 transition-colors ${
-                    isActive
-                      ? isDark ? 'text-white' : 'text-brand'
-                      : isDark ? 'text-zinc-500' : 'text-zinc-400'
-                  }`}
+                  className="w-5 h-5 transition-colors"
+                  style={{ color: isActive ? '#FFFFFF' : (customText ? `${customText}99` : (isDark ? '#71717A' : '#A1A1AA')) }}
                 />
                 <span>{item.name}</span>
               </Link>
@@ -86,13 +83,10 @@ export default function Sidebar({ mode = 'light' }: SidebarProps) {
         <form action="/api/signout" method="POST">
           <button
             type="submit"
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-colors ${
-              isDark
-                ? 'text-zinc-400 hover:text-red-400 hover:bg-red-950/40'
-                : 'text-zinc-500 hover:text-red-600 hover:bg-red-50'
-            }`}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-colors"
+            style={{ color: customText ? `${customText}99` : (isDark ? '#71717A' : '#71717A') }}
           >
-            <LogOut className={`w-5 h-5 ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`} />
+            <LogOut className="w-5 h-5" style={{ color: customText ? `${customText}99` : (isDark ? '#71717A' : '#71717A') }} />
             <span>Sign Out</span>
           </button>
         </form>
