@@ -165,14 +165,14 @@ export default function ThemeDrawer({
           </div>
         </div>
 
-        {/* Light / Dark Sidebar Toggle */}
+        {/* Light / Dark Sidebar Quick Presets */}
         <div className="mb-6">
           <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-3">
             Sidebar Mode
           </label>
           <div className="grid grid-cols-2 gap-2">
             <button
-              onClick={() => updateSidebarMode('light')}
+              onClick={() => { updateSidebarBg('#FFFFFF'); updateSidebarText('#18181B'); updateSidebarMode('light'); }}
               className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
                 sidebarMode === 'light'
                   ? 'bg-zinc-900 text-white border-zinc-900'
@@ -182,7 +182,7 @@ export default function ThemeDrawer({
               <Sun className="w-4 h-4" /> Light
             </button>
             <button
-              onClick={() => updateSidebarMode('dark')}
+              onClick={() => { updateSidebarBg('#18181B'); updateSidebarText('#FFFFFF'); updateSidebarMode('dark'); }}
               className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
                 sidebarMode === 'dark'
                   ? 'bg-zinc-900 text-white border-zinc-900'
