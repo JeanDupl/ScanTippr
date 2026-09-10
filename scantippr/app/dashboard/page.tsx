@@ -64,11 +64,6 @@ export default async function DashboardPage() {
       initialSidebarMode={company?.sidebar_mode || 'dark'}
     >
       <div className="space-y-8">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">{company?.name || 'Company Dashboard'}</h1>
-          <p className="text-slate-500 text-sm mt-1">Real-time tipping performance</p>
-        </div>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-medium text-slate-500">Total tips collected</p>
