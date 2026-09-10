@@ -5,7 +5,7 @@ export async function GET(
   { params }: { params: Promise<{ guardId: string }> }
 ) {
   const { guardId } = await params;
-  const url = `https://www.scantippr.co.za/guard-card/${guardId}`;
+  const url = `https://www.scantippr.co.za/pay/${guardId}`;
 
   const qrBuffer = await QRCode.toBuffer(url, {
     errorCorrectionLevel: 'H',
