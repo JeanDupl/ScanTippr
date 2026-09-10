@@ -23,27 +23,41 @@ export default async function DashboardPage() {
     .eq('id', userId)
     .single()
 
+  const role = profile?.role ?? 'company'
   const companyId = profile?.company_id
+  const guardId = profile?.guard_id
   if (!companyId) redirect('/login')
 
-  const { data: company } = await supabase
-    .from('companies')
-    .select('*')
-    .eq('id', companyId)
-    .single()
+  // For individual role, scope to their guard record only
+  let guards, transactions, company
 
-  const { data: guards } = await supabase
-    .from('guards')
-    .select('*')
-    .eq('company_id', companyId)
-    .eq('is_active', true)
-
-  const { data: transactions } = await supabase
-    .from('transactions')
-    .select('id, amount, currency, created_at, status, guard_id, ozow_payment_id')
-    .eq('company_id', companyId)
-    .order('created_at', { ascending: false })
-    .limit(10)
+  if (role === 'individual' && guardId) {
+    const [{ data: g }, { data: tx }, { data: co }] = await Promise.all([
+      supabase.from('guards').select('*').eq('id', guardId).eq('is_active', true),
+      supabase.from('transactions')
+        .select('id, amount, currency, created_at, status, guard_id, ozow_payment_id')
+        .eq('guard_id', guardId)
+        .order('created_at', { ascending: false })
+        .limit(10),
+      supabase.from('companies').select('*').eq('id', companyId).single(),
+    ])
+    guards = g
+    transactions = tx
+    company = co
+  } else {
+    const [{ data: co }, { data: g }, { data: tx }] = await Promise.all([
+      supabase.from('companies').select('*').eq('id', companyId).single(),
+      supabase.from('guards').select('*').eq('company_id', companyId).eq('is_active', true),
+      supabase.from('transactions')
+        .select('id, amount, currency, created_at, status, guard_id, ozow_payment_id')
+        .eq('company_id', companyId)
+        .order('created_at', { ascending: false })
+        .limit(10),
+    ])
+    company = co
+    guards = g
+    transactions = tx
+  }
 
   const guardMap = Object.fromEntries(
     (guards ?? []).map((g) => [g.id, `${g.first_name} ${g.last_name}`])
