@@ -59,7 +59,7 @@ export default function QRCardsClient({ employees, companyName }: Props) {
 
               {/* QR Code */}
               <img
-                src={`/api/qr/${emp.id}`}
+                src={`/api/qr/${emp.id}?v=2`}
                 alt={`QR code for ${emp.first_name} ${emp.last_name}`}
                 className="w-48 h-48 rounded-lg"
               />
