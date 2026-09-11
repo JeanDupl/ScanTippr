@@ -27,31 +27,41 @@ export default async function QRCardsPage() {
   const guardId = profile?.guard_id
   if (!companyId && role !== 'individual') redirect('/login')
 
-  // 👇 CHANGED — was .select('name'), now includes theme columns too
-  const { data: company } = await supabase
-    .from('companies')
-    .select('name, brand_primary, brand_light, sidebar_mode')
-    .eq('id', companyId)
-    .single()
+  let company = null
+  let employees = null
 
-  const { data: employees } = await supabase
-    .from('guards')
-    .select('id, first_name, last_name, job_title, location, is_active')
-    .eq('company_id', companyId)
-    .eq('is_active', true)
-    .order('first_name', { ascending: true })
+  if (role === 'individual' && guardId) {
+    const { data: g } = await supabase
+      .from('guards')
+      .select('id, first_name, last_name, job_title, location, is_active')
+      .eq('id', guardId)
+      .single()
+    employees = g ? [g] : []
+  } else {
+    const [{ data: co }, { data: g }] = await Promise.all([
+      supabase.from('companies').select('name, brand_primary, brand_light, sidebar_mode').eq('id', companyId).single(),
+      supabase.from('guards').select('id, first_name, last_name, job_title, location, is_active')
+        .eq('company_id', companyId).eq('is_active', true).order('first_name', { ascending: true }),
+    ])
+    company = co
+    employees = g
+  }
+
+  const displayName = role === 'individual' && employees?.[0]
+    ? `${employees[0].first_name} ${employees[0].last_name}`
+    : company?.name ?? ''
 
   return (
     <DashboardShell
-      companyId={companyId}
-      companyName={company?.name ?? ""}
+      companyId={companyId ?? ''}
+      companyName={displayName}
       initialTheme={{
         primary: company?.brand_primary || '#FF5A00',
         light: company?.brand_light || '#FFF0E6',
       }}
       initialSidebarMode={company?.sidebar_mode || 'dark'}
     >
-      <QRCardsClient employees={employees ?? []} companyName={company?.name ?? 'Company'} />
+      <QRCardsClient employees={employees ?? []} companyName={displayName} />
     </DashboardShell>
   )
 }
