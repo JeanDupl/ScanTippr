@@ -121,6 +121,20 @@ export default function ReportsClient({ transactions, employees, companyName }: 
           <p className="text-slate-500 text-sm mt-1">Filter and export your transaction history</p>
         </div>
         <div className="flex gap-3">
+          <div className="flex rounded-xl border border-slate-200 overflow-hidden">
+            <button
+              onClick={() => setViewMode('detailed')}
+              className={`px-4 py-2 text-sm font-medium transition-colors ${viewMode === 'detailed' ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}
+            >
+              Detailed
+            </button>
+            <button
+              onClick={() => setViewMode('summary')}
+              className={`px-4 py-2 text-sm font-medium transition-colors ${viewMode === 'summary' ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}
+            >
+              Summary
+            </button>
+          </div>
           <button
             onClick={handleExportCSV}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors"
