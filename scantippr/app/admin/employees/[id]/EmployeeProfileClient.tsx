@@ -300,7 +300,6 @@ export default function EmployeeProfileClient({
               <a href={`/api/qr/${guard.id}`} target="_blank" style={{ display: 'block', padding: '8px 14px', background: '#F9FAFB', color: '#374151', border: '1px solid #E5E7EB', borderRadius: '7px', fontSize: '13px', textDecoration: 'none' }}>Download QR</a>
             </div>
           </div>
-          </div>
         </div>
       </div>
     </div>
