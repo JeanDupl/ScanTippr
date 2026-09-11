@@ -158,7 +158,13 @@ export default function EmployeeProfileClient({
           <span style={{ position: 'absolute', bottom: 2, right: 2, width: '12px', height: '12px', borderRadius: '50%', background: isActive ? '#22C55E' : '#9CA3AF', border: '2px solid #fff' }} />
         </div>
         <div style={{ flex: 1 }}>
-          <h1 style={{ margin: '0 0 4px', fontSize: '26px', fontWeight: 700, color: '#0A0A0A', letterSpacing: '-0.4px' }}>{displayName}</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
+            <h1 style={{ margin: 0, fontSize: '26px', fontWeight: 700, color: '#0A0A0A', letterSpacing: '-0.4px' }}>{displayName}</h1>
+            <button onClick={() => setEditing(!editing)} style={{ padding: '6px 14px', background: '#F97316', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}>
+              {editing ? 'Cancel' : 'Edit'}
+            </button>
+            <OverflowMenu onDeactivate={toggleActive} isActive={isActive} />
+          </div>
           <p style={{ margin: '0 0 10px', fontSize: '14px', color: '#6B7280' }}>
             {guard.job_title || 'Employee'}{company ? ` \u00b7 ${company.name}` : ''}{guard.location ? ` \u00b7 ${guard.location}` : ''}
           </p>
@@ -184,11 +190,19 @@ export default function EmployeeProfileClient({
             </span>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-          <button onClick={() => setEditing(!editing)} style={{ padding: '8px 18px', background: '#F97316', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
-            {editing ? 'Cancel' : 'Edit Employee'}
+        <div style={{ flexShrink: 0, minWidth: '220px' }}>
+          <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 600, color: '#0A0A0A' }}>Dashboard Access</p>
+          <p style={{ margin: '0 0 10px', fontSize: '11px', color: '#9CA3AF' }}>
+            {loginStatus === 'success' ? 'Login created — employee will receive a password setup email.' : 'Give this employee access to their personal dashboard.'}
+          </p>
+          {loginError && <p style={{ margin: '0 0 8px', fontSize: '11px', color: '#B91C1C' }}>{loginError}</p>}
+          <button
+            onClick={createLogin}
+            disabled={loginStatus === 'creating' || loginStatus === 'success'}
+            style={{ width: '100%', padding: '8px 14px', background: loginStatus === 'success' ? '#15803D' : '#F97316', color: '#fff', border: 'none', borderRadius: '7px', fontSize: '12px', fontWeight: 600, cursor: loginStatus === 'creating' || loginStatus === 'success' ? 'not-allowed' : 'pointer' }}
+          >
+            {loginStatus === 'creating' ? 'Creating Login…' : loginStatus === 'success' ? '✓ Login Created' : 'Create Login'}
           </button>
-          <OverflowMenu onDeactivate={toggleActive} isActive={isActive} />
         </div>
       </div>
 
@@ -275,25 +289,6 @@ export default function EmployeeProfileClient({
 
         {/* RIGHT COLUMN: dashboard access + qr code */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '20px' }}>
-            <p style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>Dashboard Access</p>
-            <p style={{ margin: '0 0 14px', fontSize: '11.5px', color: '#9CA3AF' }}>
-              {loginStatus === 'success' ? 'Login created — employee will receive a password setup email.' : 'Give this employee access to their personal dashboard.'}
-            </p>
-            {loginError && <p style={{ margin: '0 0 10px', fontSize: '12px', color: '#B91C1C' }}>{loginError}</p>}
-            <button
-              onClick={createLogin}
-              disabled={loginStatus === 'creating' || loginStatus === 'success'}
-              style={{
-                width: '100%', padding: '9px 14px', background: loginStatus === 'success' ? '#15803D' : '#F97316',
-                color: '#fff', border: 'none', borderRadius: '7px', fontSize: '13px', fontWeight: 600,
-                cursor: loginStatus === 'creating' || loginStatus === 'success' ? 'not-allowed' : 'pointer', opacity: loginStatus === 'creating' ? 0.7 : 1,
-              }}
-            >
-              {loginStatus === 'creating' ? 'Creating Login…' : loginStatus === 'success' ? '✓ Login Created' : 'Create Login'}
-            </button>
-          </div>
-
           <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '20px', textAlign: 'center' }}>
             <p style={{ margin: '0 0 2px', fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>Employee QR Code</p>
             <p style={{ margin: '0 0 14px', fontSize: '11.5px', color: '#9CA3AF' }}>Linked to {guard.first_name} {guard.last_name}</p>
