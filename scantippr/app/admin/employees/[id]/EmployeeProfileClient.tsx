@@ -258,7 +258,7 @@ export default function EmployeeProfileClient({
           <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden' }}>
             <div style={{ padding: '18px 24px', borderBottom: '1px solid #F3F4F6' }}>
               <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#0A0A0A' }}>Transaction History</h2>
-              <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#9CA3AF' }}>{transactions.length} transaction{transactions.length !== 1 ? 's' : ''} \u00b7 {completedTx.length} completed</p>
+              <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#9CA3AF' }}>{transactions.length} transaction{transactions.length !== 1 ? 's' : ''} · {completedTx.length} completed</p>
             </div>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
