@@ -10,13 +10,19 @@ export const revalidate = 0
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
 export default async function AdminPayoutsPage() {
-  const [{ data: periods }, { data: companies }] = await Promise.all([
+  const [{ data: periods }, { data: companies }, { data: independents }] = await Promise.all([
     supabase
       .from('payout_periods')
       .select('*, payout_line_items(*)')
       .order('period_year', { ascending: false })
       .order('period_month', { ascending: false }),
     supabase.from('companies').select('id, name'),
+    supabase
+      .from('guards')
+      .select('id, first_name, last_name, job_title')
+      .is('company_id', null)
+      .eq('is_active', true)
+      .order('first_name'),
   ])
 
   const enriched = (periods ?? []).map(p => {
@@ -39,5 +45,12 @@ export default async function AdminPayoutsPage() {
 
   const years = [...new Set((periods ?? []).map(p => p.period_year))].sort((a, b) => b - a)
 
-  return <PayoutsAdminClient periods={enriched} companies={companies ?? []} availableYears={years} />
+  return (
+    <PayoutsAdminClient
+      periods={enriched}
+      companies={companies ?? []}
+      independents={independents ?? []}
+      availableYears={years}
+    />
+  )
 }
