@@ -44,12 +44,13 @@ export default async function PaymentsPage() {
     guards = g
   }
 
-  // Fetch payout periods for this company
+  // Fetch payout periods — scoped by recipient type
+  const isIndividual = role === 'individual'
   const { data: payoutPeriods } = await supabase
     .from('payout_periods')
     .select('*')
-    .eq('recipient_type', 'company')
-    .eq('recipient_id', companyId)
+    .eq('recipient_type', isIndividual ? 'guard' : 'company')
+    .eq('recipient_id', isIndividual ? (guardId ?? '') : (companyId ?? ''))
     .order('period_year', { ascending: false })
     .order('period_month', { ascending: false })
 
@@ -63,19 +64,24 @@ export default async function PaymentsPage() {
         .order('guard_name', { ascending: true })
     : { data: [] }
 
-  // Count unpaid completed transactions (for the "ready to pay out" indicator)
+  // Count unpaid completed transactions — scoped by recipient type
   const now = new Date()
   const currentMonth = now.getMonth() + 1
   const currentYear  = now.getFullYear()
 
-  const { count: unpaidCount } = await supabase
+  const unpaidQuery = supabase
     .from('transactions')
     .select('id', { count: 'exact', head: true })
-    .eq('company_id', companyId)
     .eq('payment_status', 'completed')
     .eq('payout_status', 'unpaid')
 
-  const displayName = role === 'individual' && guard
+  const { count: unpaidCount } = await (
+    isIndividual
+      ? unpaidQuery.eq('guard_id', guardId ?? '')
+      : unpaidQuery.eq('company_id', companyId ?? '')
+  )
+
+  const displayName = isIndividual && guard
     ? `${guard.first_name} ${guard.last_name}`
     : company?.name ?? ''
 
@@ -92,8 +98,8 @@ export default async function PaymentsPage() {
       <PayoutsClient
         companyId={companyId ?? ''}
         companyName={displayName}
-        isIndividual={role === 'individual'}
-        hasBankDetails={role === 'individual'
+        isIndividual={isIndividual}
+        hasBankDetails={isIndividual
           ? !!(guard?.bank_account_number && guard?.bank_name)
           : !!(company?.bank_account_number && company?.bank_name)}
         payoutPeriods={payoutPeriods ?? []}
