@@ -12,7 +12,6 @@ const supabase = createClient(
 export default function AddCompanyPage() {
   const router = useRouter()
   const [name, setName] = useState('')
-  const [subaccount, setSubaccount] = useState('')
   const [logoFile, setLogoFile] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
@@ -46,7 +45,6 @@ export default function AddCompanyPage() {
 
     await supabase.from('companies').insert({
       name: name.trim(),
-      paystack_subaccount_code: subaccount.trim() || null,
       logo_url,
     })
 

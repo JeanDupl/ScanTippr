@@ -30,6 +30,7 @@ export default function ReportsClient({ transactions, employees, companyName }: 
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
   const [selectedEmployee, setSelectedEmployee] = useState('')
+  const [viewMode, setViewMode] = useState<'detailed' | 'summary'>('detailed')
 
   const guardMap = Object.fromEntries(
     employees.map((g) => [g.id, `${g.first_name} ${g.last_name}`])
@@ -272,7 +273,7 @@ export default function ReportsClient({ transactions, employees, companyName }: 
         )}
 
         {/* Transaction History */}
-        <div className="mt-8">
+        {viewMode === 'detailed' && <div className="mt-8">
           <h2 className="text-sm font-extrabold uppercase tracking-widest text-slate-900 mb-3">Transaction History</h2>
           <table className="w-full text-sm border border-slate-200 rounded-xl overflow-hidden">
             <thead>
@@ -304,7 +305,7 @@ export default function ReportsClient({ transactions, employees, companyName }: 
           {filtered.length === 0 && (
             <div className="p-8 text-center text-slate-400 text-sm">No transactions found for the selected filters.</div>
           )}
-        </div>
+        </div>}
 
         {/* Footer */}
         <div className="mt-10 pt-4 border-t-2 border-orange-500">
