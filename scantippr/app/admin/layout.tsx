@@ -12,6 +12,7 @@ const NAV_GROUPS = [
     heading: 'Management',
     items: [
       { label: 'Companies', href: '/admin/companies', exact: false, icon: CompaniesIcon },
+      { label: 'Independents', href: '/admin/independents', exact: false, icon: IndependentsIcon },
       { label: 'Employees', href: '/admin/employees', exact: false, icon: EmployeesIcon },
     ],
   },
@@ -42,6 +43,16 @@ function CompaniesIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+  )
+}
+function IndependentsIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+      <line x1="12" y1="14" x2="12" y2="17"/>
+      <line x1="9" y1="17" x2="15" y2="17"/>
     </svg>
   )
 }
@@ -182,6 +193,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               cursor: 'pointer',
             }}>
               + Add Employee
+            </div>
+          </Link>
+          <Link href="/admin/independents/add" style={{ textDecoration: 'none' }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: '9px 16px',
+              background: '#1a1a1a', color: '#888',
+              border: '1px solid #252525',
+              borderRadius: '8px', fontSize: '12.5px', fontWeight: 500,
+              cursor: 'pointer',
+            }}>
+              + Add Independent
             </div>
           </Link>
         </div>
