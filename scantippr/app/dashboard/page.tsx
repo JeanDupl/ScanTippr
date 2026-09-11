@@ -26,7 +26,7 @@ export default async function DashboardPage() {
   const role = profile?.role ?? 'company'
   const companyId = profile?.company_id
   const guardId = profile?.guard_id
-  if (!companyId) redirect('/login')
+  if (!companyId && role !== 'individual') redirect('/login')
 
   // For individual role, scope to their guard record only
   let guards, transactions, company
