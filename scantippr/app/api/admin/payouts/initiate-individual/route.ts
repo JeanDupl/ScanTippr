@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
-import { runIndividualPayout } from '../../../../../../lib/payouts/payoutOrchestrator'
-import { FeeDisposalMode } from '../../../../../../lib/payouts/payoutTypes'
+import { runIndividualPayout } from '../../../../../lib/payouts/payoutOrchestrator'
+import { FeeDisposalMode } from '../../../../../lib/payouts/payoutTypes'
 
 // POST /api/admin/payouts/initiate-individual
 // Admin-only — initiates a payout for an independent worker by guardId.
