@@ -170,44 +170,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           ))}
         </nav>
 
-        {/* Bottom actions */}
-        <div style={{ padding: '16px', borderTop: '1px solid #1c1c1c', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <Link href="/admin/add-company" style={{ textDecoration: 'none' }}>
-            <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              padding: '9px 16px',
-              background: '#F97316', color: '#fff',
-              borderRadius: '8px', fontSize: '12.5px', fontWeight: 600,
-              cursor: 'pointer', letterSpacing: '-0.1px',
-            }}>
-              + Add Company
-            </div>
-          </Link>
-          <Link href="/admin/add-guard" style={{ textDecoration: 'none' }}>
-            <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              padding: '9px 16px',
-              background: '#1a1a1a', color: '#888',
-              border: '1px solid #252525',
-              borderRadius: '8px', fontSize: '12.5px', fontWeight: 500,
-              cursor: 'pointer',
-            }}>
-              + Add Employee
-            </div>
-          </Link>
-          <Link href="/admin/independents/add" style={{ textDecoration: 'none' }}>
-            <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              padding: '9px 16px',
-              background: '#1a1a1a', color: '#888',
-              border: '1px solid #252525',
-              borderRadius: '8px', fontSize: '12.5px', fontWeight: 500,
-              cursor: 'pointer',
-            }}>
-              + Add Independent
-            </div>
-          </Link>
-        </div>
+
       </aside>
 
       {/* Main content */}
