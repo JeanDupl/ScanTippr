@@ -40,6 +40,7 @@ interface LineItem {
 interface Props {
   companyId: string
   companyName: string
+  isIndividual?: boolean
   hasBankDetails: boolean
   payoutPeriods: PayoutPeriod[]
   lineItems: LineItem[]
@@ -196,6 +197,7 @@ function PeriodRow({
 export default function PayoutsClient({
   companyId,
   companyName,
+  isIndividual = false,
   hasBankDetails,
   payoutPeriods,
   lineItems,
@@ -222,7 +224,7 @@ export default function PayoutsClient({
           <div className="text-sm text-amber-800">
             <p className="font-semibold">Bank details required</p>
             <p className="mt-0.5">
-              Please add your company bank details in{' '}
+              Please add your {isIndividual ? '' : 'company '}bank details in{' '}
               <a href="/dashboard/settings" className="underline font-medium">Settings</a>{' '}
               so ScanTippr can process your monthly payout.
             </p>
@@ -239,7 +241,7 @@ export default function PayoutsClient({
           <p className="font-semibold text-slate-900">Payouts are processed automatically</p>
           <p className="text-slate-500 mt-0.5">
             ScanTippr processes net payouts on your behalf at the end of each month.
-            You don't need to do anything — your employees will be paid automatically.
+            You don't need to do anything — {isIndividual ? 'you will be paid automatically.' : 'your employees will be paid automatically.'}
           </p>
         </div>
       </div>

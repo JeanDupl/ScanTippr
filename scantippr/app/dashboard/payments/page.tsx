@@ -92,6 +92,7 @@ export default async function PaymentsPage() {
       <PayoutsClient
         companyId={companyId ?? ''}
         companyName={displayName}
+        isIndividual={role === 'individual'}
         hasBankDetails={role === 'individual'
           ? !!(guard?.bank_account_number && guard?.bank_name)
           : !!(company?.bank_account_number && company?.bank_name)}
