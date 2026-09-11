@@ -113,6 +113,7 @@ export default function EmployeeProfileClient({
     await supabase.from('guards').update({
       first_name: editFirst.trim(), last_name: editLast.trim(),
       job_title: editJob.trim() || null, location: editLocation.trim() || null, photo_url,
+      email: editEmail.trim() || null,
     }).eq('id', guard.id)
     setSaving(false); setSaved(true); setEditing(false)
     setTimeout(() => setSaved(false), 2000)
@@ -184,8 +185,7 @@ export default function EmployeeProfileClient({
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: '20px', alignItems: 'start' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {editing && (
             <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #F97316', padding: '24px' }}>
               <h3 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: '#0A0A0A' }}>Edit Employee Details</h3>
@@ -250,7 +250,7 @@ export default function EmployeeProfileClient({
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '20px', alignItems: 'start' }}>
           <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '20px' }}>
             <p style={{ margin: '0 0 14px', fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>Employee Information</p>
             {[
@@ -271,6 +271,7 @@ export default function EmployeeProfileClient({
             ))}
           </div>
 
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '20px' }}>
             <p style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>Dashboard Access</p>
             <p style={{ margin: '0 0 14px', fontSize: '11.5px', color: '#9CA3AF' }}>
@@ -298,6 +299,7 @@ export default function EmployeeProfileClient({
               <a href={`/guard-card/${guard.id}`} target="_blank" style={{ display: 'block', padding: '8px 14px', background: '#F97316', color: '#fff', borderRadius: '7px', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}>Print Card</a>
               <a href={`/api/qr/${guard.id}`} target="_blank" style={{ display: 'block', padding: '8px 14px', background: '#F9FAFB', color: '#374151', border: '1px solid #E5E7EB', borderRadius: '7px', fontSize: '13px', textDecoration: 'none' }}>Download QR</a>
             </div>
+          </div>
           </div>
         </div>
       </div>
