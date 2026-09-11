@@ -17,12 +17,14 @@ export default async function EmployeesPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('company_id')
+    .select('company_id, role, guard_id')
     .eq('id', userId)
     .single()
 
   const companyId = profile?.company_id
-  if (!companyId) redirect('/login')
+  const role = profile?.role ?? 'company'
+  const guardId = profile?.guard_id
+  if (!companyId && role !== 'individual') redirect('/login')
 
   const { data: company } = await supabase
     .from('companies')
