@@ -26,22 +26,31 @@ export default async function EmployeesPage() {
   const guardId = profile?.guard_id
   if (!companyId && role !== 'individual') redirect('/login')
 
-  const { data: company } = await supabase
-    .from('companies')
-    .select('name, brand_primary, brand_light, sidebar_mode')
-    .eq('id', companyId)
-    .single()
+  let company = null
+  let employees = null
 
-  const { data: employees } = await supabase
-    .from('guards')
-    .select('*')
-    .eq('company_id', companyId)
-    .order('first_name', { ascending: true })
+  if (role === 'individual' && guardId) {
+    const [{ data: g }] = await Promise.all([
+      supabase.from('guards').select('*').eq('id', guardId).single(),
+    ])
+    employees = g ? [g] : []
+  } else {
+    const [{ data: co }, { data: g }] = await Promise.all([
+      supabase.from('companies').select('name, brand_primary, brand_light, sidebar_mode').eq('id', companyId).single(),
+      supabase.from('guards').select('*').eq('company_id', companyId).order('first_name', { ascending: true }),
+    ])
+    company = co
+    employees = g
+  }
+
+  const displayName = role === 'individual' && employees?.[0]
+    ? `${employees[0].first_name} ${employees[0].last_name}`
+    : company?.name ?? ''
 
   return (
     <DashboardShell
-      companyId={companyId}
-      companyName={company?.name ?? ""}
+      companyId={companyId ?? ''}
+      companyName={displayName}
       initialTheme={{
         primary: company?.brand_primary || '#FF5A00',
         light: company?.brand_light || '#FFF0E6',
@@ -51,7 +60,7 @@ export default async function EmployeesPage() {
       <div className="space-y-8">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Employees</h1>
-          <p className="text-slate-500 text-sm mt-1">All employees registered under your company</p>
+          <p className="text-slate-500 text-sm mt-1">{role === 'individual' ? 'Your profile' : 'All employees registered under your company'}</p>
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
