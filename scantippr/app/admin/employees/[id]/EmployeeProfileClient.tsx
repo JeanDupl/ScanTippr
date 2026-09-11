@@ -185,7 +185,9 @@ export default function EmployeeProfileClient({
         ))}
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '20px', alignItems: 'start' }}>
+        {/* LEFT COLUMN: edit form + transactions */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {editing && (
             <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #F97316', padding: '24px' }}>
               <h3 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: '#0A0A0A' }}>Edit Employee Details</h3>
@@ -250,8 +252,8 @@ export default function EmployeeProfileClient({
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '20px', alignItems: 'start' }}>
-          <div>
+        {/* RIGHT COLUMN: dashboard access + qr code */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '20px' }}>
             <p style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>Dashboard Access</p>
             <p style={{ margin: '0 0 14px', fontSize: '11.5px', color: '#9CA3AF' }}>
