@@ -27,17 +27,22 @@ export default async function PaymentsPage() {
   const guardId = profile?.guard_id
   if (!companyId && role !== 'individual') redirect('/login')
 
-  const { data: company } = await supabase
-    .from('companies')
-    .select('name, brand_primary, brand_light, sidebar_mode, bank_account_number, bank_name, bank_account_holder, bank_account_type')
-    .eq('id', companyId)
-    .single()
+  let company = null
+  let guards = null
+  let guard = null
 
-  const { data: guards } = await supabase
-    .from('guards')
-    .select('id, first_name, last_name')
-    .eq('company_id', companyId)
-    .eq('is_active', true)
+  if (role === 'individual' && guardId) {
+    const { data: g } = await supabase.from('guards').select('*').eq('id', guardId).single()
+    guard = g
+    guards = g ? [g] : []
+  } else {
+    const [{ data: co }, { data: g }] = await Promise.all([
+      supabase.from('companies').select('name, brand_primary, brand_light, sidebar_mode, bank_account_number, bank_name, bank_account_holder, bank_account_type').eq('id', companyId).single(),
+      supabase.from('guards').select('id, first_name, last_name').eq('company_id', companyId).eq('is_active', true),
+    ])
+    company = co
+    guards = g
+  }
 
   // Fetch payout periods for this company
   const { data: payoutPeriods } = await supabase
@@ -70,10 +75,14 @@ export default async function PaymentsPage() {
     .eq('payment_status', 'completed')
     .eq('payout_status', 'unpaid')
 
+  const displayName = role === 'individual' && guard
+    ? `${guard.first_name} ${guard.last_name}`
+    : company?.name ?? ''
+
   return (
     <DashboardShell
-      companyId={companyId}
-      companyName={company?.name ?? ""}
+      companyId={companyId ?? ''}
+      companyName={displayName}
       initialTheme={{
         primary: company?.brand_primary || '#FF5A00',
         light: company?.brand_light || '#FFF0E6',
@@ -81,9 +90,11 @@ export default async function PaymentsPage() {
       initialSidebarMode={company?.sidebar_mode || 'dark'}
     >
       <PayoutsClient
-        companyId={companyId}
-        companyName={company?.name ?? ''}
-        hasBankDetails={!!(company?.bank_account_number && company?.bank_name)}
+        companyId={companyId ?? ''}
+        companyName={displayName}
+        hasBankDetails={role === 'individual'
+          ? !!(guard?.bank_account_number && guard?.bank_name)
+          : !!(company?.bank_account_number && company?.bank_name)}
         payoutPeriods={payoutPeriods ?? []}
         lineItems={lineItems ?? []}
         unpaidTransactionCount={unpaidCount ?? 0}

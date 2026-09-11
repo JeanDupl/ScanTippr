@@ -16,44 +16,36 @@ export default async function SettingsPage() {
   const userId = cookieStore.get('sb_user_id')?.value
   if (!userId) redirect('/login')
 
-  // Get profile → determines company_id and role
   const { data: profile } = await supabase
     .from('profiles')
-    .select('company_id, role, full_name')
+    .select('company_id, role, guard_id, full_name')
     .eq('id', userId)
     .single()
 
   const companyId = profile?.company_id
-  if (!companyId) redirect('/login')
+  const role = profile?.role ?? 'company'
+  const guardId = profile?.guard_id
+  if (!companyId && role !== 'individual') redirect('/login')
 
-  const { data: company } = await supabase
-    .from('companies')
-    .select('*')
-    .eq('id', companyId)
-    .single()
+  let company = null
+  let guard = null
 
-  // Check if this user is also a guard (individual-managed account)
-  const { data: guard } = await supabase
-    .from('guards')
-    .select('*')
-    .eq('company_id', companyId)
-    .eq('is_active', true)
-    .limit(1)
-    .maybeSingle()
+  if (role === 'individual' && guardId) {
+    const { data: g } = await supabase.from('guards').select('*').eq('id', guardId).single()
+    guard = g
+  } else {
+    const { data: co } = await supabase.from('companies').select('*').eq('id', companyId).single()
+    company = co
+  }
 
-  // Determine account type:
-  // company-managed  → company has multiple guards OR guard has a company_id set by admin
-  // individual       → guard signed up directly (company is their own solo entity)
-  const { data: guardCount } = await supabase
-    .from('guards')
-    .select('id', { count: 'exact', head: true })
-    .eq('company_id', companyId)
-    .eq('is_active', true)
+  const displayName = role === 'individual' && guard
+    ? `${guard.first_name} ${guard.last_name}`
+    : company?.name ?? ''
 
   return (
     <DashboardShell
-      companyId={companyId}
-      companyName={company?.name ?? ""}
+      companyId={companyId ?? ''}
+      companyName={displayName}
       initialTheme={{
         primary: company?.brand_primary || '#FF5A00',
         light: company?.brand_light || '#FFF0E6',
@@ -69,13 +61,13 @@ export default async function SettingsPage() {
         </div>
 
         <BankDetailsForm
-          companyId={companyId}
-          companyName={company?.name || ''}
+          companyId={companyId ?? ''}
+          companyName={displayName}
           initialCompanyBank={{
-            bank_account_number: company?.bank_account_number || '',
-            bank_name: company?.bank_name || '',
-            bank_account_holder: company?.bank_account_holder || '',
-            bank_account_type: company?.bank_account_type || '',
+            bank_account_number: (role === 'individual' ? guard?.bank_account_number : company?.bank_account_number) || '',
+            bank_name: (role === 'individual' ? guard?.bank_name : company?.bank_name) || '',
+            bank_account_holder: (role === 'individual' ? guard?.bank_account_holder : company?.bank_account_holder) || '',
+            bank_account_type: (role === 'individual' ? guard?.bank_account_type : company?.bank_account_type) || '',
           }}
         />
       </div>
