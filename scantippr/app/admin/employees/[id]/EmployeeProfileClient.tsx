@@ -159,9 +159,30 @@ export default function EmployeeProfileClient({
         </div>
         <div style={{ flex: 1 }}>
           <h1 style={{ margin: '0 0 4px', fontSize: '26px', fontWeight: 700, color: '#0A0A0A', letterSpacing: '-0.4px' }}>{displayName}</h1>
-          <p style={{ margin: 0, fontSize: '14px', color: '#6B7280' }}>
+          <p style={{ margin: '0 0 10px', fontSize: '14px', color: '#6B7280' }}>
             {guard.job_title || 'Employee'}{company ? ` \u00b7 ${company.name}` : ''}{guard.location ? ` \u00b7 ${guard.location}` : ''}
           </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11.5px', color: '#6B7280' }}>
+              <span style={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: '10px', color: '#9CA3AF' }}>ID </span>
+              <span style={{ fontFamily: 'monospace' }}>{truncatedId}</span>
+              <CopyButton value={guard.id} />
+            </span>
+            {guard.email && (
+              <span style={{ fontSize: '11.5px', color: '#6B7280' }}>
+                <span style={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: '10px', color: '#9CA3AF' }}>Email </span>
+                {guard.email}
+              </span>
+            )}
+            <span style={{ fontSize: '11.5px', color: '#6B7280' }}>
+              <span style={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: '10px', color: '#9CA3AF' }}>Status </span>
+              <span style={{ color: isActive ? '#15803D' : '#9CA3AF', fontWeight: 600 }}>{isActive ? 'Active' : 'Inactive'}</span>
+            </span>
+            <span style={{ fontSize: '11.5px', color: '#6B7280' }}>
+              <span style={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: '10px', color: '#9CA3AF' }}>Created </span>
+              {createdAt}
+            </span>
+          </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
           <button onClick={() => setEditing(!editing)} style={{ padding: '8px 18px', background: '#F97316', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
