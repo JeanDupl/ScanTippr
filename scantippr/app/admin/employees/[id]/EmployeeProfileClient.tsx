@@ -251,27 +251,7 @@ export default function EmployeeProfileClient({
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '20px', alignItems: 'start' }}>
-          <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '20px' }}>
-            <p style={{ margin: '0 0 14px', fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>Employee Information</p>
-            {[
-              { label: 'Employee ID', value: truncatedId, full: guard.id, mono: true, copy: true },
-              { label: 'Email', value: guard.email || '\u2014' },
-              { label: 'Location', value: guard.location || '\u2014' },
-              { label: 'Company', value: company?.name || '\u2014' },
-              { label: 'Status', value: isActive ? 'Active' : 'Inactive', statusColor: isActive ? '#15803D' : '#9CA3AF' },
-              { label: 'Created', value: createdAt },
-            ].map((row, idx, arr) => (
-              <div key={row.label} style={{ padding: '8px 0', borderBottom: idx < arr.length - 1 ? '1px solid #F3F4F6' : 'none' }}>
-                <p style={{ margin: '0 0 3px', fontSize: '11px', color: '#9CA3AF', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{row.label}</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontSize: row.mono ? '11.5px' : '13px', color: (row as any).statusColor ?? '#111827', fontWeight: (row as any).statusColor ? 600 : 500, fontFamily: row.mono ? 'monospace' : 'inherit' }}>{row.value}</span>
-                  {row.copy && <CopyButton value={(row as any).full} />}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div>
           <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '20px' }}>
             <p style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>Dashboard Access</p>
             <p style={{ margin: '0 0 14px', fontSize: '11.5px', color: '#9CA3AF' }}>
