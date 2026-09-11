@@ -151,16 +151,51 @@ export default function IndependentProfileClient({ guard, transactions, totalDon
           <span style={{ position: 'absolute', bottom: 2, right: 2, width: '12px', height: '12px', borderRadius: '50%', background: isActive ? '#22C55E' : '#9CA3AF', border: '2px solid #fff' }} />
         </div>
         <div style={{ flex: 1 }}>
-          <h1 style={{ margin: '0 0 4px', fontSize: '26px', fontWeight: 700, color: '#0A0A0A', letterSpacing: '-0.4px' }}>{displayName}</h1>
-          <p style={{ margin: 0, fontSize: '14px', color: '#6B7280' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
+            <h1 style={{ margin: 0, fontSize: '26px', fontWeight: 700, color: '#0A0A0A', letterSpacing: '-0.4px' }}>{displayName}</h1>
+            <button onClick={() => setEditing(!editing)} style={{ padding: '6px 14px', background: '#F97316', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}>
+              {editing ? 'Cancel' : 'Edit'}
+            </button>
+            <OverflowMenu onDeactivate={toggleActive} isActive={isActive} />
+          </div>
+          <p style={{ margin: '0 0 10px', fontSize: '14px', color: '#6B7280' }}>
             {guard.job_title || 'Independent'}{guard.phone ? ` · ${guard.phone}` : ''}
           </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11.5px', color: '#6B7280' }}>
+              <span style={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: '10px', color: '#9CA3AF' }}>ID </span>
+              <span style={{ fontFamily: 'monospace' }}>{truncatedId}</span>
+              <CopyButton value={guard.id} />
+            </span>
+            {guard.email && (
+              <span style={{ fontSize: '11.5px', color: '#6B7280' }}>
+                <span style={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: '10px', color: '#9CA3AF' }}>Email </span>
+                {guard.email}
+              </span>
+            )}
+            <span style={{ fontSize: '11.5px', color: '#6B7280' }}>
+              <span style={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: '10px', color: '#9CA3AF' }}>Status </span>
+              <span style={{ color: isActive ? '#15803D' : '#9CA3AF', fontWeight: 600 }}>{isActive ? 'Active' : 'Inactive'}</span>
+            </span>
+            <span style={{ fontSize: '11.5px', color: '#6B7280' }}>
+              <span style={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: '10px', color: '#9CA3AF' }}>Created </span>
+              {createdAt}
+            </span>
+          </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-          <button onClick={() => setEditing(!editing)} style={{ padding: '8px 18px', background: '#F97316', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
-            {editing ? 'Cancel' : 'Edit'}
+        <div style={{ flexShrink: 0, minWidth: '220px' }}>
+          <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 600, color: '#0A0A0A' }}>Dashboard Access</p>
+          <p style={{ margin: '0 0 10px', fontSize: '11px', color: '#9CA3AF' }}>
+            {loginStatus === 'success' ? 'Login created — they will receive a password setup email.' : 'Give this independent access to their personal dashboard.'}
+          </p>
+          {loginError && <p style={{ margin: '0 0 8px', fontSize: '11px', color: '#B91C1C' }}>{loginError}</p>}
+          <button
+            onClick={createLogin}
+            disabled={loginStatus === 'creating' || loginStatus === 'success'}
+            style={{ width: '100%', padding: '8px 14px', background: loginStatus === 'success' ? '#15803D' : '#F97316', color: '#fff', border: 'none', borderRadius: '7px', fontSize: '12px', fontWeight: 600, cursor: loginStatus === 'creating' || loginStatus === 'success' ? 'not-allowed' : 'pointer' }}
+          >
+            {loginStatus === 'creating' ? 'Creating Login…' : loginStatus === 'success' ? '✓ Login Created' : 'Create Login'}
           </button>
-          <OverflowMenu onDeactivate={toggleActive} isActive={isActive} />
         </div>
       </div>
 
@@ -249,41 +284,6 @@ export default function IndependentProfileClient({ guard, transactions, totalDon
 
         {/* Right panel */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '20px' }}>
-            <p style={{ margin: '0 0 14px', fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>Information</p>
-            {[
-              { label: 'ID', value: truncatedId, full: guard.id, mono: true, copy: true },
-              { label: 'Email', value: guard.email || '—' },
-              { label: 'Phone', value: guard.phone || '—' },
-              { label: 'Status', value: isActive ? 'Active' : 'Inactive', statusColor: isActive ? '#15803D' : '#9CA3AF' },
-              { label: 'Created', value: createdAt },
-            ].map((row, idx, arr) => (
-              <div key={row.label} style={{ padding: '8px 0', borderBottom: idx < arr.length - 1 ? '1px solid #F3F4F6' : 'none' }}>
-                <p style={{ margin: '0 0 3px', fontSize: '11px', color: '#9CA3AF', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{row.label}</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontSize: row.mono ? '11.5px' : '13px', color: (row as any).statusColor ?? '#111827', fontWeight: (row as any).statusColor ? 600 : 500, fontFamily: row.mono ? 'monospace' : 'inherit' }}>{row.value}</span>
-                  {row.copy && <CopyButton value={(row as any).full} />}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Dashboard Access */}
-          <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '20px' }}>
-            <p style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>Dashboard Access</p>
-            <p style={{ margin: '0 0 14px', fontSize: '11.5px', color: '#9CA3AF' }}>
-              {loginStatus === 'success' ? 'Login created — they will receive a password setup email.' : 'Give this independent access to their personal dashboard.'}
-            </p>
-            {loginError && <p style={{ margin: '0 0 10px', fontSize: '12px', color: '#B91C1C' }}>{loginError}</p>}
-            <button
-              onClick={createLogin}
-              disabled={loginStatus === 'creating' || loginStatus === 'success'}
-              style={{ width: '100%', padding: '9px 14px', background: loginStatus === 'success' ? '#15803D' : '#F97316', color: '#fff', border: 'none', borderRadius: '7px', fontSize: '13px', fontWeight: 600, cursor: loginStatus === 'creating' || loginStatus === 'success' ? 'not-allowed' : 'pointer' }}
-            >
-              {loginStatus === 'creating' ? 'Creating Login…' : loginStatus === 'success' ? '✓ Login Created' : 'Create Login'}
-            </button>
-          </div>
-
           {/* QR Code */}
           <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '20px', textAlign: 'center' }}>
             <p style={{ margin: '0 0 2px', fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>QR Code</p>
