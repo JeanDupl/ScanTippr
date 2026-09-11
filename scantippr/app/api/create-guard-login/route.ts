@@ -9,8 +9,8 @@ const supabase = createClient(
 export async function POST(request: NextRequest) {
   try {
     const { guardId, email, companyId } = await request.json()
-    if (!guardId || !email || !companyId) {
-      return NextResponse.json({ error: 'guardId, email and companyId are required' }, { status: 400 })
+    if (!guardId || !email) {
+      return NextResponse.json({ error: 'guardId and email are required' }, { status: 400 })
     }
 
     // Create Supabase auth user and send password reset email
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     // Insert profile row linking to guard
     const { error: profileError } = await supabase.from('profiles').insert({
       id: userId,
-      company_id: companyId,
+      company_id: companyId ?? null,
       role: 'individual',
       guard_id: guardId,
       full_name: email,
