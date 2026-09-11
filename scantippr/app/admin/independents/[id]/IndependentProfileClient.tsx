@@ -285,7 +285,7 @@ export default function IndependentProfileClient({ guard, transactions, totalDon
         {/* Right panel */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* QR Code */}
-          <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '20px', textAlign: 'center' }}>
+          <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <p style={{ margin: '0 0 2px', fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>QR Code</p>
             <p style={{ margin: '0 0 14px', fontSize: '11.5px', color: '#9CA3AF' }}>Linked to {guard.first_name} {guard.last_name}</p>
             <img src={`/api/qr/${guard.id}?v=4`} alt="QR Code" style={{ width: '130px', height: '130px', marginBottom: '14px' }} />
