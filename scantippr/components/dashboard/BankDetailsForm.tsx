@@ -33,6 +33,7 @@ interface BankDetails {
 interface Props {
   companyId: string
   companyName: string
+  isIndividual?: boolean
   initialCompanyBank: BankDetails
 }
 
@@ -189,6 +190,7 @@ function BankDetailsSection({
 export default function BankDetailsForm({
   companyId,
   companyName,
+  isIndividual = false,
   initialCompanyBank,
 }: Props) {
   // Company bank state
@@ -235,7 +237,7 @@ export default function BankDetailsForm({
 
       {/* Company bank details */}
       <BankDetailsSection
-        title={`${companyName} — Company Bank Account`}
+        title={`${companyName} — ${isIndividual ? 'Bank Account' : 'Company Bank Account'}`}
         description="Net monthly payout will be sent to this account via Ozow"
         icon={Building2}
         saveState={companySaveState}
