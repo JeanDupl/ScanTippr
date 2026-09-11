@@ -11,7 +11,7 @@ const supabase = createClient(
 
 export default function AddIndependentPage() {
   const router = useRouter()
-  const [form, setForm] = useState({ first_name: '', last_name: '', job_title: '', email: '', phone: '' })
+  const [form, setForm] = useState({ first_name: '', last_name: '', job_title: '', email: '', phone: '', location: '' })
   const [photoFile, setPhotoFile] = useState<File | null>(null)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
@@ -79,6 +79,7 @@ export default function AddIndependentPage() {
           <div><label style={labelStyle}>Last Name *</label><input value={form.last_name} onChange={e => set('last_name', e.target.value)} style={inputStyle} placeholder="e.g. Smith" /></div>
           <div><label style={labelStyle}>Job Title</label><input value={form.job_title} onChange={e => set('job_title', e.target.value)} style={inputStyle} placeholder="e.g. Car Guard" /></div>
           <div><label style={labelStyle}>Cell Number</label><input value={form.phone} onChange={e => set('phone', e.target.value)} style={inputStyle} placeholder="e.g. 082 123 4567" /></div>
+          <div><label style={labelStyle}>Location</label><input value={form.location} onChange={e => set('location', e.target.value)} style={inputStyle} placeholder="e.g. Waterfront Spur" /></div>
           <div style={{ gridColumn: 'span 2' }}><label style={labelStyle}>Email *</label><input type="email" value={form.email} onChange={e => set('email', e.target.value)} style={inputStyle} placeholder="e.g. john@email.com" /></div>
         </div>
 
