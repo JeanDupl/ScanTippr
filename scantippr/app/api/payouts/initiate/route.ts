@@ -1,12 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
-import { runCompanyPayout, runIndividualPayout } from '../../../../lib/payouts/payoutOrchestrator'
+import { runCompanyPayout } from '../../../../lib/payouts/payoutOrchestrator'
 import { FeeDisposalMode } from '../../../../lib/payouts/payoutTypes'
 
 // POST /api/payouts/initiate
 // Server-side only — initiates a payout for the authenticated user's company
-// Body: { periodMonth: number, periodYear: number, feeDisposalMode: string }
+// Body: { periodStart: string, periodEnd: string, feeDisposalMode?: string }
+// NOTE: This route is currently unused — payouts are initiated via /api/admin/payouts/initiate
 
 export async function POST(request: Request) {
   try {
@@ -15,43 +16,28 @@ export async function POST(request: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
 
-    // Verify authentication
     const cookieStore = await cookies()
     const userId = cookieStore.get('sb_user_id')?.value
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
-    }
+    if (!userId) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
 
-    // Get profile
     const { data: profile } = await supabase
       .from('profiles')
       .select('company_id')
       .eq('id', userId)
       .single()
 
-    if (!profile?.company_id) {
-      return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
-    }
+    if (!profile?.company_id) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
 
     const companyId = profile.company_id
-
-    // Parse and validate body
     const body = await request.json()
-    const { periodMonth, periodYear, feeDisposalMode } = body
+    const { periodStart, periodEnd, feeDisposalMode } = body
 
-    if (!periodMonth || !periodYear) {
-      return NextResponse.json(
-        { error: 'periodMonth and periodYear are required' },
-        { status: 400 }
-      )
+    if (!periodStart || !periodEnd) {
+      return NextResponse.json({ error: 'periodStart and periodEnd are required' }, { status: 400 })
     }
 
-    if (periodMonth < 1 || periodMonth > 12) {
-      return NextResponse.json({ error: 'periodMonth must be 1–12' }, { status: 400 })
-    }
-
-    if (periodYear < 2024) {
-      return NextResponse.json({ error: 'periodYear must be 2024 or later' }, { status: 400 })
+    if (isNaN(Date.parse(periodStart)) || isNaN(Date.parse(periodEnd))) {
+      return NextResponse.json({ error: 'Invalid date format — use YYYY-MM-DD' }, { status: 400 })
     }
 
     const resolvedFeeDisposalMode: FeeDisposalMode =
@@ -59,18 +45,14 @@ export async function POST(request: Request) {
         ? feeDisposalMode
         : 'pending_decision'
 
-    // Fetch company with bank details
     const { data: company } = await supabase
       .from('companies')
       .select('id, name, bank_account_number, bank_name, bank_account_holder, bank_account_type')
       .eq('id', companyId)
       .single()
 
-    if (!company) {
-      return NextResponse.json({ error: 'Company not found' }, { status: 404 })
-    }
+    if (!company) return NextResponse.json({ error: 'Company not found' }, { status: 404 })
 
-    // Fetch active guards for this company
     const { data: guards } = await supabase
       .from('guards')
       .select('id, company_id, first_name, last_name, bank_account_number, bank_name, bank_account_holder, bank_account_type')
@@ -81,10 +63,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No active employees found' }, { status: 400 })
     }
 
-    // Fetch completed + unpaid transactions for this period
-    const periodStart = new Date(periodYear, periodMonth - 1, 1).toISOString()
-    const periodEnd   = new Date(periodYear, periodMonth, 1).toISOString()
-
     const { data: transactions } = await supabase
       .from('transactions')
       .select('id, guard_id, company_id, amount, payment_status, payout_status, fee_status, created_at')
@@ -93,30 +71,23 @@ export async function POST(request: Request) {
       .eq('payout_status', 'unpaid')
       .eq('fee_status', 'unpaid')
       .gte('created_at', periodStart)
-      .lt('created_at', periodEnd)
+      .lt('created_at', new Date(new Date(periodEnd).getTime() + 86400000).toISOString())
 
-    // Run the orchestrator
     const result = await runCompanyPayout(
       company,
       guards,
       transactions ?? [],
-      {
-        periodMonth,
-        periodYear,
-        feeDisposalMode: resolvedFeeDisposalMode,
-      }
+      { periodType: 'monthly', periodStart, periodEnd, feeDisposalMode: resolvedFeeDisposalMode }
     )
 
-    if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 400 })
-    }
+    if (!result.success) return NextResponse.json({ error: result.error }, { status: 400 })
 
     return NextResponse.json({
-      success:       true,
+      success:        true,
       payoutPeriodId: result.payoutPeriodId,
       summary: {
-        periodMonth,
-        periodYear,
+        periodStart,
+        periodEnd,
         totalGross:    result.summary?.totalGross,
         totalFee:      result.summary?.totalFee,
         totalNet:      result.summary?.totalNet,

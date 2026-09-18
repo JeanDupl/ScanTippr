@@ -1,13 +1,5 @@
 // ============================================================
 // lib/payouts/payoutOrchestrator.ts
-// Orchestrates the full payout flow for one recipient/period:
-//   1. Validate inputs
-//   2. Calculate gross / fee / net per employee
-//   3. Write payout_periods + payout_line_items + join table
-//   4. Mark transactions as included
-//   5. Send fee payout instruction to Ozow (if applicable)
-//   6. Send net payout instruction to Ozow (if net > 0)
-//   7. Update statuses based on Ozow responses
 // ============================================================
 
 import crypto from 'crypto'
@@ -18,6 +10,7 @@ import {
   Transaction,
   PayoutSummary,
   FeeDisposalMode,
+  PeriodType,
 } from './payoutTypes'
 import {
   calculateCompanyPayout,
@@ -25,7 +18,6 @@ import {
 } from './calculatePayouts'
 import { createOzowPayout } from './ozowPayout'
 
-// ── Supabase client (service role — server-side only) ────────
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -33,10 +25,10 @@ function getSupabase() {
   )
 }
 
-// ── Input for the orchestrator ────────────────────────────────
 export interface OrchestratorInput {
-  periodMonth:     number
-  periodYear:      number
+  periodType:      PeriodType
+  periodStart:     string   // YYYY-MM-DD
+  periodEnd:       string   // YYYY-MM-DD
   feeDisposalMode: FeeDisposalMode
 }
 
@@ -47,26 +39,24 @@ export interface OrchestratorResult {
   error?:          string
 }
 
-// ── Guard against double-processing ──────────────────────────
 async function periodAlreadyExists(
   supabase: ReturnType<typeof getSupabase>,
   recipientType: string,
   recipientId: string,
-  periodMonth: number,
-  periodYear: number
+  periodStart: string,
+  periodEnd: string
 ): Promise<boolean> {
   const { data } = await supabase
     .from('payout_periods')
     .select('id')
     .eq('recipient_type', recipientType)
     .eq('recipient_id', recipientId)
-    .eq('period_month', periodMonth)
-    .eq('period_year', periodYear)
+    .eq('period_start', periodStart)
+    .eq('period_end', periodEnd)
     .maybeSingle()
   return !!data
 }
 
-// ── Write payout_periods record ───────────────────────────────
 async function createPayoutPeriod(
   supabase: ReturnType<typeof getSupabase>,
   summary: PayoutSummary,
@@ -75,6 +65,10 @@ async function createPayoutPeriod(
   const { data, error } = await supabase
     .from('payout_periods')
     .insert({
+      period_type:          summary.periodType,
+      period_start:         summary.periodStart,
+      period_end:           summary.periodEnd,
+      // Only set month/year for monthly periods
       period_month:         summary.periodMonth,
       period_year:          summary.periodYear,
       recipient_type:       summary.recipientType,
@@ -100,7 +94,6 @@ async function createPayoutPeriod(
   return data.id
 }
 
-// ── Write payout_line_items + join table ──────────────────────
 async function createLineItems(
   supabase: ReturnType<typeof getSupabase>,
   payoutPeriodId: string,
@@ -146,7 +139,6 @@ async function createLineItems(
   return true
 }
 
-// ── Mark transactions as included ────────────────────────────
 async function markTransactionsIncluded(
   supabase: ReturnType<typeof getSupabase>,
   summary: PayoutSummary,
@@ -157,10 +149,7 @@ async function markTransactionsIncluded(
 
   const { error } = await supabase
     .from('transactions')
-    .update({
-      payout_status: 'included',
-      fee_status:    'included',
-    })
+    .update({ payout_status: 'included', fee_status: 'included' })
     .in('id', allTxIds)
 
   if (error) {
@@ -170,7 +159,6 @@ async function markTransactionsIncluded(
   return true
 }
 
-// ── Update payout period status after Ozow calls ─────────────
 async function updatePayoutPeriodStatus(
   supabase: ReturnType<typeof getSupabase>,
   payoutPeriodId: string,
@@ -181,12 +169,9 @@ async function updatePayoutPeriodStatus(
     .update(updates)
     .eq('id', payoutPeriodId)
 
-  if (error) {
-    console.error('[orchestrator] updatePayoutPeriodStatus error:', error)
-  }
+  if (error) console.error('[orchestrator] updatePayoutPeriodStatus error:', error)
 }
 
-// ── Write ScanTippr fee record ────────────────────────────────
 async function createFeeRecord(
   supabase: ReturnType<typeof getSupabase>,
   summary: PayoutSummary,
@@ -209,17 +194,17 @@ async function createFeeRecord(
       submitted_at:     ozowFeePayoutId ? new Date().toISOString() : null,
     })
 
-  if (error) {
-    console.error('[orchestrator] createFeeRecord error:', error)
-  }
+  if (error) console.error('[orchestrator] createFeeRecord error:', error)
 }
 
-// ── Short alphanumeric reference for bank statements ─────────
-function shortRef(prefix: string, year: number, month: number): string {
-  return `${prefix}-${year}-${String(month).padStart(2, '0')}`
+// Short reference for bank statements
+function shortRef(prefix: string, periodType: PeriodType, periodStart: string): string {
+  // e.g. NET-2026-09 for monthly, NET-2026-09-07 for weekly
+  const date = periodStart.substring(0, periodType === 'weekly' ? 10 : 7)
+  return `${prefix}-${date}`
 }
 
-// ── Main orchestrator: company-managed ───────────────────────
+// ── Company payout ────────────────────────────────────────────
 
 export async function runCompanyPayout(
   company: Company,
@@ -228,38 +213,28 @@ export async function runCompanyPayout(
   input: OrchestratorInput
 ): Promise<OrchestratorResult> {
   const supabase = getSupabase()
-  const { periodMonth, periodYear, feeDisposalMode } = input
+  const { periodType, periodStart, periodEnd, feeDisposalMode } = input
 
-  // 1. Guard against double-processing
-  const exists = await periodAlreadyExists(
-    supabase, 'company', company.id, periodMonth, periodYear
-  )
+  const exists = await periodAlreadyExists(supabase, 'company', company.id, periodStart, periodEnd)
   if (exists) {
-    return {
-      success: false,
-      error: `Payout period ${periodMonth}/${periodYear} already exists for company ${company.id}`,
-    }
+    return { success: false, error: `Payout period ${periodStart}–${periodEnd} already exists for company ${company.id}` }
   }
 
-  // 2. Calculate
-  const result = calculateCompanyPayout(company, guards, transactions, periodMonth, periodYear)
+  const result = calculateCompanyPayout(company, guards, transactions, periodType, periodStart, periodEnd)
   if (!result.success) return { success: false, error: result.error }
   const { summary } = result
 
-  // 3. Write payout_periods record
   const payoutPeriodId = await createPayoutPeriod(supabase, summary, feeDisposalMode)
   if (!payoutPeriodId) return { success: false, error: 'Failed to create payout period record' }
 
-  // 4. Write line items + join table
   const lineItemsOk = await createLineItems(supabase, payoutPeriodId, summary)
   if (!lineItemsOk) return { success: false, error: 'Failed to create payout line items' }
 
-  // 5. Mark transactions as included
   await markTransactionsIncluded(supabase, summary, payoutPeriodId)
 
-  // 6. Fee payout instruction (if applicable)
   let ozowFeePayoutId: string | null = null
   if (!summary.hasZeroFee && feeDisposalMode === 'payout_to_scantippr') {
+    const feeRef = shortRef('FEE', periodType, periodStart)
     const feeResult = await createOzowPayout({
       amount:            summary.totalFee,
       bank: {
@@ -268,10 +243,10 @@ export async function runCompanyPayout(
         bankAccountHolder: process.env.SCANTIPPR_BANK_ACCOUNT_HOLDER!,
         bankAccountType:   process.env.SCANTIPPR_BANK_ACCOUNT_TYPE!,
       },
-      reference:         shortRef('FEE', periodYear, periodMonth),
-      customerReference: shortRef('FEE', periodYear, periodMonth),
+      reference:         feeRef,
+      customerReference: feeRef,
       payoutPeriodId,
-      description:       `ScanTippr fee — ${company.name} — ${periodMonth}/${periodYear}`,
+      description:       `ScanTippr fee — ${company.name} — ${periodStart}`,
     })
 
     if (feeResult.success) {
@@ -282,26 +257,21 @@ export async function runCompanyPayout(
         fee_submitted_at:   new Date().toISOString(),
       })
     } else {
-      await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
-        fee_payout_status: 'failed',
-      })
+      await updatePayoutPeriodStatus(supabase, payoutPeriodId, { fee_payout_status: 'failed' })
       console.error('[orchestrator] fee payout failed:', feeResult.error)
     }
   } else if (feeDisposalMode === 'remain_in_float') {
-    await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
-      fee_payout_status: 'in_float',
-    })
+    await updatePayoutPeriodStatus(supabase, payoutPeriodId, { fee_payout_status: 'in_float' })
   }
 
-  // 7. Write ScanTippr fee record
-  await createFeeRecord(supabase, summary, payoutPeriodId, feeDisposalMode, ozowFeePayoutId)  // 8. Net payout instruction
-  if (!summary.hasZeroNet) {
-    const netMerchantRef = shortRef('NET', periodYear, periodMonth)
-    const encryptionKey  = crypto.randomBytes(16).toString('hex').substring(0, 16)
+  await createFeeRecord(supabase, summary, payoutPeriodId, feeDisposalMode, ozowFeePayoutId)
 
-    // Store reference & key BEFORE calling Ozow so payout-verify can locate it synchronously
+  if (!summary.hasZeroNet) {
+    const netRef        = shortRef('NET', periodType, periodStart)
+    const encryptionKey = crypto.randomBytes(16).toString('hex').substring(0, 16)
+
     await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
-      net_merchant_reference: netMerchantRef,
+      net_merchant_reference: netRef,
       encryption_key:         encryptionKey,
       net_payout_status:      'initiating',
     })
@@ -309,11 +279,11 @@ export async function runCompanyPayout(
     const netResult = await createOzowPayout({
       amount:            summary.totalNet,
       bank:              summary.bankSnapshot,
-      reference:         netMerchantRef,
-      customerReference: netMerchantRef,
+      reference:         netRef,
+      customerReference: netRef,
       payoutPeriodId,
       encryptionKey,
-      description:       `Net payout — ${company.name} — ${periodMonth}/${periodYear}`,
+      description:       `Net payout — ${company.name} — ${periodStart}`,
     })
 
     if (netResult.success) {
@@ -323,9 +293,7 @@ export async function runCompanyPayout(
         net_submitted_at:   new Date().toISOString(),
       })
     } else {
-      await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
-        net_payout_status: 'failed',
-      })
+      await updatePayoutPeriodStatus(supabase, payoutPeriodId, { net_payout_status: 'failed' })
       console.error('[orchestrator] net payout failed:', netResult.error)
     }
   }
@@ -333,7 +301,7 @@ export async function runCompanyPayout(
   return { success: true, payoutPeriodId, summary }
 }
 
-// ── Main orchestrator: individual-managed ────────────────────
+// ── Individual payout ─────────────────────────────────────────
 
 export async function runIndividualPayout(
   guard: Guard,
@@ -341,38 +309,28 @@ export async function runIndividualPayout(
   input: OrchestratorInput
 ): Promise<OrchestratorResult> {
   const supabase = getSupabase()
-  const { periodMonth, periodYear, feeDisposalMode } = input
+  const { periodType, periodStart, periodEnd, feeDisposalMode } = input
 
-  // 1. Guard against double-processing
-  const exists = await periodAlreadyExists(
-    supabase, 'guard', guard.id, periodMonth, periodYear
-  )
+  const exists = await periodAlreadyExists(supabase, 'guard', guard.id, periodStart, periodEnd)
   if (exists) {
-    return {
-      success: false,
-      error: `Payout period ${periodMonth}/${periodYear} already exists for guard ${guard.id}`,
-    }
+    return { success: false, error: `Payout period ${periodStart}–${periodEnd} already exists for guard ${guard.id}` }
   }
 
-  // 2. Calculate
-  const result = calculateIndividualPayout(guard, transactions, periodMonth, periodYear)
+  const result = calculateIndividualPayout(guard, transactions, periodType, periodStart, periodEnd)
   if (!result.success) return { success: false, error: result.error }
   const { summary } = result
 
-  // 3. Write payout_periods record
   const payoutPeriodId = await createPayoutPeriod(supabase, summary, feeDisposalMode)
   if (!payoutPeriodId) return { success: false, error: 'Failed to create payout period record' }
 
-  // 4. Write line items + join table
   const lineItemsOk = await createLineItems(supabase, payoutPeriodId, summary)
   if (!lineItemsOk) return { success: false, error: 'Failed to create payout line items' }
 
-  // 5. Mark transactions as included
   await markTransactionsIncluded(supabase, summary, payoutPeriodId)
 
-  // 6. Fee payout
   let ozowFeePayoutId: string | null = null
   if (!summary.hasZeroFee && feeDisposalMode === 'payout_to_scantippr') {
+    const feeRef = shortRef('FEE', periodType, periodStart)
     const feeResult = await createOzowPayout({
       amount:            summary.totalFee,
       bank: {
@@ -381,10 +339,10 @@ export async function runIndividualPayout(
         bankAccountHolder: process.env.SCANTIPPR_BANK_ACCOUNT_HOLDER!,
         bankAccountType:   process.env.SCANTIPPR_BANK_ACCOUNT_TYPE!,
       },
-      reference:         shortRef('FEE', periodYear, periodMonth),
-      customerReference: shortRef('FEE', periodYear, periodMonth),
+      reference:         feeRef,
+      customerReference: feeRef,
       payoutPeriodId,
-      description:       `ScanTippr fee — ${guard.first_name} ${guard.last_name} — ${periodMonth}/${periodYear}`,
+      description:       `ScanTippr fee — ${guard.first_name} ${guard.last_name} — ${periodStart}`,
     })
 
     if (feeResult.success) {
@@ -395,27 +353,20 @@ export async function runIndividualPayout(
         fee_submitted_at:   new Date().toISOString(),
       })
     } else {
-      await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
-        fee_payout_status: 'failed',
-      })
+      await updatePayoutPeriodStatus(supabase, payoutPeriodId, { fee_payout_status: 'failed' })
     }
   } else if (feeDisposalMode === 'remain_in_float') {
-    await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
-      fee_payout_status: 'in_float',
-    })
+    await updatePayoutPeriodStatus(supabase, payoutPeriodId, { fee_payout_status: 'in_float' })
   }
 
-  // 7. Write ScanTippr fee record
   await createFeeRecord(supabase, summary, payoutPeriodId, feeDisposalMode, ozowFeePayoutId)
 
-  // 8. Net payout
   if (!summary.hasZeroNet) {
-    const netMerchantRef = shortRef('NET', periodYear, periodMonth)
-    const encryptionKey  = crypto.randomBytes(16).toString('hex').substring(0, 16)
+    const netRef        = shortRef('NET', periodType, periodStart)
+    const encryptionKey = crypto.randomBytes(16).toString('hex').substring(0, 16)
 
-    // Pre-save BEFORE calling Ozow so payout-verify can locate the record synchronously
     await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
-      net_merchant_reference: netMerchantRef,
+      net_merchant_reference: netRef,
       encryption_key:         encryptionKey,
       net_payout_status:      'initiating',
     })
@@ -423,11 +374,11 @@ export async function runIndividualPayout(
     const netResult = await createOzowPayout({
       amount:            summary.totalNet,
       bank:              summary.bankSnapshot,
-      reference:         netMerchantRef,
-      customerReference: netMerchantRef,
+      reference:         netRef,
+      customerReference: netRef,
       payoutPeriodId,
       encryptionKey,
-      description:       `Net payout — ${guard.first_name} ${guard.last_name} — ${periodMonth}/${periodYear}`,
+      description:       `Net payout — ${guard.first_name} ${guard.last_name} — ${periodStart}`,
     })
 
     if (netResult.success) {
@@ -437,9 +388,7 @@ export async function runIndividualPayout(
         net_submitted_at:   new Date().toISOString(),
       })
     } else {
-      await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
-        net_payout_status: 'failed',
-      })
+      await updatePayoutPeriodStatus(supabase, payoutPeriodId, { net_payout_status: 'failed' })
     }
   }
 

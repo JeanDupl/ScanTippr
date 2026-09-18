@@ -1,11 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { runIndividualPayout } from '../../../../../lib/payouts/payoutOrchestrator'
-import { FeeDisposalMode } from '../../../../../lib/payouts/payoutTypes'
+import { FeeDisposalMode, PeriodType } from '../../../../../lib/payouts/payoutTypes'
 
 // POST /api/admin/payouts/initiate-individual
-// Admin-only — initiates a payout for an independent worker by guardId.
-// Body: { guardId: string, periodMonth: number, periodYear: number, feeDisposalMode?: string }
+// Body: { guardId, periodType, periodStart, periodEnd, feeDisposalMode }
 
 export async function POST(request: Request) {
   try {
@@ -15,26 +14,17 @@ export async function POST(request: Request) {
     )
 
     const body = await request.json()
-    const { guardId, periodMonth, periodYear, feeDisposalMode } = body
+    const { guardId, periodType, periodStart, periodEnd, feeDisposalMode } = body
 
-    // ── Validate inputs ───────────────────────────────────────
-    if (!guardId) {
-      return NextResponse.json({ error: 'guardId is required' }, { status: 400 })
+    if (!guardId) return NextResponse.json({ error: 'guardId is required' }, { status: 400 })
+    if (!periodStart || !periodEnd) return NextResponse.json({ error: 'periodStart and periodEnd are required' }, { status: 400 })
+    if (!periodType || !['monthly', 'weekly'].includes(periodType)) return NextResponse.json({ error: 'periodType must be monthly or weekly' }, { status: 400 })
+
+    if (isNaN(Date.parse(periodStart)) || isNaN(Date.parse(periodEnd))) {
+      return NextResponse.json({ error: 'Invalid date format — use YYYY-MM-DD' }, { status: 400 })
     }
-
-    if (!periodMonth || !periodYear) {
-      return NextResponse.json(
-        { error: 'periodMonth and periodYear are required' },
-        { status: 400 }
-      )
-    }
-
-    if (periodMonth < 1 || periodMonth > 12) {
-      return NextResponse.json({ error: 'periodMonth must be 1–12' }, { status: 400 })
-    }
-
-    if (periodYear < 2024) {
-      return NextResponse.json({ error: 'periodYear must be 2024 or later' }, { status: 400 })
+    if (new Date(periodEnd) < new Date(periodStart)) {
+      return NextResponse.json({ error: 'periodEnd must be on or after periodStart' }, { status: 400 })
     }
 
     const resolvedFeeDisposalMode: FeeDisposalMode =
@@ -42,7 +32,8 @@ export async function POST(request: Request) {
         ? feeDisposalMode
         : 'pending_decision'
 
-    // ── Fetch guard ───────────────────────────────────────────
+    const resolvedPeriodType: PeriodType = periodType === 'weekly' ? 'weekly' : 'monthly'
+
     const { data: guard, error: guardError } = await supabase
       .from('guards')
       .select('id, company_id, first_name, last_name, bank_account_number, bank_name, bank_account_holder, bank_account_type')
@@ -50,13 +41,7 @@ export async function POST(request: Request) {
       .is('company_id', null)
       .single()
 
-    if (guardError || !guard) {
-      return NextResponse.json({ error: 'Independent worker not found' }, { status: 404 })
-    }
-
-    // ── Fetch unpaid transactions for this period ─────────────
-    const periodStart = new Date(periodYear, periodMonth - 1, 1).toISOString()
-    const periodEnd   = new Date(periodYear, periodMonth, 1).toISOString()
+    if (guardError || !guard) return NextResponse.json({ error: 'Independent worker not found' }, { status: 404 })
 
     const { data: transactions } = await supabase
       .from('transactions')
@@ -66,34 +51,28 @@ export async function POST(request: Request) {
       .eq('payout_status', 'unpaid')
       .eq('fee_status', 'unpaid')
       .gte('created_at', periodStart)
-      .lt('created_at', periodEnd)
+      .lt('created_at', new Date(new Date(periodEnd).getTime() + 86400000).toISOString())
 
-    // ── Run orchestrator ──────────────────────────────────────
     const result = await runIndividualPayout(
       guard,
       transactions ?? [],
-      {
-        periodMonth,
-        periodYear,
-        feeDisposalMode: resolvedFeeDisposalMode,
-      }
+      { periodType: resolvedPeriodType, periodStart, periodEnd, feeDisposalMode: resolvedFeeDisposalMode }
     )
 
-    if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 400 })
-    }
+    if (!result.success) return NextResponse.json({ error: result.error }, { status: 400 })
 
     return NextResponse.json({
       success:        true,
       payoutPeriodId: result.payoutPeriodId,
       summary: {
-        guardName:     `${guard.first_name} ${guard.last_name}`,
-        periodMonth,
-        periodYear,
-        totalGross:    result.summary?.totalGross,
-        totalFee:      result.summary?.totalFee,
-        totalNet:      result.summary?.totalNet,
-        hasZeroNet:    result.summary?.hasZeroNet,
+        guardName:  `${guard.first_name} ${guard.last_name}`,
+        periodType: resolvedPeriodType,
+        periodStart,
+        periodEnd,
+        totalGross: result.summary?.totalGross,
+        totalFee:   result.summary?.totalFee,
+        totalNet:   result.summary?.totalNet,
+        hasZeroNet: result.summary?.hasZeroNet,
       },
     })
 

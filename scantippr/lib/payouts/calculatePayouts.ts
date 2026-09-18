@@ -1,13 +1,6 @@
 // ============================================================
 // lib/payouts/calculatePayouts.ts
 // Pure fee calculation engine — no Ozow, no DB writes
-// Fully testable in isolation
-//
-// Rules (confirmed):
-//   fee = MIN(R150, employee monthly gross)
-//   net = gross - fee
-//   company payout = SUM(all employee nets)
-//   individual payout = that employee's net
 // ============================================================
 
 import {
@@ -18,46 +11,49 @@ import {
   PayoutSummary,
   BankSnapshot,
   CalculationResult,
+  PeriodType,
   SCANTIPPR_FEE_CAP,
 } from './payoutTypes'
 
-// ── Fee calculation (core rule) ──────────────────────────────
+// ── Fee calculation ──────────────────────────────────────────
 
-/**
- * Calculate ScanTippr fee for one employee for one period.
- * fee = MIN(R150, gross)
- * Stored immutably — never recalculated from this point forward.
- */
 export function calculateEmployeeFee(grossAmount: number): number {
   if (grossAmount <= 0) return 0
-  return Math.min(150, grossAmount) // fee = MIN(R150, employee gross)
+  return Math.min(SCANTIPPR_FEE_CAP, grossAmount)
 }
 
-/**
- * Calculate net payout for one employee.
- * net = gross - fee
- */
 export function calculateEmployeeNet(grossAmount: number): number {
   const fee = calculateEmployeeFee(grossAmount)
   return Math.max(0, grossAmount - fee)
 }
 
-// ── Round to 2 decimal places ────────────────────────────────
 function round2(n: number): number {
   return Math.round(n * 100) / 100
 }
 
-// ── Per-employee line item ────────────────────────────────────
+// ── Period helpers ───────────────────────────────────────────
 
 /**
- * Build a single employee line item from their transactions.
- * Filters to only completed + unpaid transactions.
+ * Derive periodMonth/periodYear from a date string for monthly periods.
+ * Returns null for weekly periods.
  */
+function monthYearFromDate(
+  periodType: PeriodType,
+  periodStart: string
+): { periodMonth: number | null; periodYear: number | null } {
+  if (periodType === 'monthly') {
+    const d = new Date(periodStart)
+    return { periodMonth: d.getMonth() + 1, periodYear: d.getFullYear() }
+  }
+  return { periodMonth: null, periodYear: null }
+}
+
+// ── Per-employee line item ────────────────────────────────────
+
 function buildEmployeeLineItem(
   guard: Guard,
   transactions: Transaction[]
 ): EmployeeLineItem {
-  // Only include completed payments that haven't been paid out yet
   const eligible = transactions.filter(
     (tx) =>
       tx.payment_status === 'completed' &&
@@ -65,11 +61,9 @@ function buildEmployeeLineItem(
       tx.fee_status === 'unpaid'
   )
 
-  const grossAmount = round2(
-    eligible.reduce((sum, tx) => sum + Number(tx.amount), 0)
-  )
-  const feeAmount  = round2(calculateEmployeeFee(grossAmount))
-  const netAmount  = round2(calculateEmployeeNet(grossAmount))
+  const grossAmount = round2(eligible.reduce((sum, tx) => sum + Number(tx.amount), 0))
+  const feeAmount   = round2(calculateEmployeeFee(grossAmount))
+  const netAmount   = round2(calculateEmployeeNet(grossAmount))
 
   return {
     guardId:          guard.id,
@@ -115,51 +109,37 @@ function validateBankDetails(
 
 // ── Company payout calculation ────────────────────────────────
 
-/**
- * Calculate payout for a company-managed account.
- * One line item per employee. Company receives SUM(all nets).
- *
- * @param company     The company record (with bank details)
- * @param guards      All active guards for this company
- * @param transactions All completed+unpaid transactions for this company in the period
- * @param periodMonth 1–12
- * @param periodYear  e.g. 2026
- */
 export function calculateCompanyPayout(
   company: Company,
   guards: Guard[],
   transactions: Transaction[],
-  periodMonth: number,
-  periodYear: number
+  periodType: PeriodType,
+  periodStart: string,
+  periodEnd: string
 ): CalculationResult {
-  // Validate bank details
   const bankResult = validateBankDetails(company, company.name)
-  if (!bankResult.valid) {
-    return { success: false, error: bankResult.error }
-  }
+  if (!bankResult.valid) return { success: false, error: bankResult.error }
 
-  // Group transactions by guard
   const txByGuard = new Map<string, Transaction[]>()
-  for (const guard of guards) {
-    txByGuard.set(guard.id, [])
-  }
+  for (const guard of guards) txByGuard.set(guard.id, [])
   for (const tx of transactions) {
-    if (txByGuard.has(tx.guard_id)) {
-      txByGuard.get(tx.guard_id)!.push(tx)
-    }
+    if (txByGuard.has(tx.guard_id)) txByGuard.get(tx.guard_id)!.push(tx)
   }
 
-  // Build line items — one per guard (even if they have no transactions)
-  const lineItems: EmployeeLineItem[] = guards.map((guard) =>
+  const lineItems = guards.map((guard) =>
     buildEmployeeLineItem(guard, txByGuard.get(guard.id) ?? [])
   )
 
-  // Aggregate
   const totalGross = round2(lineItems.reduce((sum, li) => sum + li.grossAmount, 0))
   const totalFee   = round2(lineItems.reduce((sum, li) => sum + li.feeAmount,   0))
   const totalNet   = round2(lineItems.reduce((sum, li) => sum + li.netAmount,   0))
 
+  const { periodMonth, periodYear } = monthYearFromDate(periodType, periodStart)
+
   const summary: PayoutSummary = {
+    periodType,
+    periodStart,
+    periodEnd,
     periodMonth,
     periodYear,
     recipientType: 'company',
@@ -178,33 +158,23 @@ export function calculateCompanyPayout(
 
 // ── Individual payout calculation ─────────────────────────────
 
-/**
- * Calculate payout for an individual (no company) guard.
- * One line item for the guard themselves. Guard receives their own net.
- *
- * @param guard       The guard record (with bank details)
- * @param transactions All completed+unpaid transactions for this guard in the period
- * @param periodMonth 1–12
- * @param periodYear  e.g. 2026
- */
 export function calculateIndividualPayout(
   guard: Guard,
   transactions: Transaction[],
-  periodMonth: number,
-  periodYear: number
+  periodType: PeriodType,
+  periodStart: string,
+  periodEnd: string
 ): CalculationResult {
-  // Validate bank details
-  const bankResult = validateBankDetails(
-    guard,
-    `${guard.first_name} ${guard.last_name}`
-  )
-  if (!bankResult.valid) {
-    return { success: false, error: bankResult.error }
-  }
+  const bankResult = validateBankDetails(guard, `${guard.first_name} ${guard.last_name}`)
+  if (!bankResult.valid) return { success: false, error: bankResult.error }
 
   const lineItem = buildEmployeeLineItem(guard, transactions)
+  const { periodMonth, periodYear } = monthYearFromDate(periodType, periodStart)
 
   const summary: PayoutSummary = {
+    periodType,
+    periodStart,
+    periodEnd,
     periodMonth,
     periodYear,
     recipientType: 'guard',
@@ -221,15 +191,13 @@ export function calculateIndividualPayout(
   return { success: true, summary }
 }
 
-// ── Summary helpers (for display / logging) ───────────────────
-
-/**
- * Human-readable summary of a payout calculation.
- * Useful for logging and dashboard display.
- */
 export function formatPayoutSummary(summary: PayoutSummary): string {
+  const periodLabel = summary.periodType === 'weekly'
+    ? `${summary.periodStart} to ${summary.periodEnd}`
+    : `${summary.periodMonth}/${summary.periodYear}`
+
   const lines = [
-    `Payout summary — ${summary.periodMonth}/${summary.periodYear}`,
+    `Payout summary — ${periodLabel}`,
     `Recipient: ${summary.recipientType} ${summary.recipientId}`,
     ``,
     ...summary.lineItems.map(

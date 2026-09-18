@@ -5,6 +5,8 @@
 
 export type RecipientType = 'company' | 'guard'
 
+export type PeriodType = 'monthly' | 'weekly'
+
 export type PaymentStatus = 'pending' | 'completed' | 'failed'
 
 export type FeeStatus =
@@ -44,19 +46,17 @@ export type FeeDisposalMode =
 
 // ── Input types ──────────────────────────────────────────────
 
-// A single transaction as read from the database
 export interface Transaction {
   id: string
   guard_id: string
   company_id: string
-  amount: number          // in rands
+  amount: number
   payment_status: PaymentStatus
   payout_status: PayoutStatus
   fee_status: FeeStatus
   created_at: string
 }
 
-// A guard as read from the database
 export interface Guard {
   id: string
   company_id: string | null
@@ -68,7 +68,6 @@ export interface Guard {
   bank_account_type: string | null
 }
 
-// A company as read from the database
 export interface Company {
   id: string
   name: string
@@ -80,18 +79,16 @@ export interface Company {
 
 // ── Output types ─────────────────────────────────────────────
 
-// Per-employee calculation result (becomes a payout_line_item row)
 export interface EmployeeLineItem {
   guardId: string
-  guardName: string           // snapshot at calculation time
-  transactionIds: string[]    // which transactions are included
+  guardName: string
+  transactionIds: string[]
   transactionCount: number
-  grossAmount: number         // sum of transaction amounts (rands)
-  feeAmount: number           // MIN(150, gross) — immutable once stored
-  netAmount: number           // gross - fee
+  grossAmount: number
+  feeAmount: number
+  netAmount: number
 }
 
-// Snapshot of bank details at payout time
 export interface BankSnapshot {
   bankAccountNumber: string
   bankName: string
@@ -99,27 +96,26 @@ export interface BankSnapshot {
   bankAccountType: string
 }
 
-// Full payout summary for one recipient for one period
-// This is what gets written to payout_periods + payout_line_items
 export interface PayoutSummary {
-  periodMonth: number
-  periodYear: number
+  periodType: PeriodType
+  periodStart: string   // ISO date string YYYY-MM-DD
+  periodEnd: string     // ISO date string YYYY-MM-DD
+  // Monthly convenience fields (null for weekly)
+  periodMonth: number | null
+  periodYear: number | null
   recipientType: RecipientType
   recipientId: string
   lineItems: EmployeeLineItem[]
-  totalGross: number          // sum of all employee gross amounts
-  totalFee: number            // sum of all employee fees (= ScanTippr revenue)
-  totalNet: number            // sum of all employee nets (= Ozow payout instruction amount)
+  totalGross: number
+  totalFee: number
+  totalNet: number
   bankSnapshot: BankSnapshot
-  // Edge case flags
-  hasZeroNet: boolean         // true if totalNet = 0 (nothing to pay out)
-  hasZeroFee: boolean         // true if totalFee = 0 (no fee due)
+  hasZeroNet: boolean
+  hasZeroFee: boolean
 }
 
-// Result of the calculation — may contain errors
 export type CalculationResult =
   | { success: true; summary: PayoutSummary }
   | { success: false; error: string }
 
-// ── Constants ────────────────────────────────────────────────
-export const SCANTIPPR_FEE_CAP = 150  // R150 per employee per month
+export const SCANTIPPR_FEE_CAP = 150
