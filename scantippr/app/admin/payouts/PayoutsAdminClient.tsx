@@ -1,575 +1,573 @@
-"use client";
+'use client'
+import { useState, useMemo } from 'react'
+import Link from 'next/link'
 
-import React, { useState } from 'react';
+const fmtCurrency = (n: number) =>
+  'R' + n.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
-export default function Home() {
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
-  const toggleFaq = (index: number) => {
-    setActiveFaq(activeFaq === index ? null : index);
-  };
+const statusStyle = (status: string) => {
+  if (status === 'complete' || status === 'paid') return { bg: '#F0FDF4', color: '#15803D', label: 'Paid' }
+  if (status === 'failed') return { bg: '#FEF2F2', color: '#B91C1C', label: 'Failed' }
+  if (status === 'not_due') return { bg: '#F3F4F6', color: '#6B7280', label: 'Not Due' }
+  if (status === 'pending') return { bg: '#FFFBEB', color: '#B45309', label: 'Pending' }
+  if (status === 'submitted') return { bg: '#EFF6FF', color: '#1D4ED8', label: 'Submitted' }
+  return { bg: '#F3F4F6', color: '#6B7280', label: status ?? '—' }
+}
+
+const selectStyle: React.CSSProperties = {
+  padding: '9px 12px', border: '1px solid #E5E7EB',
+  borderRadius: '8px', fontSize: '13px', background: '#fff',
+  outline: 'none', color: '#111827', width: '100%',
+}
+
+const inputStyle: React.CSSProperties = {
+  padding: '9px 12px', border: '1px solid #E5E7EB',
+  borderRadius: '8px', fontSize: '13px', background: '#fff',
+  outline: 'none', color: '#111827', width: '100%',
+}
+
+const labelStyle: React.CSSProperties = {
+  display: 'block', fontSize: '11.5px', fontWeight: 600,
+  color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.07em',
+  marginBottom: '6px',
+}
+
+type InitiateState =
+  | { phase: 'idle' }
+  | { phase: 'loading' }
+  | { phase: 'error'; message: string }
+  | { phase: 'success'; summary: any }
+
+// ── Helper: get Monday and Sunday of current week ─────────────
+function getCurrentWeekRange(): { start: string; end: string } {
+  const today = new Date()
+  const day = today.getDay()
+  const diff = today.getDate() - day + (day === 0 ? -6 : 1) // Monday
+  const monday = new Date(today.setDate(diff))
+  const sunday = new Date(monday)
+  sunday.setDate(monday.getDate() + 6)
+  return {
+    start: monday.toISOString().split('T')[0],
+    end:   sunday.toISOString().split('T')[0],
+  }
+}
+
+// ── Helper: get first and last day of previous month ──────────
+function getPreviousMonthRange(): { start: string; end: string } {
+  const now = new Date()
+  const first = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+  const last  = new Date(now.getFullYear(), now.getMonth(), 0)
+  return {
+    start: first.toISOString().split('T')[0],
+    end:   last.toISOString().split('T')[0],
+  }
+}
+
+function formatPeriodLabel(periodType: string, periodStart: string, periodEnd: string): string {
+  if (periodType === 'weekly') {
+    const s = new Date(periodStart).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' })
+    const e = new Date(periodEnd).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' })
+    return `${s} – ${e}`
+  }
+  const d = new Date(periodStart)
+  return `${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`
+}
+
+// ── Period picker sub-component ───────────────────────────────
+function PeriodPicker({
+  periodType,
+  setPeriodType,
+  periodStart,
+  setPeriodStart,
+  periodEnd,
+  setPeriodEnd,
+  onReset,
+  accentColor,
+}: {
+  periodType: string
+  setPeriodType: (v: string) => void
+  periodStart: string
+  setPeriodStart: (v: string) => void
+  periodEnd: string
+  setPeriodEnd: (v: string) => void
+  onReset: () => void
+  accentColor: string
+}) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      {/* Toggle */}
+      <div style={{ display: 'flex', gap: '0px', background: '#F3F4F6', borderRadius: '8px', padding: '3px', width: 'fit-content' }}>
+        {['monthly', 'weekly'].map(t => (
+          <button
+            key={t}
+            onClick={() => {
+              setPeriodType(t)
+              if (t === 'weekly') {
+                const { start, end } = getCurrentWeekRange()
+                setPeriodStart(start)
+                setPeriodEnd(end)
+              } else {
+                const { start, end } = getPreviousMonthRange()
+                setPeriodStart(start)
+                setPeriodEnd(end)
+              }
+              onReset()
+            }}
+            style={{
+              padding: '5px 14px',
+              background: periodType === t ? '#fff' : 'transparent',
+              color: periodType === t ? '#0A0A0A' : '#9CA3AF',
+              border: 'none', borderRadius: '6px',
+              fontSize: '12px', fontWeight: periodType === t ? 600 : 400,
+              cursor: 'pointer',
+              boxShadow: periodType === t ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+            }}
+          >
+            {t.charAt(0).toUpperCase() + t.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      {/* Date inputs */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+        <div>
+          <label style={labelStyle}>Start Date</label>
+          <input type="date" value={periodStart} onChange={e => { setPeriodStart(e.target.value); onReset() }} style={inputStyle} />
+        </div>
+        <div>
+          <label style={labelStyle}>End Date</label>
+          <input type="date" value={periodEnd} onChange={e => { setPeriodEnd(e.target.value); onReset() }} style={inputStyle} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Initiate Company Payout Panel ─────────────────────────────
+function InitiatePayoutPanel({ companies }: { companies: any[] }) {
+  const prevMonth = getPreviousMonthRange()
+  const [companyId, setCompanyId]     = useState('')
+  const [periodType, setPeriodType]   = useState('monthly')
+  const [periodStart, setPeriodStart] = useState(prevMonth.start)
+  const [periodEnd, setPeriodEnd]     = useState(prevMonth.end)
+  const [feeDisposalMode, setFeeDisposal] = useState('payout_to_scantippr')
+  const [state, setState]             = useState<InitiateState>({ phase: 'idle' })
+  const [confirmed, setConfirmed]     = useState(false)
+
+  const canSubmit = companyId && confirmed && state.phase !== 'loading'
+  const selectedCompany = companies.find(c => c.id === companyId)
+
+  async function handleInitiate() {
+    if (!canSubmit) return
+    setState({ phase: 'loading' })
+    try {
+      const res = await fetch('/api/admin/payouts/initiate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ companyId, periodType, periodStart, periodEnd, feeDisposalMode }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setState({ phase: 'error', message: data.error ?? 'Unknown error' }); setConfirmed(false) }
+      else { setState({ phase: 'success', summary: data.summary }); setConfirmed(false); setCompanyId('') }
+    } catch { setState({ phase: 'error', message: 'Network error — please try again' }); setConfirmed(false) }
+  }
 
   return (
-    <>
-      <style jsx global>{`
-        .responsive-container {
-          width: 100%;
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 16px;
-        }
-        .hero-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 40px;
-          align-items: center;
-        }
-        .dashboard-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 24px;
-        }
-        .three-col-grid, .pricing-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 24px;
-        }
-        .four-col-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 16px;
-        }
-        .footer-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 32px;
-        }
-        .nav-links {
-          display: none;
-        }
-        @media (min-width: 768px) {
-          .hero-grid { grid-template-columns: 1.1fr 0.9fr; gap: 48px; }
-          .dashboard-grid { grid-template-columns: 240px 1fr; }
-          .three-col-grid { grid-template-columns: 1fr 1fr 1fr; gap: 32px; }
-          .four-col-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
-          .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; }
-          .nav-links { display: flex; gap: 32px; align-items: center; }
-        }
-        @media (min-width: 992px) {
-          .pricing-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
-        }
-        @keyframes float {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-          100% { transform: translateY(0px); }
-        }
-        .floating-mockup { animation: float 6s ease-in-out infinite; }
-        .about-steps {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 32px;
-        }
-        @media (min-width: 768px) {
-          .about-steps { grid-template-columns: repeat(2, 1fr); gap: 32px; }
-        }
-        @media (min-width: 992px) {
-          .about-steps { grid-template-columns: repeat(3, 1fr); gap: 32px; }
-        }
-      `}</style>
-
-      <main style={{ fontFamily: "'Inter', 'Manrope', system-ui, sans-serif", background: '#F8FAFC', color: '#1E293B', minHeight: '100vh', overflowX: 'hidden' }}>
-
-        {/* Sticky Header */}
-        <header style={{ position: 'sticky', top: 0, background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(8px)', borderBottom: '1px solid #E5E7EB', zIndex: 100, padding: '6px 16px' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <a href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-              <img src="/ScanTippr_header.png" alt="ScanTippr Logo" style={{ width: '240px', height: 'auto', objectFit: 'contain' }} />
-            </a>
-            <nav className="nav-links">
-              <a href="#features" style={{ textDecoration: 'none', color: '#475569', fontSize: '15px', fontWeight: 700 }}>Features</a>
-              <a href="#how-it-works" style={{ textDecoration: 'none', color: '#475569', fontSize: '15px', fontWeight: 700 }}>How It Works</a>
-              <a href="#about" style={{ textDecoration: 'none', color: '#475569', fontSize: '15px', fontWeight: 700 }}>About</a>
-              <a href="#industries" style={{ textDecoration: 'none', color: '#475569', fontSize: '15px', fontWeight: 700 }}>Industries</a>
-              <a href="#branding" style={{ textDecoration: 'none', color: '#475569', fontSize: '15px', fontWeight: 700 }}>Branding</a>
-              <a href="#pricing" style={{ textDecoration: 'none', color: '#475569', fontSize: '15px', fontWeight: 700 }}>Pricing</a>
-            </nav>
-            <div>
-              <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ padding: '6px 16px', fontSize: '13px', borderRadius: '6px', background: '#F97316', color: '#fff', textDecoration: 'none', fontWeight: 600, boxShadow: '0 4px 12px rgba(249,115,22,0.3)' }}>
-                Book a Demo
-              </a>
-            </div>
+    <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)', overflow: 'hidden', marginBottom: '16px' }}>
+      <div style={{ padding: '18px 24px', borderBottom: '1px solid #F3F4F6', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#FFF7ED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+        </div>
+        <div>
+          <p style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#0A0A0A' }}>Initiate Company Payout</p>
+          <p style={{ margin: 0, fontSize: '12px', color: '#9CA3AF' }}>Manually trigger a payout run for a company</p>
+        </div>
+      </div>
+      <div style={{ padding: '20px 24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 1.5fr', gap: '16px', alignItems: 'start' }}>
+          <div>
+            <label style={labelStyle}>Company</label>
+            <select value={companyId} onChange={e => { setCompanyId(e.target.value); setState({ phase: 'idle' }); setConfirmed(false) }} style={selectStyle}>
+              <option value="">Select a company…</option>
+              {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
           </div>
-        </header>
-
-        {/* Hero Section */}
-        <section style={{ padding: '32px 0 20px 0', background: '#FFF' }}>
-          <div className="responsive-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '48px', alignItems: 'start' }}>
-            <div style={{ textAlign: 'left', marginTop: '20px' }}>
-              <h1 style={{ fontSize: '52px', fontWeight: 900, color: '#000000', lineHeight: 1.1, letterSpacing: '-0.02em', marginBottom: '16px' }}>
-                Cashless appreciation <br />
-                <span style={{ color: '#F97316' }}>for your employees.</span>
-              </h1>
-              <p style={{ fontSize: '18px', color: '#64748B', lineHeight: 1.6, marginBottom: '32px', maxWidth: '540px' }}>
-                Let customers thank your security guards, car guards, fuel attendants and frontline staff with a simple QR scan.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 mb-12 w-full sm:w-auto">
-                <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ background: '#111111', color: '#fff', textDecoration: 'none', padding: '14px 28px', borderRadius: '8px', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                  Book a Demo <span>→</span>
-                </a>
-                <a href="#how-it-works" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '14px 28px', background: '#fff', color: '#F97316', border: '2px solid #F97316', borderRadius: '8px', fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}>
-                  <span>▷</span> Watch Demo
-                </a>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '16px', paddingTop: '32px', borderTop: '1px solid #F1F5F9', maxWidth: '540px' }}>
-                {[
-                  { icon: '🛡️', title: 'Secure', sub: 'Payments' },
-                  { icon: '⚡', title: 'Instant', sub: 'Appreciation' },
-                  { icon: '📊', title: 'Real-time', sub: 'Reporting' },
-                  { icon: '📱', title: 'Easy QR', sub: 'Management' },
-                ].map(f => (
-                  <div key={f.title} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ fontSize: '20px' }}>{f.icon}</div>
-                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#000000', lineHeight: 1.2 }}>{f.title}<br /><span style={{ fontWeight: 500, color: '#64748B' }}>{f.sub}</span></div>
-                  </div>
-                ))}
-              </div>
-              <div style={{ marginTop: '40px', display: 'flex', alignItems: 'center', gap: '32px', maxWidth: '540px' }}>
-                <img src="/QR_Card.png" alt="ScanTippr Employee QR Card" style={{ width: '160px', height: 'auto', borderRadius: '12px', filter: 'drop-shadow(0 15px 30px rgba(15,41,66,0.08))' }} />
-                <div>
-                  <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#000000', margin: '0 0 8px 0' }}>Employee QR Card</h3>
-                  <p style={{ fontSize: '15px', color: '#64748B', lineHeight: 1.6, margin: 0 }}>Every employee receives a unique branded QR code.</p>
-                </div>
-              </div>
-            </div>
-            <div className="floating-mockup" style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
-              <div style={{ width: '100%', maxWidth: '350px', filter: 'drop-shadow(0 20px 35px rgba(15,41,66,0.15))' }}>
-                <img src="/Cell-Phone.png" alt="ScanTippr Mobile Payment Screen" style={{ width: '100%', height: 'auto', display: 'block' }} />
-              </div>
-            </div>
+          <div>
+            <label style={labelStyle}>Period</label>
+            <PeriodPicker
+              periodType={periodType} setPeriodType={setPeriodType}
+              periodStart={periodStart} setPeriodStart={setPeriodStart}
+              periodEnd={periodEnd} setPeriodEnd={setPeriodEnd}
+              onReset={() => { setState({ phase: 'idle' }); setConfirmed(false) }}
+              accentColor="#F97316"
+            />
           </div>
-        </section>
-
-        {/* Trusted By */}
-        <section style={{ padding: '40px 16px', background: '#FFF', borderTop: '1px solid #E5E7EB', borderBottom: '1px solid #E5E7EB' }}>
-          <div className="responsive-container" style={{ textAlign: 'center' }}>
-            <h2 style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#64748B', fontWeight: 600, marginBottom: '24px' }}>
-              Trusted by leading security and hospitality groups
-            </h2>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '24px 48px', flexWrap: 'wrap', opacity: 0.6 }}>
-              <span style={{ fontSize: '16px', fontWeight: '800', color: '#475569' }}>SENTRY SECURITY</span>
-              <span style={{ fontSize: '16px', fontWeight: '800', color: '#475569' }}>PROTECT SERVICES</span>
-              <span style={{ fontSize: '16px', fontWeight: '800', color: '#475569' }}>SAFEZONE CO.</span>
-              <span style={{ fontSize: '16px', fontWeight: '800', color: '#475569' }}>URBAN GUARDING</span>
-            </div>
+          <div>
+            <label style={labelStyle}>Fee Disposal</label>
+            <select value={feeDisposalMode} onChange={e => { setFeeDisposal(e.target.value); setState({ phase: 'idle' }); setConfirmed(false) }} style={selectStyle}>
+              <option value="payout_to_scantippr">Pay out to ScanTippr</option>
+              <option value="remain_in_float">Remain in float</option>
+              <option value="pending_decision">Pending decision</option>
+            </select>
           </div>
-        </section>
+        </div>
 
-        {/* How It Works */}
-        <section id="how-it-works" style={{ padding: '60px 16px', background: '#F8FAFC' }}>
-          <div className="responsive-container">
-            <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-              <h2 style={{ fontSize: '42px', fontWeight: 900, color: '#000000', letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '12px' }}>How ScanTippr Works</h2>
-              <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto' }}>Three simple steps to modernize appreciation without physical cash.</p>
-            </div>
-            <div className="three-col-grid">
-              <div style={{ background: '#FFF', padding: '32px 24px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 10px 25px -5px rgba(15,41,66,0.05)' }}>
-                <div style={{ width: '64px', height: '64px', background: 'rgba(249,115,22,0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px auto' }}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                    <path d="M4 8V6C4 4.89543 4.89543 4 6 4H8" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round"/>
-                    <path d="M20 8V6C20 4.89543 19.1046 4 18 4H16" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round"/>
-                    <path d="M4 16V18C4 19.1046 4.89543 20 6 20H8" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round"/>
-                    <path d="M20 16V18C20 19.1046 19.1046 20 18 20H16" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round"/>
-                    <rect x="8" y="8" width="8" height="8" rx="1.5" stroke="#000000" strokeWidth="2"/>
-                    <rect x="11" y="11" width="2" height="2" fill="#000000"/>
-                  </svg>
-                </div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#000000', marginBottom: '8px', textAlign: 'center' }}>1. Scan QR Code</h3>
-                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0, textAlign: 'center' }}>Customer scans the employee's unique QR code card using any native smartphone camera. No app download required.</p>
-              </div>
-              <div style={{ background: '#FFF', padding: '32px 24px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 10px 25px -5px rgba(15,41,66,0.05)' }}>
-                <div style={{ width: '64px', height: '64px', background: 'rgba(249,115,22,0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px auto' }}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                    <rect x="3" y="4" width="18" height="12" rx="2" stroke="#000000" strokeWidth="2"/>
-                    <circle cx="12" cy="10" r="3" stroke="#F97316" strokeWidth="2"/>
-                    <path d="M3 10H5M19 10H21" stroke="#000000" strokeWidth="2" strokeLinecap="round"/>
-                    <path d="M7 20H17" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round"/>
-                    <path d="M12 17V20" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round"/>
-                  </svg>
-                </div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#000000', marginBottom: '8px', textAlign: 'center' }}>2. Select Amount</h3>
-                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0, textAlign: 'center' }}>Select predefined appreciation options like R20, R50, or type in a completely custom amount instantly.</p>
-              </div>
-              <div style={{ background: '#FFF', padding: '32px 24px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 10px 25px -5px rgba(15,41,66,0.05)' }}>
-                <div style={{ width: '64px', height: '64px', background: 'rgba(249,115,22,0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px auto' }}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                    <rect x="3" y="6" width="18" height="12" rx="2" stroke="#000000" strokeWidth="2"/>
-                    <path d="M3 10H21" stroke="#000000" strokeWidth="2"/>
-                    <path d="M7 14H9" stroke="#F97316" strokeWidth="2" strokeLinecap="round"/>
-                    <path d="M14 13.5L16.5 16L21 11" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#000000', marginBottom: '8px', textAlign: 'center' }}>3. Pay Securely</h3>
-                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0, textAlign: 'center' }}>Complete payment in seconds using Ozow — South Africa's leading instant EFT provider. Supports all major banks, Capitec Pay, and ABSA Pay. No card details stored.</p>
-              </div>
-            </div>
+        {companyId && (
+          <div style={{ marginTop: '16px', padding: '14px 16px', background: '#FFFBF5', borderRadius: '8px', border: '1px solid #FED7AA', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', flex: 1 }}>
+              <input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} style={{ width: '15px', height: '15px', accentColor: '#F97316', cursor: 'pointer' }} />
+              <span style={{ fontSize: '13px', color: '#374151', lineHeight: 1.4 }}>
+                I confirm: run <strong>{periodType}</strong> payout for <strong>{selectedCompany?.name}</strong> — <strong>{formatPeriodLabel(periodType, periodStart, periodEnd)}</strong> (<strong>{feeDisposalMode === 'payout_to_scantippr' ? 'fee paid to ScanTippr' : feeDisposalMode === 'remain_in_float' ? 'fee stays in float' : 'fee decision pending'}</strong>). This cannot be undone.
+              </span>
+            </label>
+            <button onClick={handleInitiate} disabled={!canSubmit} style={{ padding: '9px 20px', borderRadius: '8px', border: 'none', background: canSubmit ? '#F97316' : '#E5E7EB', color: canSubmit ? '#fff' : '#9CA3AF', fontSize: '13px', fontWeight: 600, cursor: canSubmit ? 'pointer' : 'not-allowed', whiteSpace: 'nowrap', minWidth: '140px' }}>
+              {state.phase === 'loading' ? 'Initiating…' : 'Initiate Payout'}
+            </button>
           </div>
-          <div style={{ maxWidth: '900px', margin: '56px auto 0 auto', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 20px 60px -10px rgba(0,0,0,0.15)', position: 'relative' }}>
-            <video controls autoPlay muted loop playsInline style={{ width: '100%', height: 'auto', display: 'block' }}>
-              <source src="/Scan_QR.mp4" type="video/mp4"/>
-              Your browser does not support the video tag.
-            </video>
+        )}
+
+        {state.phase === 'error' && (
+          <div style={{ marginTop: '12px', padding: '12px 16px', borderRadius: '8px', background: '#FEF2F2', border: '1px solid #FECACA', fontSize: '13px', color: '#B91C1C', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            {state.message}
           </div>
-        </section>
+        )}
 
-        {/* About ScanTippr */}
-        <section id="about" style={{ padding: '80px 16px', background: '#FFFFFF' }}>
-          <div className="responsive-container">
-            <div style={{ textAlign: 'center', marginBottom: '56px' }}>
-              <span style={{ fontSize: '12px', color: '#F97316', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>About ScanTippr</span>
-              <h2 style={{ fontSize: '42px', fontWeight: 900, color: '#000000', letterSpacing: '-0.02em', lineHeight: 1.1, marginTop: '8px', marginBottom: '16px' }}>Everything you need to know</h2>
-              <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '620px', margin: '0 auto', lineHeight: 1.7 }}>
-                ScanTippr is a South African cashless appreciation platform that connects customers with the frontline workers who serve them — securely, instantly, and without cash.
-              </p>
+        {state.phase === 'success' && (
+          <div style={{ marginTop: '12px', padding: '14px 16px', borderRadius: '8px', background: '#F0FDF4', border: '1px solid #BBF7D0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#15803D" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span style={{ fontSize: '13px', fontWeight: 700, color: '#15803D' }}>Payout initiated — {state.summary.companyName} · {formatPeriodLabel(state.summary.periodType, state.summary.periodStart, state.summary.periodEnd)}</span>
             </div>
-
-            <div className="about-steps">
-              {[
-                {
-                  step: '01',
-                  title: 'Register Your Business',
-                  body: 'Sign up as a company on ScanTippr. We add your employees to the system — name, job title, and an optional photo. Each employee gets their own unique QR code.',
-                  icon: '🏢',
-                },
-                {
-                  step: '02',
-                  title: 'Deploy QR Cards',
-                  body: 'We print and provide branded QR cards for each employee. Cards are displayed at the employee\'s workstation, worn on a lanyard, or placed on a table — wherever your customers interact with them.',
-                  icon: '🪪',
-                },
-                {
-                  step: '03',
-                  title: 'Customers Scan & Pay',
-                  body: 'A customer scans the QR code with their phone camera — no app needed. They see the employee\'s name and photo, choose an amount, and pay via Ozow instant EFT. The whole process takes under 30 seconds.',
-                  icon: '📱',
-                },
-                {
-                  step: '04',
-                  title: 'Tips Accumulate',
-                  body: 'Every tip is recorded in real time on your company dashboard. You can see exactly how much each employee has received, view transaction history, and download reports at any time.',
-                  icon: '📊',
-                },
-                {
-                  step: '05',
-                  title: 'ScanTippr Deducts a Fee',
-                  body: 'ScanTippr charges R150 per employee per month — or the total tips received if less than R150. This fee is automatically deducted at payout time. No invoices, no upfront costs.',
-                  icon: '💳',
-                },
-                {
-                  step: '06',
-                  title: 'Employees Get Paid',
-                  body: 'At the end of each week or month, ScanTippr initiates a payout via Ozow. The net amount — tips minus the fee — is paid directly into your company\'s bank account or each employee\'s own account, depending on your setup.',
-                  icon: '🏦',
-                },
-              ].map(item => (
-                <div key={item.step} style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
-                  <div style={{ flexShrink: 0, width: '52px', height: '52px', background: '#FFF7ED', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>
-                    {item.icon}
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#F97316', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Step {item.step}</div>
-                    <h3 style={{ fontSize: '17px', fontWeight: 700, color: '#000000', margin: '0 0 8px 0' }}>{item.title}</h3>
-                    <p style={{ fontSize: '14px', color: '#64748B', lineHeight: 1.7, margin: 0 }}>{item.body}</p>
-                  </div>
+            <div style={{ display: 'flex', gap: '24px' }}>
+              {[{ label: 'Employees', value: state.summary.employeeCount }, { label: 'Gross', value: fmtCurrency(state.summary.totalGross ?? 0) }, { label: 'Fee', value: fmtCurrency(state.summary.totalFee ?? 0) }, { label: 'Net', value: fmtCurrency(state.summary.totalNet ?? 0) }].map(item => (
+                <div key={item.label}>
+                  <p style={{ margin: '0 0 2px', fontSize: '10.5px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{item.label}</p>
+                  <p style={{ margin: 0, fontSize: '13.5px', fontWeight: 700, color: '#15803D', fontVariantNumeric: 'tabular-nums' }}>{item.value}</p>
                 </div>
               ))}
             </div>
-
-            {/* Two models */}
-            <div style={{ marginTop: '64px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
-              <div style={{ background: '#F8FAFC', borderRadius: '16px', border: '1px solid #E5E7EB', padding: '32px 28px' }}>
-                <div style={{ fontSize: '32px', marginBottom: '16px' }}>🏢</div>
-                <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#000000', margin: '0 0 10px 0' }}>Company Account</h3>
-                <p style={{ fontSize: '14px', color: '#64748B', lineHeight: 1.7, margin: '0 0 16px 0' }}>For businesses with multiple staff. One company registration covers all employees. Payouts go to the company bank account — the business distributes to staff.</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px', color: '#475569' }}>
-                  <span>✓ Restaurants, bars, hotels</span>
-                  <span>✓ Security companies</span>
-                  <span>✓ Car washes, fuel stations</span>
-                  <span>✓ Retail stores</span>
-                </div>
-              </div>
-              <div style={{ background: '#FFF7ED', borderRadius: '16px', border: '1px solid #FED7AA', padding: '32px 28px' }}>
-                <div style={{ fontSize: '32px', marginBottom: '16px' }}>👤</div>
-                <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#000000', margin: '0 0 10px 0' }}>Independent Account</h3>
-                <p style={{ fontSize: '14px', color: '#64748B', lineHeight: 1.7, margin: '0 0 16px 0' }}>For individual workers with no employer. Each worker has their own account and QR code. Tips are paid directly into their own bank account.</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px', color: '#475569' }}>
-                  <span>✓ Freelance car guards</span>
-                  <span>✓ Independent waiters</span>
-                  <span>✓ Casual workers</span>
-                  <span>✓ Any individual frontline worker</span>
-                </div>
-              </div>
-            </div>
+            <p style={{ margin: '10px 0 0', fontSize: '11.5px', color: '#6B7280' }}>Refresh the page to see the new period in the table below.</p>
           </div>
-        </section>
+        )}
+      </div>
+    </div>
+  )
+}
 
-        {/* Management Suite */}
-        <section id="features" style={{ padding: '80px 0', background: '#F8FAFC' }}>
-          <div className="responsive-container">
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <span style={{ fontSize: '12px', color: '#F97316', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Management Suite</span>
-              <h2 style={{ fontSize: '42px', fontWeight: 900, color: '#000000', letterSpacing: '-0.02em', lineHeight: 1.1, marginTop: '8px', marginBottom: '12px' }}>Powerful Corporate Dashboard</h2>
-              <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '600px', margin: '0 auto' }}>Complete command over your branch locations, personnel profiles, transaction logs, and performance metrics.</p>
-            </div>
-            <div style={{ background: '#FFF', borderRadius: '24px', boxShadow: '0 20px 60px -20px rgba(15,41,66,0.08)', border: '1px solid #E2E8F0', overflow: 'hidden', padding: '12px' }}>
-              <img src="/Dashboard.png" alt="ScanTippr Corporate Dashboard Overview" style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '16px' }} />
-            </div>
-          </div>
-        </section>
+// ── Initiate Individual Payout Panel ─────────────────────────
+function InitiateIndividualPayoutPanel({ independents }: { independents: any[] }) {
+  const prevMonth = getPreviousMonthRange()
+  const [guardId, setGuardId]         = useState('')
+  const [periodType, setPeriodType]   = useState('monthly')
+  const [periodStart, setPeriodStart] = useState(prevMonth.start)
+  const [periodEnd, setPeriodEnd]     = useState(prevMonth.end)
+  const [feeDisposalMode, setFeeDisposal] = useState('payout_to_scantippr')
+  const [state, setState]             = useState<InitiateState>({ phase: 'idle' })
+  const [confirmed, setConfirmed]     = useState(false)
 
-        {/* Industries */}
-        <section id="industries" style={{ padding: '60px 16px', background: '#F8FAFC' }}>
-          <div className="responsive-container">
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <h2 style={{ fontSize: '42px', fontWeight: 900, color: '#000000', letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '12px' }}>Perfect for Every Frontline Team</h2>
-              <p style={{ fontSize: '16px', color: '#64748B' }}>Providing cashless convenience across different corporate sectors.</p>
+  const canSubmit = guardId && confirmed && state.phase !== 'loading'
+  const selectedGuard = independents.find(g => g.id === guardId)
+
+  async function handleInitiate() {
+    if (!canSubmit) return
+    setState({ phase: 'loading' })
+    try {
+      const res = await fetch('/api/admin/payouts/initiate-individual', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guardId, periodType, periodStart, periodEnd, feeDisposalMode }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setState({ phase: 'error', message: data.error ?? 'Unknown error' }); setConfirmed(false) }
+      else { setState({ phase: 'success', summary: data.summary }); setConfirmed(false); setGuardId('') }
+    } catch { setState({ phase: 'error', message: 'Network error — please try again' }); setConfirmed(false) }
+  }
+
+  return (
+    <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)', overflow: 'hidden', marginBottom: '24px' }}>
+      <div style={{ padding: '18px 24px', borderBottom: '1px solid #F3F4F6', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#F5F3FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+        </div>
+        <div>
+          <p style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#0A0A0A' }}>Initiate Independent Payout</p>
+          <p style={{ margin: 0, fontSize: '12px', color: '#9CA3AF' }}>Manually trigger a payout run for an independent worker</p>
+        </div>
+      </div>
+      <div style={{ padding: '20px 24px' }}>
+        {independents.length === 0 ? (
+          <p style={{ margin: 0, fontSize: '13px', color: '#9CA3AF' }}>No active independent workers found.</p>
+        ) : (
+          <>
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 1.5fr', gap: '16px', alignItems: 'start' }}>
+              <div>
+                <label style={labelStyle}>Independent Worker</label>
+                <select value={guardId} onChange={e => { setGuardId(e.target.value); setState({ phase: 'idle' }); setConfirmed(false) }} style={selectStyle}>
+                  <option value="">Select a worker…</option>
+                  {independents.map(g => <option key={g.id} value={g.id}>{g.first_name} {g.last_name}{g.job_title ? ` — ${g.job_title}` : ''}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={labelStyle}>Period</label>
+                <PeriodPicker
+                  periodType={periodType} setPeriodType={setPeriodType}
+                  periodStart={periodStart} setPeriodStart={setPeriodStart}
+                  periodEnd={periodEnd} setPeriodEnd={setPeriodEnd}
+                  onReset={() => { setState({ phase: 'idle' }); setConfirmed(false) }}
+                  accentColor="#6D28D9"
+                />
+              </div>
+              <div>
+                <label style={labelStyle}>Fee Disposal</label>
+                <select value={feeDisposalMode} onChange={e => { setFeeDisposal(e.target.value); setState({ phase: 'idle' }); setConfirmed(false) }} style={selectStyle}>
+                  <option value="payout_to_scantippr">Pay out to ScanTippr</option>
+                  <option value="remain_in_float">Remain in float</option>
+                  <option value="pending_decision">Pending decision</option>
+                </select>
+              </div>
             </div>
-            <div className="four-col-grid">
-              {[
-                { name: 'Security Companies', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> },
-                { name: 'Car Guards', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><rect x="1" y="3" width="22" height="13" rx="2"/><path d="M7 21h10M12 16v5"/></svg> },
-                { name: 'Fuel Stations', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><path d="M3 22V2h12v20M15 6h4v4h-4M19 10l2 3v5h-4"/></svg> },
-                { name: 'Restaurants & Bars', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><path d="M12 2v20M17 5H7a2 2 0 00-2 2v3a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2z"/></svg> },
-                { name: 'Hotels', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 7h2M9 11h2M13 7h2M13 11h2"/></svg> },
-                { name: 'Cleaning Services', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><path d="M12 22a7 7 0 100-14 7 7 0 000 14zM12 2v6M4.93 4.93l4.24 4.24M19.07 4.93l-4.24 4.24"/></svg> },
-                { name: 'Retail Stores', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0"/></svg> },
-                { name: 'Corporate Offices', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M6 21h12M12 17v4"/></svg> },
-              ].map(industry => (
-                <div key={industry.name} style={{ background: '#FFF', padding: '24px 16px', borderRadius: '12px', border: '1px solid #E5E7EB', textAlign: 'center', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.01)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', background: '#FFF7ED', borderRadius: '50%' }}>{industry.icon}</div>
-                  <span style={{ fontSize: '15px', fontWeight: 700, color: '#000000' }}>{industry.name}</span>
+
+            {guardId && (
+              <div style={{ marginTop: '16px', padding: '14px 16px', background: '#FAFAFF', borderRadius: '8px', border: '1px solid #DDD6FE', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', flex: 1 }}>
+                  <input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} style={{ width: '15px', height: '15px', accentColor: '#6D28D9', cursor: 'pointer' }} />
+                  <span style={{ fontSize: '13px', color: '#374151', lineHeight: 1.4 }}>
+                    I confirm: run <strong>{periodType}</strong> payout for <strong>{selectedGuard?.first_name} {selectedGuard?.last_name}</strong> — <strong>{formatPeriodLabel(periodType, periodStart, periodEnd)}</strong> (<strong>{feeDisposalMode === 'payout_to_scantippr' ? 'fee paid to ScanTippr' : feeDisposalMode === 'remain_in_float' ? 'fee stays in float' : 'fee decision pending'}</strong>). This cannot be undone.
+                  </span>
+                </label>
+                <button onClick={handleInitiate} disabled={!canSubmit} style={{ padding: '9px 20px', borderRadius: '8px', border: 'none', background: canSubmit ? '#6D28D9' : '#E5E7EB', color: canSubmit ? '#fff' : '#9CA3AF', fontSize: '13px', fontWeight: 600, cursor: canSubmit ? 'pointer' : 'not-allowed', whiteSpace: 'nowrap', minWidth: '140px' }}>
+                  {state.phase === 'loading' ? 'Initiating…' : 'Initiate Payout'}
+                </button>
+              </div>
+            )}
+
+            {state.phase === 'error' && (
+              <div style={{ marginTop: '12px', padding: '12px 16px', borderRadius: '8px', background: '#FEF2F2', border: '1px solid #FECACA', fontSize: '13px', color: '#B91C1C', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                {state.message}
+              </div>
+            )}
+
+            {state.phase === 'success' && (
+              <div style={{ marginTop: '12px', padding: '14px 16px', borderRadius: '8px', background: '#F0FDF4', border: '1px solid #BBF7D0' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#15803D" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span style={{ fontSize: '13px', fontWeight: 700, color: '#15803D' }}>Payout initiated — {state.summary.guardName} · {formatPeriodLabel(state.summary.periodType, state.summary.periodStart, state.summary.periodEnd)}</span>
                 </div>
+                <div style={{ display: 'flex', gap: '24px' }}>
+                  {[{ label: 'Gross', value: fmtCurrency(state.summary.totalGross ?? 0) }, { label: 'Fee', value: fmtCurrency(state.summary.totalFee ?? 0) }, { label: 'Net', value: fmtCurrency(state.summary.totalNet ?? 0) }].map(item => (
+                    <div key={item.label}>
+                      <p style={{ margin: '0 0 2px', fontSize: '10.5px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{item.label}</p>
+                      <p style={{ margin: 0, fontSize: '13.5px', fontWeight: 700, color: '#15803D', fontVariantNumeric: 'tabular-nums' }}>{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+                <p style={{ margin: '10px 0 0', fontSize: '11.5px', color: '#6B7280' }}>Refresh the page to see the new period in the table below.</p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ── Main client component ─────────────────────────────────────
+export default function PayoutsAdminClient({
+  periods, companies, independents, availableYears,
+}: {
+  periods: any[]
+  companies: any[]
+  independents: any[]
+  availableYears: number[]
+}) {
+  const [recipientFilter, setRecipientFilter] = useState('all')
+  const [typeFilter, setTypeFilter]           = useState('all')
+  const [periodTypeFilter, setPeriodTypeFilter] = useState('all')
+  const [statusFilter, setStatusFilter]       = useState('all')
+  const [monthFilter, setMonthFilter]         = useState('all')
+  const [yearFilter, setYearFilter]           = useState('all')
+  const [search, setSearch]                   = useState('')
+  const [expanded, setExpanded]               = useState<string | null>(null)
+
+  const filtered = useMemo(() => periods.filter(p => {
+    const inRecipient   = recipientFilter === 'all' || p.recipient_id === recipientFilter
+    const inType        = typeFilter === 'all' || p.recipient_type === typeFilter
+    const inPeriodType  = periodTypeFilter === 'all' || p.period_type === periodTypeFilter
+    const inStatus      = statusFilter === 'all' || p.net_payout_status === statusFilter
+    const inMonth       = monthFilter === 'all' || String(p.period_month) === monthFilter
+    const inYear        = yearFilter === 'all' || String(p.period_year) === yearFilter
+    const inSearch      = !search || p.recipientName.toLowerCase().includes(search.toLowerCase()) || p.periodLabel.toLowerCase().includes(search.toLowerCase())
+    return inRecipient && inType && inPeriodType && inStatus && inMonth && inYear && inSearch
+  }), [periods, recipientFilter, typeFilter, periodTypeFilter, statusFilter, monthFilter, yearFilter, search])
+
+  const totalGross = filtered.reduce((s, p) => s + p.gross, 0)
+  const totalFee   = filtered.reduce((s, p) => s + p.fee, 0)
+  const totalNet   = filtered.reduce((s, p) => s + p.net, 0)
+
+  const filterSelectStyle: React.CSSProperties = {
+    padding: '8px 12px', border: '1px solid #E5E7EB',
+    borderRadius: '8px', fontSize: '13px', background: '#fff', outline: 'none',
+  }
+
+  return (
+    <div style={{ padding: '36px 40px' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '28px' }}>
+        <div>
+          <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 600, color: '#F97316', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Payments</p>
+          <h1 style={{ margin: 0, fontSize: '26px', fontWeight: 700, color: '#0A0A0A', letterSpacing: '-0.4px' }}>Payouts</h1>
+        </div>
+      </div>
+
+      <InitiatePayoutPanel companies={companies} />
+      <InitiateIndividualPayoutPanel independents={independents} />
+
+      {/* Stats */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
+        {[
+          { label: 'Payout Periods', value: filtered.length,         sub: 'matching filters',  color: '#0A0A0A' },
+          { label: 'Total Gross',    value: fmtCurrency(totalGross), sub: 'before fees',        color: '#15803D' },
+          { label: 'Total Fees',     value: fmtCurrency(totalFee),   sub: 'ScanTippr revenue',  color: '#B45309' },
+          { label: 'Total Net',      value: fmtCurrency(totalNet),   sub: 'paid to recipients', color: '#1D4ED8' },
+        ].map(card => (
+          <div key={card.label} style={{ background: '#fff', borderRadius: '10px', padding: '18px 20px', border: '1px solid #E5E7EB', boxShadow: '0 1px 2px rgba(0,0,0,0.03)', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: '#F97316' }} />
+            <p style={{ margin: '0 0 8px', fontSize: '11px', fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{card.label}</p>
+            <p style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 700, color: card.color, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.3px' }}>{card.value}</p>
+            <p style={{ margin: 0, fontSize: '12px', color: '#9CA3AF' }}>{card.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Table */}
+      <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)', overflow: 'hidden' }}>
+        <div style={{ padding: '16px 24px', borderBottom: '1px solid #F3F4F6', display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ position: 'relative' }}>
+            <svg style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search…" style={{ ...filterSelectStyle, paddingLeft: '32px', width: '180px' }} />
+          </div>
+          <select value={periodTypeFilter} onChange={e => setPeriodTypeFilter(e.target.value)} style={filterSelectStyle}>
+            <option value="all">All Periods</option>
+            <option value="monthly">Monthly</option>
+            <option value="weekly">Weekly</option>
+          </select>
+          <select value={monthFilter} onChange={e => setMonthFilter(e.target.value)} style={filterSelectStyle}>
+            <option value="all">All Months</option>
+            {MONTH_NAMES.map((m, i) => <option key={i + 1} value={String(i + 1)}>{m}</option>)}
+          </select>
+          <select value={yearFilter} onChange={e => setYearFilter(e.target.value)} style={filterSelectStyle}>
+            <option value="all">All Years</option>
+            {availableYears.map(y => <option key={y} value={String(y)}>{y}</option>)}
+          </select>
+          <select value={typeFilter} onChange={e => { setTypeFilter(e.target.value); setRecipientFilter('all') }} style={filterSelectStyle}>
+            <option value="all">All Types</option>
+            <option value="company">Companies</option>
+            <option value="guard">Independents</option>
+          </select>
+          <select value={recipientFilter} onChange={e => setRecipientFilter(e.target.value)} style={filterSelectStyle}>
+            <option value="all">All Recipients</option>
+            {typeFilter !== 'guard' && companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            {typeFilter !== 'company' && independents.map(g => <option key={g.id} value={g.id}>{g.first_name} {g.last_name}</option>)}
+          </select>
+          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={filterSelectStyle}>
+            <option value="all">All Statuses</option>
+            <option value="paid">Paid</option>
+            <option value="submitted">Submitted</option>
+            <option value="pending">Pending</option>
+            <option value="failed">Failed</option>
+            <option value="not_due">Not Due</option>
+          </select>
+          <p style={{ margin: 0, fontSize: '12px', color: '#9CA3AF', marginLeft: 'auto' }}>{filtered.length} {filtered.length === 1 ? 'period' : 'periods'}</p>
+        </div>
+
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ background: '#FAFAFA' }}>
+              {['Period', 'Recipient', 'Type', 'Frequency', 'Employees', 'Gross', 'Fee', 'Net Payout', 'Status', ''].map(h => (
+                <th key={h} style={{ padding: '10px 20px', textAlign: 'left', fontSize: '11px', fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.07em', borderBottom: '1px solid #F3F4F6' }}>{h}</th>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Branding */}
-        <section id="branding" style={{ padding: '80px 16px', background: '#FFFFFF' }}>
-          <div className="responsive-container">
-            <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '16px' }}>
-                <span style={{ fontSize: '20px' }}>🎨</span>
-                <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', color: '#F97316', letterSpacing: '0.12em' }}>Fully Customisable</span>
-              </div>
-              <h2 style={{ fontSize: '42px', fontWeight: 900, color: '#000000', letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '16px' }}>
-                Your Brand. <span style={{ color: '#F97316' }}>Your Identity.</span>
-              </h2>
-              <div style={{ width: '48px', height: '3px', background: '#F97316', margin: '0 auto 20px auto', borderRadius: '2px' }} />
-              <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '560px', margin: '0 auto', lineHeight: 1.6 }}>Every enterprise can design high-end branded physical cards to match corporate design systems.</p>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', maxWidth: '680px', margin: '0 auto 56px auto' }}>
-              <img src="/Fully_custom1.png" alt="Branded QR Cards" style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '16px' }} />
-              <img src="/Fully_custom2.png" alt="Branded QR Cards" style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '16px' }} />
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '32px', maxWidth: '1100px', margin: '0 auto' }}>
-              {[
-                { icon: '🎨', title: 'Brand Freedom', body: 'Use your brand colours, fonts, and logo.' },
-                { icon: '🖨️', title: 'High Quality Print', body: 'Premium cards that represent your brand.' },
-                { icon: '📱', title: 'Smart & Scan Ready', body: 'Optimised QR codes for fast, reliable scans.' },
-                { icon: '🏆', title: 'Professional Impact', body: 'Elevate brand presence with every interaction.' },
-              ].map(f => (
-                <div key={f.title} style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                  <div style={{ fontSize: '28px', flexShrink: 0 }}>{f.icon}</div>
-                  <div>
-                    <h4 style={{ fontSize: '15px', fontWeight: 800, color: '#000000', margin: '0 0 6px 0', textTransform: 'uppercase', letterSpacing: '0.03em' }}>{f.title}</h4>
-                    <p style={{ fontSize: '14px', color: '#64748B', margin: 0, lineHeight: 1.6 }}>{f.body}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Pricing */}
-        <section id="pricing" style={{ padding: '60px 16px', background: '#F8FAFC', borderTop: '1px solid #E5E7EB' }}>
-          <div className="responsive-container">
-            <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-              <h2 style={{ fontSize: '42px', fontWeight: 900, color: '#000000', letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '12px' }}>Simple, Transparent Pricing</h2>
-              <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '580px', margin: '0 auto 8px auto' }}>Two straightforward fees — no surprises, no invoices for the tip fee.</p>
-            </div>
-
-            {/* Fee explanation banner */}
-            <div style={{ maxWidth: '860px', margin: '0 auto 40px auto', background: '#FFF7ED', border: '1px solid #FED7AA', borderRadius: '14px', padding: '20px 28px', display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-              <div style={{ fontSize: '24px', flexShrink: 0 }}>💡</div>
-              <div>
-                <p style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700, color: '#000000' }}>How the tip fee works</p>
-                <p style={{ margin: 0, fontSize: '13px', color: '#64748B', lineHeight: 1.7 }}>
-                  ScanTippr charges <strong>R150 per employee per month</strong> — or the total tips received if less than R150. This fee is automatically deducted from tips at payout time. You never receive an invoice for it and pay nothing upfront. The Platform & Support Fee below is billed separately.
-                </p>
-              </div>
-            </div>
-
-            <div className="pricing-grid">
-              {/* Starter */}
-              <div style={{ background: '#FFF', padding: '28px 24px', borderRadius: '16px', border: '1px solid #E5E7EB', display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#64748B', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Starter</h3>
-                <div style={{ fontSize: '13px', color: '#94A3B8', marginBottom: '16px' }}>1 – 9 employees</div>
-                <div style={{ fontSize: '36px', fontWeight: 900, color: '#000000', marginBottom: '4px' }}>R149<span style={{ fontSize: '14px', color: '#64748B', fontWeight: 500 }}>/month</span></div>
-                <div style={{ fontSize: '12px', color: '#94A3B8', marginBottom: '24px' }}>Platform & Support Fee</div>
-                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 28px 0', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', color: '#475569', flex: 1 }}>
-                  <li>✓ Up to 9 employees</li>
-                  <li>✓ Branded QR cards</li>
-                  <li>✓ Company dashboard</li>
-                  <li>✓ Weekly & monthly payouts</li>
-                  <li>✓ Transaction reports</li>
-                </ul>
-                <a href="mailto:info@scantippr.co.za?subject=Starter Plan" style={{ display: 'block', textDecoration: 'none', textAlign: 'center', padding: '11px 0', border: '2px solid #000000', color: '#000000', borderRadius: '8px', fontWeight: 600, fontSize: '13px' }}>Get Started</a>
-              </div>
-
-              {/* Growth */}
-              <div style={{ background: '#FFF', padding: '28px 24px', borderRadius: '16px', border: '1px solid #E5E7EB', display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#64748B', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Growth</h3>
-                <div style={{ fontSize: '13px', color: '#94A3B8', marginBottom: '16px' }}>10 – 49 employees</div>
-                <div style={{ fontSize: '36px', fontWeight: 900, color: '#000000', marginBottom: '4px' }}>R399<span style={{ fontSize: '14px', color: '#64748B', fontWeight: 500 }}>/month</span></div>
-                <div style={{ fontSize: '12px', color: '#94A3B8', marginBottom: '24px' }}>Platform & Support Fee</div>
-                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 28px 0', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', color: '#475569', flex: 1 }}>
-                  <li>✓ Up to 49 employees</li>
-                  <li>✓ Branded QR cards</li>
-                  <li>✓ Company dashboard</li>
-                  <li>✓ Weekly & monthly payouts</li>
-                  <li>✓ Transaction reports</li>
-                  <li>✓ Priority support</li>
-                </ul>
-                <a href="mailto:info@scantippr.co.za?subject=Growth Plan" style={{ display: 'block', textDecoration: 'none', textAlign: 'center', padding: '11px 0', border: '2px solid #000000', color: '#000000', borderRadius: '8px', fontWeight: 600, fontSize: '13px' }}>Get Started</a>
-              </div>
-
-              {/* Professional — featured */}
-              <div style={{ background: '#111111', color: '#FFF', padding: '28px 24px', borderRadius: '20px', border: '2px solid #F97316', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-                <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: '#F97316', color: '#FFF', padding: '3px 14px', borderRadius: '20px', fontSize: '11px', fontWeight: 700, whiteSpace: 'nowrap' }}>MOST POPULAR</div>
-                <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#94A3B8', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Professional</h3>
-                <div style={{ fontSize: '13px', color: '#64748B', marginBottom: '16px' }}>50 – 100 employees</div>
-                <div style={{ fontSize: '36px', fontWeight: 900, color: '#FFF', marginBottom: '4px' }}>R599<span style={{ fontSize: '14px', color: '#94A3B8', fontWeight: 500 }}>/month</span></div>
-                <div style={{ fontSize: '12px', color: '#64748B', marginBottom: '24px' }}>Platform & Support Fee</div>
-                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 28px 0', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', color: '#94A3B8', flex: 1 }}>
-                  <li style={{ color: '#FFF' }}>✓ Up to 100 employees</li>
-                  <li style={{ color: '#FFF' }}>✓ Custom branded QR cards</li>
-                  <li style={{ color: '#FFF' }}>✓ Full dashboard suite</li>
-                  <li style={{ color: '#FFF' }}>✓ Weekly & monthly payouts</li>
-                  <li style={{ color: '#FFF' }}>✓ Advanced reporting</li>
-                  <li style={{ color: '#FFF' }}>✓ Dedicated support</li>
-                </ul>
-                <a href="mailto:info@scantippr.co.za?subject=Professional Plan" style={{ display: 'block', textDecoration: 'none', textAlign: 'center', padding: '12px 0', background: '#F97316', color: '#FFF', borderRadius: '8px', fontWeight: 700, fontSize: '13px' }}>Get Started</a>
-              </div>
-
-              {/* Enterprise */}
-              <div style={{ background: '#FFF', padding: '28px 24px', borderRadius: '16px', border: '1px solid #E5E7EB', display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#64748B', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Enterprise</h3>
-                <div style={{ fontSize: '13px', color: '#94A3B8', marginBottom: '16px' }}>101+ employees</div>
-                <div style={{ fontSize: '36px', fontWeight: 900, color: '#000000', marginBottom: '4px' }}>Custom</div>
-                <div style={{ fontSize: '12px', color: '#94A3B8', marginBottom: '24px' }}>Tailored pricing</div>
-                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 28px 0', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', color: '#475569', flex: 1 }}>
-                  <li>✓ Unlimited employees</li>
-                  <li>✓ Multi-branch management</li>
-                  <li>✓ Custom QR card branding</li>
-                  <li>✓ Weekly & monthly payouts</li>
-                  <li>✓ Custom reporting</li>
-                  <li>✓ Dedicated account manager</li>
-                </ul>
-                <a href="mailto:info@scantippr.co.za?subject=Enterprise Enquiry" style={{ display: 'block', textDecoration: 'none', textAlign: 'center', padding: '11px 0', border: '2px solid #F97316', color: '#F97316', borderRadius: '8px', fontWeight: 600, fontSize: '13px' }}>Contact Us</a>
-              </div>
-            </div>
-
-            {/* Tip fee reminder */}
-            <p style={{ textAlign: 'center', fontSize: '13px', color: '#94A3B8', marginTop: '24px' }}>
-              All plans include the R150/employee/month tip fee, automatically deducted from tips at payout. No separate invoice.
-            </p>
-          </div>
-        </section>
-
-        {/* FAQs */}
-        <section style={{ padding: '60px 16px', background: '#FFFFFF' }}>
-          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <h2 style={{ fontSize: '42px', fontWeight: 900, color: '#000000', letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '12px' }}>Frequently Asked Questions</h2>
-              <p style={{ fontSize: '16px', color: '#64748B' }}>Everything you need to know about setting up and running ScanTippr.</p>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {[
-                { q: "How does ScanTippr work?", a: "Every employee is assigned a unique, branded QR card. When a customer scans it with their phone camera, it launches a secure tipping page instantly — no app required. The customer selects an amount and pays via Ozow instant EFT. The tip is recorded in real time and paid out to the company or employee at the end of the payout period." },
-                { q: "What payment methods are supported?", a: "All payments are processed by Ozow — South Africa's leading instant EFT provider. Customers can pay via instant EFT from any major South African bank, Capitec Pay, and ABSA Pay. No card details are stored by ScanTippr." },
-                { q: "How much does ScanTippr charge?", a: "There are two fees. First, a tip fee of R150 per employee per month (or the total tips if less than R150) — this is automatically deducted from tips at payout, no invoice. Second, a Platform & Support Fee based on your team size: R149/month (1–9 employees), R399/month (10–49), R599/month (50–100), or custom pricing for 101+. The platform fee is invoiced monthly." },
-                { q: "How quickly do employees receive payouts?", a: "Payouts are processed weekly or monthly — you choose. ScanTippr initiates the payout via Ozow and the money is in the recipient's bank account within 1–2 business days depending on the bank." },
-                { q: "Can we customise our QR cards?", a: "Yes, fully. Your company dashboard gives you control over card branding, colours, and layout. For professional and enterprise clients we can produce fully custom-designed cards matching your corporate identity." },
-                { q: "Do customers need an app?", a: "No. Customers simply point their phone camera at the QR code — it opens a web page in their browser. No app download, no registration required." },
-              ].map((faq, idx) => (
-                <div key={idx} style={{ border: '1px solid #E5E7EB', borderRadius: '10px', padding: '16px', cursor: 'pointer' }} onClick={() => toggleFaq(idx)}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#000000', margin: 0 }}>{faq.q}</h4>
-                    <span style={{ fontSize: '16px', color: '#F97316', fontWeight: 'bold', flexShrink: 0, marginLeft: '12px' }}>{activeFaq === idx ? '−' : '+'}</span>
-                  </div>
-                  {activeFaq === idx && <p style={{ marginTop: '10px', fontSize: '13px', color: '#475569', lineHeight: '1.6', margin: '10px 0 0 0' }}>{faq.a}</p>}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section style={{ padding: '60px 16px 0 16px', background: '#111111', color: '#FFF', textAlign: 'center' }}>
-          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: '42px', fontWeight: 900, marginBottom: '16px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>Ready to modernize employee appreciation?</h2>
-            <p style={{ fontSize: '16px', color: '#94A3B8', marginBottom: '32px' }}>Join leading enterprises making employee appreciation secure, structured, and modern.</p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
-              <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ padding: '14px 28px', background: '#F97316', color: '#FFF', borderRadius: '10px', fontWeight: 700, textDecoration: 'none', boxShadow: '0 4px 14px rgba(249,115,22,0.4)' }}>Book a Demo</a>
-              <a href="mailto:info@scantippr.co.za" style={{ padding: '14px 28px', border: '2px solid rgba(255,255,255,0.2)', color: '#FFF', borderRadius: '10px', fontWeight: 600, textDecoration: 'none' }}>Contact Sales</a>
-            </div>
-          </div>
-          <div style={{ marginTop: '60px', borderTop: '1px solid rgba(249,115,22,0.3)', width: '100%' }} />
-        </section>
-
-        {/* Footer */}
-        <footer style={{ background: '#0a0a0a', padding: '40px 16px 24px 16px' }}>
-          <div className="responsive-container">
-            <div className="footer-grid" style={{ marginBottom: '32px' }}>
-              <div>
-                <img src="/Midelpage-logo.png" alt="ScanTippr Logo" style={{ width: '260px', height: 'auto', objectFit: 'contain', display: 'block', marginBottom: '16px' }} />
-                <p style={{ color: '#64748B', fontSize: '13px', lineHeight: '1.6', maxWidth: '240px', margin: 0 }}>Secure, cashless appreciation payments for South African frontline workers.</p>
-              </div>
-              <div>
-                <h4 style={{ color: '#FFF', fontSize: '15px', fontWeight: 700, marginBottom: '16px' }}>Platform</h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px' }}>
-                  <a href="#features" style={{ color: '#94A3B8', textDecoration: 'none' }}>Features</a>
-                  <a href="#how-it-works" style={{ color: '#94A3B8', textDecoration: 'none' }}>How It Works</a>
-                  <a href="#about" style={{ color: '#94A3B8', textDecoration: 'none' }}>About</a>
-                  <a href="#pricing" style={{ color: '#94A3B8', textDecoration: 'none' }}>Pricing</a>
-                </div>
-              </div>
-              <div>
-                <h4 style={{ color: '#FFF', fontSize: '15px', fontWeight: 700, marginBottom: '16px' }}>Resources</h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px' }}>
-                  <span style={{ color: '#94A3B8' }}>Help Docs</span>
-                  <span style={{ color: '#94A3B8' }}>Compliance</span>
-                </div>
-              </div>
-              <div>
-                <h4 style={{ color: '#FFF', fontSize: '15px', fontWeight: 700, marginBottom: '16px' }}>Contact</h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', color: '#94A3B8' }}>
-                  <span>✉️ info@scantippr.co.za</span>
-                  <span>📍 South Africa</span>
-                </div>
-              </div>
-            </div>
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: '#64748B', flexWrap: 'wrap', gap: '12px' }}>
-              <span>© 2026 ScanTippr. All rights reserved.</span>
-              <div style={{ display: 'flex', gap: '16px' }}>
-                <span style={{ cursor: 'pointer' }}>Privacy Policy</span>
-                <span style={{ cursor: 'pointer' }}>Terms of Service</span>
-              </div>
-            </div>
-          </div>
-        </footer>
-
-      </main>
-    </>
-  );
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.length === 0 ? (
+              <tr><td colSpan={10} style={{ padding: '56px', textAlign: 'center', color: '#9CA3AF', fontSize: '14px' }}>No payout periods match the current filters.</td></tr>
+            ) : filtered.map((p) => {
+              const s = statusStyle(p.net_payout_status)
+              const isExpanded = expanded === p.id
+              const items = p.payout_line_items ?? []
+              return (
+                <>
+                  <tr key={p.id} style={{ borderBottom: '1px solid #F9FAFB', cursor: items.length > 0 ? 'pointer' : 'default', background: isExpanded ? '#FFFBF5' : 'transparent' }} onClick={() => items.length > 0 && setExpanded(isExpanded ? null : p.id)}>
+                    <td style={{ padding: '14px 20px', fontSize: '13.5px', fontWeight: 600, color: '#111827' }}>{p.periodLabel}</td>
+                    <td style={{ padding: '14px 20px' }}>
+                      {p.recipient_type === 'company' && p.recipientId ? (
+                        <Link href={`/admin/companies/${p.recipientId}?tab=payouts`} onClick={e => e.stopPropagation()} style={{ textDecoration: 'none', fontSize: '13px', color: '#374151', fontWeight: 500 }}>{p.recipientName}</Link>
+                      ) : p.recipient_type === 'guard' && p.recipientId ? (
+                        <Link href={`/admin/independents/${p.recipientId}`} onClick={e => e.stopPropagation()} style={{ textDecoration: 'none', fontSize: '13px', color: '#374151', fontWeight: 500 }}>{p.recipientName}</Link>
+                      ) : (
+                        <span style={{ fontSize: '13px', color: '#9CA3AF' }}>{p.recipientName}</span>
+                      )}
+                    </td>
+                    <td style={{ padding: '14px 20px' }}>
+                      <span style={{ display: 'inline-block', padding: '2px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: 600, background: p.recipient_type === 'company' ? '#EFF6FF' : '#F5F3FF', color: p.recipient_type === 'company' ? '#1D4ED8' : '#6D28D9' }}>
+                        {p.recipient_type === 'company' ? 'Company' : 'Individual'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '14px 20px' }}>
+                      <span style={{ display: 'inline-block', padding: '2px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: 600, background: p.period_type === 'weekly' ? '#FFF7ED' : '#F0FDF4', color: p.period_type === 'weekly' ? '#C2410C' : '#15803D' }}>
+                        {p.period_type === 'weekly' ? 'Weekly' : 'Monthly'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '14px 20px', fontSize: '13px', color: '#374151', fontVariantNumeric: 'tabular-nums' }}>{p.employeeCount}</td>
+                    <td style={{ padding: '14px 20px', fontSize: '13.5px', fontWeight: 700, color: '#15803D', fontVariantNumeric: 'tabular-nums' }}>{fmtCurrency(p.gross)}</td>
+                    <td style={{ padding: '14px 20px', fontSize: '13px', color: '#B45309', fontVariantNumeric: 'tabular-nums' }}>{fmtCurrency(p.fee)}</td>
+                    <td style={{ padding: '14px 20px', fontSize: '13.5px', fontWeight: 700, color: '#1D4ED8', fontVariantNumeric: 'tabular-nums' }}>{fmtCurrency(p.net)}</td>
+                    <td style={{ padding: '14px 20px' }}>
+                      <span style={{ display: 'inline-block', padding: '3px 10px', borderRadius: '20px', fontSize: '11.5px', fontWeight: 600, background: s.bg, color: s.color }}>{s.label}</span>
+                    </td>
+                    <td style={{ padding: '14px 20px', fontSize: '12px', color: '#9CA3AF' }}>{items.length > 0 && (isExpanded ? '▲' : '▼')}</td>
+                  </tr>
+                  {isExpanded && items.length > 0 && (
+                    <tr key={`${p.id}-expanded`} style={{ borderBottom: '1px solid #F3F4F6' }}>
+                      <td colSpan={10} style={{ padding: '0 20px 16px 56px', background: '#FFFBF5' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px' }}>
+                          <thead>
+                            <tr>{['Employee', 'Gross', 'Fee', 'Net'].map(h => <th key={h} style={{ padding: '8px 12px', textAlign: 'left', color: '#9CA3AF', fontWeight: 600, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{h}</th>)}</tr>
+                          </thead>
+                          <tbody>
+                            {items.map((li: any) => (
+                              <tr key={li.id}>
+                                <td style={{ padding: '7px 12px', color: '#374151', fontWeight: 500 }}>{li.guard_first_name ?? ''} {li.guard_last_name ?? ''}</td>
+                                <td style={{ padding: '7px 12px', color: '#15803D', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{fmtCurrency(li.gross_amount ?? 0)}</td>
+                                <td style={{ padding: '7px 12px', color: '#B45309', fontVariantNumeric: 'tabular-nums' }}>{fmtCurrency(li.fee_amount ?? 0)}</td>
+                                <td style={{ padding: '7px 12px', color: '#1D4ED8', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{fmtCurrency(li.net_amount ?? 0)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  )}
+                </>
+              )
+            })}
+          </tbody>
+          {filtered.length > 0 && (
+            <tfoot>
+              <tr style={{ background: '#FAFAFA', borderTop: '2px solid #E5E7EB' }}>
+                <td colSpan={5} style={{ padding: '13px 20px', fontSize: '13px', fontWeight: 700, color: '#0A0A0A' }}>Totals ({filtered.length} periods)</td>
+                <td style={{ padding: '13px 20px', fontSize: '13.5px', fontWeight: 700, color: '#15803D', fontVariantNumeric: 'tabular-nums' }}>{fmtCurrency(totalGross)}</td>
+                <td style={{ padding: '13px 20px', fontSize: '13px', fontWeight: 700, color: '#B45309', fontVariantNumeric: 'tabular-nums' }}>{fmtCurrency(totalFee)}</td>
+                <td style={{ padding: '13px 20px', fontSize: '13.5px', fontWeight: 700, color: '#1D4ED8', fontVariantNumeric: 'tabular-nums' }}>{fmtCurrency(totalNet)}</td>
+                <td colSpan={2} />
+              </tr>
+            </tfoot>
+          )}
+        </table>
+      </div>
+    </div>
+  )
 }
