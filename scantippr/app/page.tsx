@@ -113,7 +113,7 @@ export default function Home() {
                 Let customers thank your security guards, car guards, fuel attendants and frontline staff with a simple QR scan.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mb-12 w-full sm:w-auto">
-                <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ background: '#111111', color: '#fff', textDecoration: 'none', padding: '14px 28px', borderRadius: '8px', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ background: '#111111', color: '#fff', textDecoration: 'none', padding: '14px 28px', borderRadius: '8px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%' }}>
                   Book a Demo <span>→</span>
                 </a>
                 <a href="#how-it-works" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '14px 28px', background: '#fff', color: '#F97316', border: '2px solid #F97316', borderRadius: '8px', fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}>
