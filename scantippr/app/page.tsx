@@ -209,7 +209,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#000000', marginBottom: '8px', textAlign: 'center' }}>3. Pay Securely</h3>
-                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0, textAlign: 'center' }}>Complete payment in seconds using Ozow — South Africa's leading instant EFT provider. Supports all major banks, Capitec Pay, and ABSA Pay. No card details stored.</p>
+                <p style={{ color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: 0, textAlign: 'center' }}>Complete payment in seconds using Ozow — South Africa's leading instant EFT provider. Supports all major banks, instant EFT, Capitec Pay, ABSA Pay, Apple Pay, and Google Pay. No card details stored.</p>
               </div>
             </div>
           </div>
@@ -496,7 +496,7 @@ export default function Home() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {[
                 { q: "How does ScanTippr work?", a: "Every employee is assigned a unique, branded QR card. When a customer scans it with their phone camera, it launches a secure tipping page instantly — no app required. The customer selects an amount and pays via Ozow instant EFT. The tip is recorded in real time and paid out to the company or employee at the end of the payout period." },
-                { q: "What payment methods are supported?", a: "All payments are processed by Ozow — South Africa's leading instant EFT provider. Customers can pay via instant EFT from any major South African bank, Capitec Pay, and ABSA Pay. No card details are stored by ScanTippr." },
+                { q: "What payment methods are supported?", a: "All payments are processed by Ozow — South Africa's leading instant EFT provider. Customers can pay via instant EFT from any major South African bank, Capitec Pay, ABSA Pay, Apple Pay, and Google Pay. No card details are stored by ScanTippr." },
                 { q: "How much does ScanTippr charge?", a: "There are two fees. First, a tip fee of R150 per employee per month (or the total tips if less than R150) — this is automatically deducted from tips at payout, no invoice. Second, a Platform & Support Fee based on your team size: R149/month (1–9 employees), R399/month (10–49), R599/month (50–100), or custom pricing for 101+. The platform fee is invoiced monthly." },
                 { q: "How quickly do employees receive payouts?", a: "Payouts are processed weekly or monthly — you choose. ScanTippr initiates the payout via Ozow and the money is in the recipient's bank account within 1–2 business days depending on the bank." },
                 { q: "Can we customise our QR cards?", a: "Yes, fully. Your company dashboard gives you control over card branding, colours, and layout. For professional and enterprise clients we can produce fully custom-designed cards matching your corporate identity." },
