@@ -94,7 +94,7 @@ export default function Home() {
               <a href="#pricing" style={{ textDecoration: 'none', color: '#475569', fontSize: '15px', fontWeight: 700 }}>Pricing</a>
             </nav>
             <div>
-              <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ padding: '6px 16px', fontSize: '13px', borderRadius: '6px', background: '#F97316', color: '#fff', textDecoration: 'none', fontWeight: 600, boxShadow: '0 4px 12px rgba(249,115,22,0.3)' }}>
+              <a href="mailto:info@scantippr.co.za?subject=Demo Request" style={{ padding: '8px 16px', fontSize: '13px', borderRadius: '6px', background: '#F97316', color: '#fff', textDecoration: 'none', fontWeight: 600, boxShadow: '0 4px 12px rgba(249,115,22,0.3)', whiteSpace: 'nowrap' }}>
                 Book a Demo
               </a>
             </div>
