@@ -77,7 +77,7 @@ export default function Home() {
         }
       `}</style>
 
-      <main style={{ fontFamily: "'Inter', 'Manrope', system-ui, sans-serif", background: '#F8FAFC', color: '#1E293B', minHeight: '100vh', overflowX: 'hidden' }}>
+      <main style={{ fontFamily: "'Inter', 'Manrope', system-ui, sans-serif", background: '#F8FAFC', color: '#1E293B', minHeight: '100vh' }}>
 
         {/* Sticky Header */}
         <header style={{ position: 'sticky', top: 0, background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(8px)', borderBottom: '1px solid #E5E7EB', zIndex: 100, padding: '6px 16px' }}>
