@@ -32,6 +32,7 @@ interface BankDetails {
 
 interface Props {
   companyId: string
+  guardId?: string
   companyName: string
   isIndividual?: boolean
   initialCompanyBank: BankDetails
@@ -189,6 +190,7 @@ function BankDetailsSection({
 
 export default function BankDetailsForm({
   companyId,
+  guardId,
   companyName,
   isIndividual = false,
   initialCompanyBank,
@@ -209,8 +211,9 @@ export default function BankDetailsForm({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          type: 'company',
-          companyId,
+          type: isIndividual ? 'individual' : 'company',
+          companyId: isIndividual ? undefined : companyId,
+          guardId: isIndividual ? guardId : undefined,
           ...companyBank,
         }),
       })

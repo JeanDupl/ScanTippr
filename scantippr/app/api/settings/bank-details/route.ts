@@ -3,8 +3,7 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
 // POST /api/settings/bank-details
-// Server-side only — bank details never pass through the client
-// Uses service role to write, but validates the user owns the record first
+// Handles both company and individual bank detail updates
 
 export async function POST(request: Request) {
   try {
@@ -13,68 +12,78 @@ export async function POST(request: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
 
-    // Verify the user is authenticated
     const cookieStore = await cookies()
     const userId = cookieStore.get('sb_user_id')?.value
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
-    }
+    if (!userId) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
 
-    // Get their profile to confirm company ownership
     const { data: profile } = await supabase
       .from('profiles')
-      .select('company_id')
+      .select('company_id, role, guard_id')
       .eq('id', userId)
       .single()
 
-    if (!profile?.company_id) {
+    if (!profile) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
+
+    // Must have either a company_id or be an individual with a guard_id
+    if (!profile.company_id && profile.role !== 'individual') {
       return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
     }
 
     const body = await request.json()
-    const {
-      type,
-      companyId,
-      bank_account_number,
-      bank_name,
-      bank_account_holder,
-      bank_account_type,
-    } = body
+    const { type, companyId, guardId, bank_account_number, bank_name, bank_account_holder, bank_account_type } = body
 
-    // Validate the user owns the company they're trying to update
+    // Validate required fields
+    if (!bank_account_number || !bank_name || !bank_account_holder || !bank_account_type) {
+      return NextResponse.json({ error: 'All bank detail fields are required' }, { status: 400 })
+    }
+
+    if (!/^\d+$/.test(bank_account_number.trim())) {
+      return NextResponse.json({ error: 'Account number must contain digits only' }, { status: 400 })
+    }
+
+    // ── Company update ────────────────────────────────────────
     if (type === 'company') {
       if (companyId !== profile.company_id) {
         return NextResponse.json({ error: 'Unauthorised' }, { status: 403 })
-      }
-
-      // Validate required fields
-      if (!bank_account_number || !bank_name || !bank_account_holder || !bank_account_type) {
-        return NextResponse.json(
-          { error: 'All bank detail fields are required' },
-          { status: 400 }
-        )
-      }
-
-      // Validate account number is numeric only
-      if (!/^\d+$/.test(bank_account_number.trim())) {
-        return NextResponse.json(
-          { error: 'Account number must contain digits only' },
-          { status: 400 }
-        )
       }
 
       const { error } = await supabase
         .from('companies')
         .update({
           bank_account_number: bank_account_number.trim(),
-          bank_name: bank_name.trim(),
+          bank_name:           bank_name.trim(),
           bank_account_holder: bank_account_holder.trim(),
-          bank_account_type: bank_account_type.trim(),
+          bank_account_type:   bank_account_type.trim(),
         })
         .eq('id', companyId)
 
       if (error) {
         console.error('[bank-details] company update error:', error)
+        return NextResponse.json({ error: 'Failed to save bank details' }, { status: 500 })
+      }
+
+      return NextResponse.json({ success: true })
+    }
+
+    // ── Individual update ─────────────────────────────────────
+    if (type === 'individual') {
+      // Confirm the guard_id in the request matches the profile's guard_id
+      if (!profile.guard_id || guardId !== profile.guard_id) {
+        return NextResponse.json({ error: 'Unauthorised' }, { status: 403 })
+      }
+
+      const { error } = await supabase
+        .from('guards')
+        .update({
+          bank_account_number: bank_account_number.trim(),
+          bank_name:           bank_name.trim(),
+          bank_account_holder: bank_account_holder.trim(),
+          bank_account_type:   bank_account_type.trim(),
+        })
+        .eq('id', profile.guard_id)
+
+      if (error) {
+        console.error('[bank-details] guard update error:', error)
         return NextResponse.json({ error: 'Failed to save bank details' }, { status: 500 })
       }
 

@@ -64,6 +64,7 @@ export default async function SettingsPage() {
           companyId={companyId ?? ''}
           companyName={displayName}
           isIndividual={role === 'individual'}
+          guardId={guardId ?? ''}
           initialCompanyBank={{
             bank_account_number: (role === 'individual' ? guard?.bank_account_number : company?.bank_account_number) || '',
             bank_name: (role === 'individual' ? guard?.bank_name : company?.bank_name) || '',
