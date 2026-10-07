@@ -91,7 +91,6 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ error: 'Invalid type' }, { status: 400 })
-
   } catch (err) {
     console.error('[bank-details] unexpected error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
