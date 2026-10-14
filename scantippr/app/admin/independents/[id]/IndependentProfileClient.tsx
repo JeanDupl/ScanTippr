@@ -90,11 +90,16 @@ export default function IndependentProfileClient({ guard, transactions, totalDon
         photo_url = data.publicUrl
       }
     }
-    await supabase.from('guards').update({
-      first_name: editFirst.trim(), last_name: editLast.trim(),
-      job_title: editJob.trim() || null, phone: editPhone.trim() || null,
-      email: editEmail.trim() || null, photo_url,
-    }).eq('id', guard.id)
+    await fetch('/api/update-independent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        guardId: guard.id,
+        first_name: editFirst.trim(), last_name: editLast.trim(),
+        job_title: editJob.trim() || null, phone: editPhone.trim() || null,
+        email: editEmail.trim() || null, photo_url,
+      }),
+    })
     setSaving(false); setSaved(true); setEditing(false)
     setTimeout(() => setSaved(false), 2000)
   }
