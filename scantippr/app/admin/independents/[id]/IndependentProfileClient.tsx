@@ -84,10 +84,20 @@ export default function IndependentProfileClient({ guard, transactions, totalDon
     if (photoFile) {
       const ext = photoFile.name.split('.').pop()
       const filename = `photo-${guard.id}.${ext}`
-      const { error: uploadError } = await supabase.storage.from('guard-photos').upload(filename, photoFile, { upsert: true })
-      if (!uploadError) {
-        const { data } = supabase.storage.from('guard-photos').getPublicUrl(filename)
-        photo_url = data.publicUrl
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result.split(',')[1])
+        reader.onerror = reject
+        reader.readAsDataURL(photoFile)
+      })
+      const uploadRes = await fetch('/api/upload-guard-photo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guardId: guard.id, fileName: filename, base64, mimeType: photoFile.type }),
+      })
+      if (uploadRes.ok) {
+        const { publicUrl } = await uploadRes.json()
+        photo_url = publicUrl
       }
     }
     await fetch('/api/update-independent', {
