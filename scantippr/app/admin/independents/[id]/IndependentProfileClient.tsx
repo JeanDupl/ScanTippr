@@ -86,7 +86,7 @@ export default function IndependentProfileClient({ guard, transactions, totalDon
       const filename = `photo-${guard.id}.${ext}`
       const base64 = await new Promise((resolve, reject) => {
         const reader = new FileReader()
-        reader.onload = () => resolve(reader.result.split(',')[1])
+        reader.onload = () => resolve((reader.result as string).split(',')[1])
         reader.onerror = reject
         reader.readAsDataURL(photoFile)
       })
