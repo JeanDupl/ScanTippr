@@ -24,12 +24,15 @@ export default function TransactionsClient({ transactions, guards, companies }: 
     const g = guards.find(g => g.id === id)
     return g ? `${g.first_name} ${g.last_name}` : '—'
   }
-  const companyName = (id: string) => companies.find(c => c.id === id)?.name ?? '—'
+  const companyName = (id: string | null) => {
+    if (!id) return 'Independent'
+    return companies.find(c => c.id === id)?.name ?? '—'
+  }
 
   const filtered = useMemo(() => transactions.filter(tx => {
     const date = tx.created_at.split('T')[0]
     const inRange = date >= from && date <= to
-    const inCompany = companyFilter === 'all' || tx.company_id === companyFilter
+    const inCompany = companyFilter === 'all' || (companyFilter === 'independent' ? !tx.company_id : tx.company_id === companyFilter)
     const inStatus = statusFilter === 'all' || tx.payment_status === statusFilter
     const name = guardName(tx.guard_id).toLowerCase()
     const inSearch = !search || name.includes(search.toLowerCase()) || companyName(tx.company_id).toLowerCase().includes(search.toLowerCase())
@@ -100,7 +103,8 @@ export default function TransactionsClient({ transactions, guards, companies }: 
             <input type="date" value={to} onChange={e => setTo(e.target.value)} style={{ padding: '7px 10px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '13px', outline: 'none' }} />
           </div>
           <select value={companyFilter} onChange={e => setCompanyFilter(e.target.value)} style={{ padding: '8px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '13px', background: '#fff', outline: 'none' }}>
-            <option value="all">All Companies</option>
+            <option value="all">All</option>
+            <option value="independent">Independents</option>
             {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ padding: '8px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '13px', background: '#fff', outline: 'none' }}>
