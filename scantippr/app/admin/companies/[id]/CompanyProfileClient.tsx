@@ -48,6 +48,7 @@ export default function CompanyProfileClient({
   const [companyName, setCompanyName] = useState(company.name)
   const [companyLogo, setCompanyLogo] = useState(company.logo_url ?? '')
   const [savingCompany, setSavingCompany] = useState(false)
+  const [showEditCompany, setShowEditCompany] = useState(false)
   const [companySaved, setCompanySaved] = useState(false)
 
   const startEdit = (g: any) => {
@@ -166,6 +167,7 @@ export default function CompanyProfileClient({
               border: '1px solid #E5E7EB', borderRadius: '8px',
               fontSize: '13px', fontWeight: 600, cursor: 'pointer',
             }}
+            onClick={() => setShowEditCompany(true)}
           >
             Edit Company
           </button>
@@ -560,6 +562,40 @@ export default function CompanyProfileClient({
             >
               {savingCompany ? 'Saving…' : companySaved ? '✓ Saved' : 'Save Changes'}
             </button>
+          </div>
+        </div>
+      )}
+    </div>
+
+      {/* Edit Company Modal */}
+      {showEditCompany && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: '#fff', borderRadius: '16px', padding: '32px', width: '440px', boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
+            <h2 style={{ margin: '0 0 24px', fontSize: '18px', fontWeight: 700, color: '#0A0A0A' }}>Edit Company</h2>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#6B7280', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Company Name</label>
+              <input value={companyName} onChange={e => setCompanyName(e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px', boxSizing: 'border-box', outline: 'none' }} />
+            </div>
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#6B7280', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Logo URL</label>
+              <input value={companyLogo} onChange={e => setCompanyLogo(e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px', boxSizing: 'border-box', outline: 'none' }} />
+            </div>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <button onClick={() => setShowEditCompany(false)} style={{ padding: '10px 20px', background: '#F9FAFB', color: '#6B7280', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>Cancel</button>
+              <button onClick={async () => {
+                setSavingCompany(true)
+                await fetch('/api/update-company', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ companyId: company.id, name: companyName, logo_url: companyLogo }),
+                })
+                setSavingCompany(false)
+                setShowEditCompany(false)
+                window.location.reload()
+              }} disabled={savingCompany} style={{ padding: '10px 20px', background: '#F97316', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>
+                {savingCompany ? 'Saving…' : 'Save Changes'}
+              </button>
+            </div>
           </div>
         </div>
       )}
