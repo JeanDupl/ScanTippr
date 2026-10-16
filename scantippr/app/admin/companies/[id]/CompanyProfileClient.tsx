@@ -11,7 +11,7 @@ const supabase = createClient(
 const fmtCurrency = (n: number) =>
   'R' + n.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
-const TABS = ['Overview', 'Employees', 'Transactions', 'Reports', 'QR Cards', 'Payouts', 'Settings'] as const
+const TABS = ['Overview', 'Employees', 'Transactions', 'Reports', 'QR Cards', 'Payouts'] as const
 type Tab = typeof TABS[number]
 
 const statusStyle = (status: string) => {
