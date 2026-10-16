@@ -126,7 +126,7 @@ export default function CompanyProfileClient({
   }
 
   return (
-    <div style={{ padding: '36px 40px' }}>
+    <><div style={{ padding: '36px 40px' }}>
 
       {/* Breadcrumb */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '20px' }}>
@@ -599,6 +599,6 @@ export default function CompanyProfileClient({
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }
