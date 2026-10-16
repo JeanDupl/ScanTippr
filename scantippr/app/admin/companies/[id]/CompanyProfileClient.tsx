@@ -160,7 +160,6 @@ export default function CompanyProfileClient({
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
           <button
-            onClick={() => setActiveTab('Settings')}
             style={{
               padding: '8px 18px',
               background: '#fff', color: '#374151',
