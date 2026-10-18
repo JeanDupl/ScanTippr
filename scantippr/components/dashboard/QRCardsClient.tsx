@@ -18,17 +18,9 @@ export default function QRCardsClient({ employees, companyName }: Props) {
   const handlePrintAll = () => window.print()
 
   const handlePrintCard = (empId: string) => {
-    const card = document.getElementById(`qr-card-${empId}`)
-    if (!card) return
-    const win = window.open('', '_blank')
+    const win = window.open(`/guard-card/${empId}`, '_blank')
     if (!win) return
-    win.document.write(`
-      <html><head><title>QR Card</title>
-      <style>body{margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#fff;}
-      @media print{body{margin:0;}}</style>
-      </head><body>${card.outerHTML}<script>window.onload=()=>{window.print();window.close();}<\/script></body></html>
-    `)
-    win.document.close()
+    win.onload = () => { win.print() }
   }
 
   const handleDownload = (empId: string, name: string) => {
