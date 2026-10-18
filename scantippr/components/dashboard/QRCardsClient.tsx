@@ -1,6 +1,6 @@
 'use client'
 import { Printer, Download } from 'lucide-react'
-import html2canvas from 'html2canvas'
+
 interface Employee {
   id: string
   first_name: string
@@ -13,16 +13,31 @@ interface Props {
   employees: Employee[]
   companyName: string
 }
+
 export default function QRCardsClient({ employees, companyName }: Props) {
-  const handlePrint = () => window.print()
-  const handleDownload = async (cardEl: HTMLElement | null, name: string) => {
-    if (!cardEl) return
-    const canvas = await html2canvas(cardEl, { scale: 3, useCORS: true, backgroundColor: null })
+  const handlePrintAll = () => window.print()
+
+  const handlePrintCard = (empId: string) => {
+    const card = document.getElementById(`qr-card-${empId}`)
+    if (!card) return
+    const win = window.open('', '_blank')
+    if (!win) return
+    win.document.write(`
+      <html><head><title>QR Card</title>
+      <style>body{margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#fff;}
+      @media print{body{margin:0;}}</style>
+      </head><body>${card.outerHTML}<script>window.onload=()=>{window.print();window.close();}<\/script></body></html>
+    `)
+    win.document.close()
+  }
+
+  const handleDownload = (empId: string, name: string) => {
     const a = document.createElement('a')
-    a.href = canvas.toDataURL('image/png')
-    a.download = `${name.replace(/\s+/g, '-')}-qr-card.png`
+    a.href = `/api/qr/${empId}?v=4`
+    a.download = `${name.replace(/\s+/g, '-')}-qr.png`
     a.click()
   }
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -32,7 +47,7 @@ export default function QRCardsClient({ employees, companyName }: Props) {
           <p className="text-slate-500 text-sm mt-1">Download or print QR codes for your active employees</p>
         </div>
         <button
-          onClick={handlePrint}
+          onClick={handlePrintAll}
           className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors"
         >
           <Printer className="w-4 h-4" />
@@ -46,119 +61,76 @@ export default function QRCardsClient({ employees, companyName }: Props) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 print:grid-cols-2">
           {employees.map((emp) => (
-            <div
-              key={emp.id}
-              id={`qr-card-${emp.id}`}
-              className="print:break-inside-avoid"
-              style={{
-                width: '105mm',
-                minHeight: '148mm',
-                background: '#f5f7fa',
-                borderRadius: '12px',
-                overflow: 'hidden',
-                display: 'flex',
-                flexDirection: 'column',
-                boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
-                fontFamily: 'sans-serif',
-              }}
-            >
-              {/* Blue header */}
-              <div style={{
-                background: '#1a3a5c',
-                padding: '14px 20px',
-                textAlign: 'center',
-              }}>
-                <p style={{
-                  margin: 0,
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  color: '#7ab3d9',
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                }}>
-                  {companyName}
-                </p>
-              </div>
-
-              {/* Body */}
-              <div style={{
-                flex: 1,
-                padding: '20px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '12px',
-              }}>
-                {/* Guard name */}
-                <p style={{ margin: 0, fontSize: '22px', fontWeight: 600, color: '#1a2b3c', textAlign: 'center' }}>
-                  {emp.first_name} {emp.last_name}
-                </p>
-
-                {/* Job title */}
-                {emp.job_title && (
-                  <p style={{ margin: '-8px 0 0 0', fontSize: '14px', color: '#495864', textAlign: 'center' }}>
-                    {emp.job_title}
-                  </p>
-                )}
-
-                <div style={{ width: '100%', height: '1px', background: '#e0e8f0' }} />
-
-                {/* CTA */}
-                <p style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: '#495864', textAlign: 'center' }}>
-                  Scan the QR code below to show your appreciation.
-                </p>
-
-                {/* QR Code */}
-                <div style={{
-                  background: '#fff',
-                  borderRadius: '8px',
-                  padding: '10px',
-                  border: '0.5px solid #e0e8f0',
-                }}>
-                  <img
-                    src={`/api/qr/${emp.id}?v=4`}
-                    alt={`QR code for ${emp.first_name} ${emp.last_name}`}
-                    width={180}
-                    height={180}
-                  />
-                </div>
-
-                {/* Thank you */}
-                <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#495864', textAlign: 'center' }}>
-                  Thank you for your support!
-                </p>
-              </div>
-
-              {/* Blue footer */}
-              <div style={{ background: '#1a3a5c', padding: '10px 20px', textAlign: 'center' }}>
-                <p style={{ margin: 0, fontSize: '13px', color: '#7ab3d9', fontWeight: 600 }}>
-                  www.scantippr.co.za
-                </p>
-              </div>
-
-              {/* Download button - hidden on print */}
-              <button
-                onClick={() => handleDownload(document.getElementById(`qr-card-${emp.id}`), `${emp.first_name}-${emp.last_name}`)}
-                className="print:hidden"
+            <div key={emp.id} className="flex flex-col print:break-inside-avoid">
+              {/* Card */}
+              <div
+                id={`qr-card-${emp.id}`}
                 style={{
-                  margin: '12px 16px 16px',
-                  padding: '8px 16px',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '10px',
-                  background: '#fff',
-                  color: '#64748b',
-                  cursor: 'pointer',
+                  width: '105mm',
+                  minHeight: '148mm',
+                  background: '#f5f7fa',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
                   display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
+                  flexDirection: 'column',
+                  boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
+                  fontFamily: 'sans-serif',
                 }}
               >
-                <Download className="w-4 h-4" />
-                Download QR
-              </button>
+                {/* Blue header */}
+                <div style={{ background: '#1a3a5c', padding: '14px 20px', textAlign: 'center' }}>
+                  <p style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: '#7ab3d9', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                    {companyName}
+                  </p>
+                </div>
+
+                {/* Body */}
+                <div style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+                  <p style={{ margin: 0, fontSize: '22px', fontWeight: 600, color: '#1a2b3c', textAlign: 'center' }}>
+                    {emp.first_name} {emp.last_name}
+                  </p>
+                  {emp.job_title && (
+                    <p style={{ margin: '-8px 0 0 0', fontSize: '14px', color: '#495864', textAlign: 'center' }}>
+                      {emp.job_title}
+                    </p>
+                  )}
+                  <div style={{ width: '100%', height: '1px', background: '#e0e8f0' }} />
+                  <p style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: '#495864', textAlign: 'center' }}>
+                    Scan the QR code below to show your appreciation.
+                  </p>
+                  <div style={{ background: '#fff', borderRadius: '8px', padding: '10px', border: '0.5px solid #e0e8f0' }}>
+                    <img src={`/api/qr/${emp.id}?v=4`} alt={`QR code for ${emp.first_name} ${emp.last_name}`} width={180} height={180} />
+                  </div>
+                  <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#495864', textAlign: 'center' }}>
+                    Thank you for your support!
+                  </p>
+                </div>
+
+                {/* Blue footer */}
+                <div style={{ background: '#1a3a5c', padding: '10px 20px', textAlign: 'center' }}>
+                  <p style={{ margin: 0, fontSize: '13px', color: '#7ab3d9', fontWeight: 600 }}>
+                    www.scantippr.co.za
+                  </p>
+                </div>
+              </div>
+
+              {/* Action buttons - hidden on print */}
+              <div className="print:hidden flex gap-2 mt-3" style={{ width: '105mm' }}>
+                <button
+                  onClick={() => handleDownload(emp.id, `${emp.first_name}-${emp.last_name}`)}
+                  style={{ flex: 1, padding: '8px 12px', fontSize: '12px', fontWeight: 500, border: '1px solid #e2e8f0', borderRadius: '10px', background: '#fff', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}
+                >
+                  <Download className="w-3 h-3" />
+                  Download QR
+                </button>
+                <button
+                  onClick={() => handlePrintCard(emp.id)}
+                  style={{ flex: 1, padding: '8px 12px', fontSize: '12px', fontWeight: 500, border: '1px solid #e2e8f0', borderRadius: '10px', background: '#fff', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}
+                >
+                  <Printer className="w-3 h-3" />
+                  Print Card
+                </button>
+              </div>
             </div>
           ))}
         </div>
