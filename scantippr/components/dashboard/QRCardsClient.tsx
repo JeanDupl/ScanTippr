@@ -1,5 +1,6 @@
 'use client'
 import { Printer, Download } from 'lucide-react'
+import html2canvas from 'html2canvas'
 interface Employee {
   id: string
   first_name: string
@@ -14,10 +15,12 @@ interface Props {
 }
 export default function QRCardsClient({ employees, companyName }: Props) {
   const handlePrint = () => window.print()
-  const handleDownload = (employeeId: string, name: string) => {
+  const handleDownload = async (cardEl: HTMLElement | null, name: string) => {
+    if (!cardEl) return
+    const canvas = await html2canvas(cardEl, { scale: 3, useCORS: true, backgroundColor: null })
     const a = document.createElement('a')
-    a.href = `/api/qr/${employeeId}?v=4`
-    a.download = `${name.replace(/\s+/g, '-')}-qr.png`
+    a.href = canvas.toDataURL('image/png')
+    a.download = `${name.replace(/\s+/g, '-')}-qr-card.png`
     a.click()
   }
   return (
@@ -45,6 +48,7 @@ export default function QRCardsClient({ employees, companyName }: Props) {
           {employees.map((emp) => (
             <div
               key={emp.id}
+              id={`qr-card-${emp.id}`}
               className="print:break-inside-avoid"
               style={{
                 width: '105mm',
@@ -134,7 +138,7 @@ export default function QRCardsClient({ employees, companyName }: Props) {
 
               {/* Download button - hidden on print */}
               <button
-                onClick={() => handleDownload(emp.id, `${emp.first_name}-${emp.last_name}`)}
+                onClick={() => handleDownload(document.getElementById(`qr-card-${emp.id}`), `${emp.first_name}-${emp.last_name}`)}
                 className="print:hidden"
                 style={{
                   margin: '12px 16px 16px',
