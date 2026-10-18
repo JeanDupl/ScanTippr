@@ -536,8 +536,39 @@ export default function CompanyProfileClient({
               <input value={companyName} onChange={e => setCompanyName(e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px', boxSizing: 'border-box', outline: 'none' }} />
             </div>
             <div style={{ marginBottom: '24px' }}>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#6B7280', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Logo URL</label>
-              <input value={companyLogo} onChange={e => setCompanyLogo(e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px', boxSizing: 'border-box', outline: 'none' }} />
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#6B7280', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Company Logo</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
+                {companyLogo && (
+                  <img src={companyLogo} alt="Logo preview" style={{ height: '48px', width: '48px', objectFit: 'contain', borderRadius: '8px', border: '1px solid #E5E7EB', padding: '4px' }} />
+                )}
+                <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 16px', background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '13px', fontWeight: 600, color: '#374151', cursor: uploadingLogo ? 'wait' : 'pointer' }}>
+                  {uploadingLogo ? 'Uploading…' : '📁 Upload Logo'}
+                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
+                    const file = e.target.files?.[0]
+                    if (!file) return
+                    setUploadingLogo(true)
+                    const ext = file.name.split('.').pop()
+                    const filename = `logo-${company.id}-${Date.now()}.${ext}`
+                    const base64 = await new Promise<string>((resolve, reject) => {
+                      const reader = new FileReader()
+                      reader.onload = () => resolve((reader.result as string).split(',')[1])
+                      reader.onerror = reject
+                      reader.readAsDataURL(file)
+                    })
+                    const res = await fetch('/api/upload-company-logo', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ companyId: company.id, fileName: filename, base64, mimeType: file.type }),
+                    })
+                    if (res.ok) {
+                      const { publicUrl } = await res.json()
+                      setCompanyLogo(publicUrl)
+                    }
+                    setUploadingLogo(false)
+                  }} />
+                </label>
+              </div>
+              <input value={companyLogo} onChange={e => setCompanyLogo(e.target.value)} placeholder="or paste a URL" style={{ width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '13px', color: '#6B7280', boxSizing: 'border-box', outline: 'none' }} />
             </div>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
               <button onClick={() => setShowEditCompany(false)} style={{ padding: '10px 20px', background: '#F9FAFB', color: '#6B7280', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>Cancel</button>
