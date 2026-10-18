@@ -49,6 +49,7 @@ export default function CompanyProfileClient({
   const [companyLogo, setCompanyLogo] = useState(company.logo_url ?? '')
   const [savingCompany, setSavingCompany] = useState(false)
   const [showEditCompany, setShowEditCompany] = useState(false)
+  const [uploadingLogo, setUploadingLogo] = useState(false)
   const [companySaved, setCompanySaved] = useState(false)
 
   const startEdit = (g: any) => {
