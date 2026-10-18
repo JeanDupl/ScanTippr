@@ -523,47 +523,7 @@ export default function CompanyProfileClient({
         </div>
       )}
 
-      {/* ─── SETTINGS ─── */}
-      {activeTab === 'Settings' && (
-        <div style={{ maxWidth: '480px' }}>
-          <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)', padding: '24px' }}>
-            <h2 style={{ margin: '0 0 20px', fontSize: '15px', fontWeight: 600, color: '#0A0A0A' }}>Company Details</h2>
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Company Name</label>
-              <input
-                value={companyName}
-                onChange={e => setCompanyName(e.target.value)}
-                style={{ width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px', color: '#111827', boxSizing: 'border-box', outline: 'none' }}
-              />
-            </div>
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Logo URL</label>
-              <input
-                value={companyLogo}
-                onChange={e => setCompanyLogo(e.target.value)}
-                placeholder="https://..."
-                style={{ width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px', color: '#111827', boxSizing: 'border-box', outline: 'none' }}
-              />
-              {companyLogo && (
-                <img src={companyLogo} alt="Logo preview" style={{ marginTop: '10px', height: '40px', objectFit: 'contain', borderRadius: '6px' }} />
-              )}
-            </div>
-            <button
-              onClick={saveCompany}
-              disabled={savingCompany}
-              style={{
-                padding: '10px 24px',
-                background: companySaved ? '#15803D' : '#F97316',
-                color: '#fff', border: 'none', borderRadius: '8px',
-                fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
-                transition: 'background 0.2s',
-              }}
-            >
-              {savingCompany ? 'Saving…' : companySaved ? '✓ Saved' : 'Save Changes'}
-            </button>
-          </div>
-        </div>
-      )}
+
     </div>
 
       {/* Edit Company Modal */}
