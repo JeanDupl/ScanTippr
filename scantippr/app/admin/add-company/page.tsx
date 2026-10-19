@@ -13,6 +13,7 @@ const supabase = createClient(
 export default function AddCompanyPage() {
   const router = useRouter()
   const [name, setName] = useState('')
+  const [modelType, setModelType] = useState<'company' | 'hybrid'>('company')
   const [logoFile, setLogoFile] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
@@ -46,6 +47,7 @@ export default function AddCompanyPage() {
 
     await supabase.from('companies').insert({
       name: name.trim(),
+      model_type: modelType,
       logo_url,
     })
 
@@ -74,6 +76,23 @@ export default function AddCompanyPage() {
             style={inputStyle}
             placeholder="e.g. My Security Company"
           />
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
+          <label style={labelStyle}>Account Model *</label>
+          <select
+            value={modelType}
+            onChange={e => setModelType(e.target.value as 'company' | 'hybrid')}
+            style={inputStyle}
+          >
+            <option value="company">Company — payouts go to the company bank account</option>
+            <option value="hybrid">Hybrid — payouts go directly to each employee&apos;s bank account</option>
+          </select>
+          <p style={{ margin: '6px 0 0', fontSize: '12px', color: '#9CA3AF' }}>
+            {modelType === 'hybrid'
+              ? 'Each employee must have their own bank details captured before a payout can be run.'
+              : 'One payout is sent to the company. The company pays its employees.'}
+          </p>
         </div>
 
         <div style={{ marginBottom: '20px' }}>

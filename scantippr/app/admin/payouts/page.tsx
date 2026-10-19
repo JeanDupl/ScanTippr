@@ -25,7 +25,7 @@ export default async function AdminPayoutsPage() {
       .from('payout_periods')
       .select('*, payout_line_items(*)')
       .order('period_start', { ascending: false }),
-    supabase.from('companies').select('id, name'),
+    supabase.from('companies').select('id, name, model_type'),
     supabase
       .from('guards')
       .select('id, first_name, last_name, job_title')
@@ -43,6 +43,12 @@ export default async function AdminPayoutsPage() {
     if (p.recipient_type === 'company') {
       const company = (companies ?? []).find(c => c.id === p.recipient_id)
       return { ...p, gross, fee, net, employeeCount: items.length, recipientName: company?.name ?? '—', recipientId: company?.id ?? null, periodLabel }
+    } else if (p.recipient_type === 'hybrid') {
+      // Hybrid: recipient_id is a guard id; look up in line items for name
+      const firstItem = items[0]
+      const guardName = firstItem ? `${firstItem.guard_first_name ?? ''} ${firstItem.guard_last_name ?? ''}`.trim() : '—'
+      // Also find the company name via company_model_type snapshot — best effort
+      return { ...p, gross, fee, net, employeeCount: items.length, recipientName: guardName, recipientId: p.recipient_id ?? null, periodLabel }
     } else {
       const guard = (independents ?? []).find(g => g.id === p.recipient_id)
       const guardName = guard ? `${guard.first_name} ${guard.last_name}` : '—'

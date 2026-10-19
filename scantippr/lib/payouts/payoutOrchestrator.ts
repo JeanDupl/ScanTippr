@@ -11,10 +11,12 @@ import {
   PayoutSummary,
   FeeDisposalMode,
   PeriodType,
+  HybridPayoutResult,
 } from './payoutTypes'
 import {
   calculateCompanyPayout,
   calculateIndividualPayout,
+  calculateHybridPayouts,
 } from './calculatePayouts'
 import { createOzowPayout } from './ozowPayout'
 
@@ -393,4 +395,165 @@ export async function runIndividualPayout(
   }
 
   return { success: true, payoutPeriodId, summary }
+}
+
+// ── Hybrid payout ─────────────────────────────────────────────
+// Fires one Ozow payout per employee, each to their own bank account.
+// A failure for one employee does not block others.
+
+export async function runHybridPayout(
+  company: Company,
+  guards: Guard[],
+  transactions: Transaction[],
+  input: OrchestratorInput
+): Promise<HybridPayoutResult> {
+  const supabase = getSupabase()
+  const { periodType, periodStart, periodEnd, feeDisposalMode } = input
+
+  if (!guards || guards.length === 0) {
+    return {
+      success: false,
+      companyId: company.id,
+      companyName: company.name,
+      employeeResults: [],
+      totalEmployees: 0,
+      successCount: 0,
+      failCount: 0,
+      error: 'No active employees found for this company',
+    }
+  }
+
+  const perEmployee = calculateHybridPayouts(
+    company, guards, transactions, periodType, periodStart, periodEnd
+  )
+
+  const employeeResults: HybridPayoutResult['employeeResults'] = []
+
+  for (const { guard, result } of perEmployee) {
+    const guardName = `${guard.first_name} ${guard.last_name}`
+
+    if (!result.success) {
+      employeeResults.push({ guardId: guard.id, guardName, success: false, error: result.error })
+      continue
+    }
+
+    const { summary } = result
+
+    // Check for duplicate period per employee
+    const exists = await periodAlreadyExists(supabase, 'hybrid', guard.id, periodStart, periodEnd)
+    if (exists) {
+      employeeResults.push({
+        guardId: guard.id, guardName, success: false,
+        error: `Payout period ${periodStart}–${periodEnd} already exists for ${guardName}`,
+      })
+      continue
+    }
+
+    // Create payout period record (recipient = the individual employee for hybrid)
+    const payoutPeriodId = await createPayoutPeriod(supabase, summary, feeDisposalMode)
+    if (!payoutPeriodId) {
+      employeeResults.push({ guardId: guard.id, guardName, success: false, error: 'Failed to create payout period record' })
+      continue
+    }
+
+    // Store company_model_type snapshot
+    await supabase
+      .from('payout_periods')
+      .update({ company_model_type: 'hybrid' })
+      .eq('id', payoutPeriodId)
+
+    const lineItemsOk = await createLineItems(supabase, payoutPeriodId, summary)
+    if (!lineItemsOk) {
+      employeeResults.push({ guardId: guard.id, guardName, success: false, error: 'Failed to create line items' })
+      continue
+    }
+
+    await markTransactionsIncluded(supabase, summary, payoutPeriodId)
+
+    // Fee payout (ScanTippr's cut)
+    let ozowFeePayoutId: string | null = null
+    if (!summary.hasZeroFee && feeDisposalMode === 'payout_to_scantippr') {
+      const feeRef = shortRef('FEE', periodType, periodStart) + `-${guard.id.substring(0, 6)}`
+      const feeResult = await createOzowPayout({
+        amount: summary.totalFee,
+        bank: {
+          bankAccountNumber: process.env.SCANTIPPR_BANK_ACCOUNT_NUMBER!,
+          bankName:          process.env.SCANTIPPR_BANK_NAME!,
+          bankAccountHolder: process.env.SCANTIPPR_BANK_ACCOUNT_HOLDER!,
+          bankAccountType:   process.env.SCANTIPPR_BANK_ACCOUNT_TYPE!,
+        },
+        reference:         feeRef,
+        customerReference: feeRef,
+        payoutPeriodId,
+        description:       `ScanTippr fee — ${guardName} (${company.name}) — ${periodStart}`,
+      })
+      if (feeResult.success) {
+        ozowFeePayoutId = feeResult.ozowPayoutId ?? null
+        await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
+          fee_payout_status:  'submitted',
+          fee_ozow_payout_id: ozowFeePayoutId,
+          fee_submitted_at:   new Date().toISOString(),
+        })
+      } else {
+        await updatePayoutPeriodStatus(supabase, payoutPeriodId, { fee_payout_status: 'failed' })
+      }
+    } else if (feeDisposalMode === 'remain_in_float') {
+      await updatePayoutPeriodStatus(supabase, payoutPeriodId, { fee_payout_status: 'in_float' })
+    }
+
+    await createFeeRecord(supabase, summary, payoutPeriodId, feeDisposalMode, ozowFeePayoutId)
+
+    // Net payout — direct to employee's own bank
+    if (!summary.hasZeroNet) {
+      const netRef        = shortRef('NET', periodType, periodStart) + `-${guard.id.substring(0, 6)}`
+      const encryptionKey = crypto.randomBytes(16).toString('hex').substring(0, 16)
+
+      await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
+        net_merchant_reference: netRef,
+        encryption_key:         encryptionKey,
+        net_payout_status:      'initiating',
+      })
+
+      const netResult = await createOzowPayout({
+        amount:            summary.totalNet,
+        bank:              summary.bankSnapshot,   // employee's own bank
+        reference:         netRef,
+        customerReference: netRef,
+        payoutPeriodId,
+        encryptionKey,
+        description:       `Tip payout — ${guardName} (${company.name}) — ${periodStart}`,
+      })
+
+      if (netResult.success) {
+        await updatePayoutPeriodStatus(supabase, payoutPeriodId, {
+          net_payout_status:  'submitted',
+          net_ozow_payout_id: netResult.ozowPayoutId ?? null,
+          net_submitted_at:   new Date().toISOString(),
+        })
+      } else {
+        await updatePayoutPeriodStatus(supabase, payoutPeriodId, { net_payout_status: 'failed' })
+      }
+    }
+
+    employeeResults.push({
+      guardId: guard.id,
+      guardName,
+      success: true,
+      payoutPeriodId,
+      netAmount: summary.totalNet,
+    })
+  }
+
+  const successCount = employeeResults.filter(r => r.success).length
+  const failCount    = employeeResults.filter(r => !r.success).length
+
+  return {
+    success:         failCount === 0,
+    companyId:       company.id,
+    companyName:     company.name,
+    employeeResults,
+    totalEmployees:  guards.length,
+    successCount,
+    failCount,
+  }
 }

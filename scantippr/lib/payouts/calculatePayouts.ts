@@ -15,6 +15,8 @@ import {
   SCANTIPPR_FEE_CAP,
 } from './payoutTypes'
 
+export type { CalculationResult }
+
 // ── Fee calculation ──────────────────────────────────────────
 
 export function calculateEmployeeFee(grossAmount: number): number {
@@ -189,6 +191,60 @@ export function calculateIndividualPayout(
   }
 
   return { success: true, summary }
+}
+
+// ── Hybrid payout calculation ─────────────────────────────────
+// Returns one CalculationResult per employee (each with their own bank details).
+// Employees with no eligible transactions are included with zero amounts.
+// Employees with incomplete bank details return a failure for that employee only.
+
+export function calculateHybridPayouts(
+  company: Company,
+  guards: Guard[],
+  transactions: Transaction[],
+  periodType: PeriodType,
+  periodStart: string,
+  periodEnd: string
+): Array<{ guard: Guard; result: CalculationResult }> {
+  const txByGuard = new Map<string, Transaction[]>()
+  for (const guard of guards) txByGuard.set(guard.id, [])
+  for (const tx of transactions) {
+    if (txByGuard.has(tx.guard_id)) txByGuard.get(tx.guard_id)!.push(tx)
+  }
+
+  return guards.map((guard) => {
+    // Each employee pays out to their own bank — validate per employee
+    const bankResult = validateBankDetails(
+      guard,
+      `${guard.first_name} ${guard.last_name}`
+    )
+    if (!bankResult.valid) {
+      return { guard, result: { success: false, error: bankResult.error } }
+    }
+
+    const guardTxs = txByGuard.get(guard.id) ?? []
+    const lineItem = buildEmployeeLineItem(guard, guardTxs)
+    const { periodMonth, periodYear } = monthYearFromDate(periodType, periodStart)
+
+    const summary: PayoutSummary = {
+      periodType,
+      periodStart,
+      periodEnd,
+      periodMonth,
+      periodYear,
+      recipientType: 'hybrid',
+      recipientId:   guard.id,   // each payout period is per-employee
+      lineItems:     [lineItem],
+      totalGross:    lineItem.grossAmount,
+      totalFee:      lineItem.feeAmount,
+      totalNet:      lineItem.netAmount,
+      bankSnapshot:  bankResult.snapshot,
+      hasZeroNet:    lineItem.netAmount === 0,
+      hasZeroFee:    lineItem.feeAmount === 0,
+    }
+
+    return { guard, result: { success: true, summary } }
+  })
 }
 
 export function formatPayoutSummary(summary: PayoutSummary): string {

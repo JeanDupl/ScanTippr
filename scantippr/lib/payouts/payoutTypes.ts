@@ -3,7 +3,9 @@
 // Shared types for the ScanTippr payout engine
 // ============================================================
 
-export type RecipientType = 'company' | 'guard'
+export type RecipientType = 'company' | 'guard' | 'hybrid'
+
+export type CompanyModelType = 'company' | 'hybrid'
 
 export type PeriodType = 'monthly' | 'weekly'
 
@@ -71,10 +73,40 @@ export interface Guard {
 export interface Company {
   id: string
   name: string
+  model_type?: CompanyModelType
   bank_account_number: string | null
   bank_name: string | null
   bank_account_holder: string | null
   bank_account_type: string | null
+}
+
+// ── Hybrid payout types ──────────────────────────────────────
+
+/**
+ * Result for a single employee in a hybrid payout run.
+ * Each employee gets their own Ozow payout instruction.
+ */
+export interface HybridEmployeePayout {
+  summary: PayoutSummary
+  payoutPeriodId: string
+}
+
+export interface HybridPayoutResult {
+  success: boolean
+  companyId: string
+  companyName: string
+  employeeResults: Array<{
+    guardId: string
+    guardName: string
+    success: boolean
+    payoutPeriodId?: string
+    error?: string
+    netAmount?: number
+  }>
+  totalEmployees: number
+  successCount: number
+  failCount: number
+  error?: string
 }
 
 // ── Output types ─────────────────────────────────────────────

@@ -375,6 +375,148 @@ function InitiateIndividualPayoutPanel({ independents }: { independents: any[] }
   )
 }
 
+// ── Initiate Hybrid Payout Panel ──────────────────────────────
+function InitiateHybridPayoutPanel({ hybridCompanies }: { hybridCompanies: any[] }) {
+  const prevMonth = getPreviousMonthRange()
+  const [companyId, setCompanyId]     = useState('')
+  const [periodType, setPeriodType]   = useState('monthly')
+  const [periodStart, setPeriodStart] = useState(prevMonth.start)
+  const [periodEnd, setPeriodEnd]     = useState(prevMonth.end)
+  const [feeDisposalMode, setFeeDisposal] = useState('payout_to_scantippr')
+  const [state, setState]             = useState<InitiateState>({ phase: 'idle' })
+  const [confirmed, setConfirmed]     = useState(false)
+
+  const canSubmit = companyId && confirmed && state.phase !== 'loading'
+  const selectedCompany = hybridCompanies.find(c => c.id === companyId)
+
+  async function handleInitiate() {
+    if (!canSubmit) return
+    setState({ phase: 'loading' })
+    try {
+      const res = await fetch('/api/admin/payouts/initiate-hybrid', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ companyId, periodType, periodStart, periodEnd, feeDisposalMode }),
+      })
+      const data = await res.json()
+      if (!res.ok && res.status !== 207) {
+        setState({ phase: 'error', message: data.error ?? 'Unknown error' })
+        setConfirmed(false)
+      } else {
+        setState({ phase: 'success', summary: data })
+        setConfirmed(false)
+        setCompanyId('')
+      }
+    } catch {
+      setState({ phase: 'error', message: 'Network error — please try again' })
+      setConfirmed(false)
+    }
+  }
+
+  return (
+    <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)', overflow: 'hidden', marginBottom: '16px' }}>
+      <div style={{ padding: '18px 24px', borderBottom: '1px solid #F3F4F6', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#F0FDF4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#15803D" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+        </div>
+        <div>
+          <p style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#0A0A0A' }}>Initiate Hybrid Payout</p>
+          <p style={{ margin: 0, fontSize: '12px', color: '#9CA3AF' }}>Pays each employee directly to their own bank account</p>
+        </div>
+      </div>
+      <div style={{ padding: '20px 24px' }}>
+        {hybridCompanies.length === 0 ? (
+          <p style={{ margin: 0, fontSize: '13px', color: '#9CA3AF' }}>No hybrid model companies found. Set a company&apos;s account model to <strong>Hybrid</strong> when creating it.</p>
+        ) : (
+          <>
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 1.5fr', gap: '16px', alignItems: 'start' }}>
+              <div>
+                <label style={labelStyle}>Hybrid Company</label>
+                <select value={companyId} onChange={e => { setCompanyId(e.target.value); setState({ phase: 'idle' }); setConfirmed(false) }} style={selectStyle}>
+                  <option value="">Select a company…</option>
+                  {hybridCompanies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={labelStyle}>Period</label>
+                <PeriodPicker
+                  periodType={periodType} setPeriodType={setPeriodType}
+                  periodStart={periodStart} setPeriodStart={setPeriodStart}
+                  periodEnd={periodEnd} setPeriodEnd={setPeriodEnd}
+                  onReset={() => { setState({ phase: 'idle' }); setConfirmed(false) }}
+                  accentColor="#15803D"
+                />
+              </div>
+              <div>
+                <label style={labelStyle}>Fee Disposal</label>
+                <select value={feeDisposalMode} onChange={e => { setFeeDisposal(e.target.value); setState({ phase: 'idle' }); setConfirmed(false) }} style={selectStyle}>
+                  <option value="payout_to_scantippr">Pay out to ScanTippr</option>
+                  <option value="remain_in_float">Remain in float</option>
+                  <option value="pending_decision">Pending decision</option>
+                </select>
+              </div>
+            </div>
+
+            {companyId && (
+              <div style={{ marginTop: '16px', padding: '14px 16px', background: '#F0FDF4', borderRadius: '8px', border: '1px solid #BBF7D0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', flex: 1 }}>
+                  <input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} style={{ width: '15px', height: '15px', accentColor: '#15803D', cursor: 'pointer' }} />
+                  <span style={{ fontSize: '13px', color: '#374151', lineHeight: 1.4 }}>
+                    I confirm: run <strong>{periodType}</strong> hybrid payout for <strong>{selectedCompany?.name}</strong> — <strong>{formatPeriodLabel(periodType, periodStart, periodEnd)}</strong>. Each employee will be paid directly to their own bank. This cannot be undone.
+                  </span>
+                </label>
+                <button onClick={handleInitiate} disabled={!canSubmit} style={{ padding: '9px 20px', borderRadius: '8px', border: 'none', background: canSubmit ? '#15803D' : '#E5E7EB', color: canSubmit ? '#fff' : '#9CA3AF', fontSize: '13px', fontWeight: 600, cursor: canSubmit ? 'pointer' : 'not-allowed', whiteSpace: 'nowrap', minWidth: '140px' }}>
+                  {state.phase === 'loading' ? 'Initiating…' : 'Initiate Payout'}
+                </button>
+              </div>
+            )}
+
+            {state.phase === 'error' && (
+              <div style={{ marginTop: '12px', padding: '12px 16px', borderRadius: '8px', background: '#FEF2F2', border: '1px solid #FECACA', fontSize: '13px', color: '#B91C1C', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                {state.message}
+              </div>
+            )}
+
+            {state.phase === 'success' && (
+              <div style={{ marginTop: '12px', padding: '14px 16px', borderRadius: '8px', background: '#F0FDF4', border: '1px solid #BBF7D0' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#15803D" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span style={{ fontSize: '13px', fontWeight: 700, color: '#15803D' }}>
+                    Hybrid payout initiated — {state.summary.companyName} · {formatPeriodLabel(state.summary.periodType, state.summary.periodStart, state.summary.periodEnd)}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', gap: '24px', marginBottom: '10px' }}>
+                  {[
+                    { label: 'Employees', value: state.summary.totalEmployees },
+                    { label: 'Paid', value: state.summary.successCount },
+                    { label: 'Failed', value: state.summary.failCount },
+                  ].map(item => (
+                    <div key={item.label}>
+                      <p style={{ margin: '0 0 2px', fontSize: '10.5px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase' as const, letterSpacing: '0.06em' }}>{item.label}</p>
+                      <p style={{ margin: 0, fontSize: '13.5px', fontWeight: 700, color: item.label === 'Failed' && item.value > 0 ? '#B91C1C' : '#15803D', fontVariantNumeric: 'tabular-nums' as const }}>{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+                {state.summary.failCount > 0 && (
+                  <div style={{ marginTop: '8px' }}>
+                    {state.summary.employeeResults.filter((r: any) => !r.success).map((r: any) => (
+                      <p key={r.guardId} style={{ margin: '2px 0', fontSize: '12px', color: '#B91C1C' }}>
+                        ✕ {r.guardName}: {r.error}
+                      </p>
+                    ))}
+                  </div>
+                )}
+                <p style={{ margin: '8px 0 0', fontSize: '11.5px', color: '#6B7280' }}>Refresh the page to see the new periods in the table below.</p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ── Main client component ─────────────────────────────────────
 export default function PayoutsAdminClient({
   periods, companies, independents, availableYears,
@@ -422,7 +564,8 @@ export default function PayoutsAdminClient({
         </div>
       </div>
 
-      <InitiatePayoutPanel companies={companies} />
+      <InitiatePayoutPanel companies={companies.filter((c: any) => c.model_type !== 'hybrid')} />
+      <InitiateHybridPayoutPanel hybridCompanies={companies.filter((c: any) => c.model_type === 'hybrid')} />
       <InitiateIndividualPayoutPanel independents={independents} />
 
       {/* Stats */}
@@ -512,8 +655,12 @@ export default function PayoutsAdminClient({
                       )}
                     </td>
                     <td style={{ padding: '14px 20px' }}>
-                      <span style={{ display: 'inline-block', padding: '2px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: 600, background: p.recipient_type === 'company' ? '#EFF6FF' : '#F5F3FF', color: p.recipient_type === 'company' ? '#1D4ED8' : '#6D28D9' }}>
-                        {p.recipient_type === 'company' ? 'Company' : 'Individual'}
+                      <span style={{
+                        display: 'inline-block', padding: '2px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: 600,
+                        background: p.recipient_type === 'company' ? '#EFF6FF' : p.recipient_type === 'hybrid' ? '#F0FDF4' : '#F5F3FF',
+                        color:      p.recipient_type === 'company' ? '#1D4ED8' : p.recipient_type === 'hybrid' ? '#15803D'  : '#6D28D9',
+                      }}>
+                        {p.recipient_type === 'company' ? 'Company' : p.recipient_type === 'hybrid' ? 'Hybrid' : 'Individual'}
                       </span>
                     </td>
                     <td style={{ padding: '14px 20px' }}>
