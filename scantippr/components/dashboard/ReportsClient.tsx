@@ -240,19 +240,15 @@ export default function ReportsClient({ transactions, employees, companyName }: 
                 <td className="px-4 py-3 font-bold text-slate-900 text-right">R{totalTips.toLocaleString('en-ZA', { minimumFractionDigits: 2 })}</td>
               </tr>
               <tr>
-                <td className="px-4 py-3 text-slate-500 font-medium">Successful payments</td>
-                <td className="px-4 py-3 font-bold text-slate-900 text-right">{filtered.length}</td>
-              </tr>
-              <tr className="bg-slate-50">
                 <td className="px-4 py-3 text-slate-500 font-medium">Average payment</td>
                 <td className="px-4 py-3 font-bold text-slate-900 text-right">R{avgTip.toLocaleString('en-ZA', { minimumFractionDigits: 2 })}</td>
               </tr>
-              <tr>
+              <tr className="bg-slate-50">
                 <td className="px-4 py-3 text-slate-500 font-medium">Highest payment</td>
                 <td className="px-4 py-3 font-bold text-slate-900 text-right">R{highestTip.toLocaleString('en-ZA', { minimumFractionDigits: 2 })}</td>
               </tr>
-              <tr className="bg-slate-50">
-                <td className="px-4 py-3 text-slate-500 font-medium">Employees receiving payments</td>
+              <tr>
+                <td className="px-4 py-3 text-slate-500 font-medium">Received payments</td>
                 <td className="px-4 py-3 font-bold text-slate-900 text-right">{uniqueEmployees}</td>
               </tr>
             </tbody>
